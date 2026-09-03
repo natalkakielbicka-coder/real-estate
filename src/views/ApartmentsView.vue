@@ -1,4 +1,5 @@
 <script setup>
+import ApartmentCard from '../components/ApartmentCard.vue'
 import { apartments } from '../data/apartments'
 </script>
 
@@ -12,14 +13,29 @@ import { apartments } from '../data/apartments'
 
         <h1>Znajdź swoje mieszkanie</h1>
 
-        <p class="apartments-header__description">
-          Porównaj dostępne lokale i wybierz przestrzeń
-          dopasowaną do Twoich potrzeb.
-        </p>
+        <div class="apartments-header__bottom">
+          <p>
+            Porównaj dostępne lokale i wybierz przestrzeń
+            dopasowaną do Twoich potrzeb.
+          </p>
 
-        <p class="apartments-header__count">
-          Liczba mieszkań: <strong>{{ apartments.length }}</strong>
-        </p>
+          <div class="apartments-header__count">
+            <strong>{{ apartments.length }}</strong>
+            <span>dostępnych ofert</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="apartments-results">
+      <div class="container">
+        <div class="apartments-grid">
+          <ApartmentCard
+            v-for="apartment in apartments"
+            :key="apartment.id"
+            :apartment="apartment"
+          />
+        </div>
       </div>
     </section>
   </main>
@@ -27,66 +43,88 @@ import { apartments } from '../data/apartments'
 
 <style scoped>
 .apartments-page {
-  min-height: 100vh;
   padding-top: 88px;
 }
 
 .apartments-header {
-  padding-block: clamp(70px, 10vw, 130px);
+  padding-block: clamp(70px, 9vw, 130px);
+  color: #ffffff;
   background-color: var(--color-primary);
 }
 
 .apartments-header__eyebrow {
   margin-bottom: 20px;
   color: var(--color-accent);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
-h1 {
-  max-width: 750px;
-  margin-bottom: 24px;
-  color: var(--color-surface);
-  font-family: var(--font-body);
-  font-size: clamp(46px, 6vw, 78px);
-  font-weight: 600;
-  letter-spacing: -0.055em;
+.apartments-header h1 {
+  max-width: 780px;
+  margin-bottom: 40px;
+  color: #ffffff;
+  font-size: clamp(48pxreti,bal, 6vw, 76px);
 }
 
-.apartments-header__description {
-  max-width: 570px;
-  margin-bottom: 38px;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: clamp(16px, 2vw, 19px);
+.apartments-header__bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.apartments-header__bottom p {
+  max-width: 580px;
+  margin-bottom: 0;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 17px;
 }
 
 .apartments-header__count {
-  margin-bottom: 0;
-  color: rgba(255, 255, 255, 0.65);
-  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
 }
 
 .apartments-header__count strong {
-  margin-left: 5px;
   color: var(--color-accent);
-  font-size: 18px;
+  font-family: var(--font-heading);
+  font-size: 46px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.apartments-header__count span {
+  max-width: 75px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.apartments-results {
+  padding-block: clamp(60px, 8vw, 110px);
+}
+
+.apartments-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+}
+
+@media (max-width: 991px) {
+  .apartments-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 767px) {
-  .apartments-header {
-    padding-block: 75px;
-  }
-}
-
-@media (max-width: 479px) {
-  .apartments-header {
-    padding-block: 60px;
-  }
-
-  h1 {
-    font-size: 43px;
+  .apartments-header__bottom {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
 </style>
