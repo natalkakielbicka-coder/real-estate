@@ -12,15 +12,15 @@
 
       <nav class="navigation" aria-label="Główna nawigacja">
         <RouterLink to="/">Strona główna</RouterLink>
-        <a href="#">Mieszkania</a>
+        <RouterLink to="/mieszkania">Mieszkania</RouterLink>
         <a href="#">Inwestycje</a>
         <a href="#">Kontakt</a>
       </nav>
 
-      <a class="header__button" href="#">
+      <RouterLink class="header__button" to="/mieszkania">
         Znajdź mieszkanie
         <span aria-hidden="true">→</span>
-      </a>
+      </RouterLink>
     </div>
   </header>
 </template>
