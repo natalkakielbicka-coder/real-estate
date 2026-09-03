@@ -18,7 +18,8 @@
   display: flex;
   align-items: center;
   min-height: 100vh;
-  padding-block: 80px;
+  padding-top: 168px;
+  padding-bottom: 80px;
 }
 
 .home__eyebrow {
