@@ -2,13 +2,7 @@
 </script>
 
 <template>
-  <main class="container">
-    <h1>Znajdź przestrzeń dla siebie</h1>
-
-    <p>
-      Nowoczesne mieszkania w najlepszych lokalizacjach.
-    </p>
-  </main>
+  <RouterView />
 </template>
 
 <style scoped>
