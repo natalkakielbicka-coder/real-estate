@@ -1,3 +1,27 @@
+:root {
+  --color-primary: #173f35;
+  --color-primary-light: #24594b;
+  --color-accent: #c79d62;
+
+  --color-background: #f6f4ef;
+  --color-surface: #ffffff;
+  --color-text: #1d2925;
+  --color-text-muted: #68736f;
+  --color-border: #dedfd9;
+
+  --font-heading: "DM Serif Display", Georgia, serif;
+  --font-body: "Manrope", Arial, sans-serif;
+
+  --container-width: 1280px;
+  --container-padding: clamp(20px, 4vw, 64px);
+
+  --radius-small: 6px;
+  --radius-medium: 14px;
+  --radius-large: 24px;
+
+  --shadow-small: 0 8px 30px rgba(23, 63, 53, 0.08);
+}
+
 *,
 *::before,
 *::after {
@@ -6,15 +30,48 @@
 
 html {
   font-size: 16px;
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  color: #1f2933;
-  background-color: #f7f7f5;
-  font-family: Arial, sans-serif;
+  color: var(--color-text);
+  background-color: var(--color-background);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin-top: 0;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  color: var(--color-primary);
+  font-family: var(--font-heading);
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+h1 {
+  font-size: clamp(42px, 7vw, 88px);
+}
+
+h2 {
+  font-size: clamp(34px, 5vw, 60px);
+}
+
+h3 {
+  font-size: clamp(24px, 3vw, 34px);
 }
 
 button,
@@ -40,4 +97,9 @@ a {
 
 #app {
   min-height: 100vh;
+}
+
+.container {
+  width: min(100% - (2 * var(--container-padding)), var(--container-width));
+  margin-inline: auto;
 }
