@@ -178,7 +178,10 @@ const filteredApartments = computed(() => {
               </small>
             </label>
           </fieldset>
-          <fieldset class="filter-group">
+          <form
+            class="filter-group"
+            @submit.prevent="applyPriceFilter"
+          >
             <legend class="filter-group__title">Cena mieszkania</legend>
 
             <div class="price-filter">
@@ -216,12 +219,11 @@ const filteredApartments = computed(() => {
             </div>
             <button
               class="price-filter__button"
-              type="button"
-              @click="applyPriceFilter"
+              type="submit"
             >
               Zastosuj cenę
             </button>
-          </fieldset>
+          </form>
         </aside>
 
         <div class="apartments-grid">
