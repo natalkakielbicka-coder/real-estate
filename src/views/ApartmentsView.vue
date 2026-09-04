@@ -19,6 +19,18 @@ const applyPriceFilter = () => {
   maxPrice.value = priceToInput.value === '' ? null : Number(priceToInput.value)
 }
 
+const resetFilters = () => {
+  selectedCities.value = []
+  selectedRooms.value = []
+  selectedStatuses.value = []
+
+  priceFromInput.value = ''
+  priceToInput.value = ''
+
+  minPrice.value = null
+  maxPrice.value = null
+}
+
 const cities = [...new Set(apartments.map((apartment) => apartment.city))]
 
 const rooms = [...new Set(apartments.map((apartment) => apartment.rooms))].sort(
@@ -107,6 +119,14 @@ const filteredApartments = computed(() => {
 
             <span> {{ filteredApartments.length }} ofert </span>
           </div>
+
+          <button
+            class="filters-sidebar__reset"
+            type="button"
+            @click="resetFilters"
+          >
+            Wyczyść
+          </button>
 
           <fieldset class="filter-group">
             <legend>Miasto</legend>
@@ -349,6 +369,31 @@ const filteredApartments = computed(() => {
   font-size: 9px;
   font-weight: 700;
   text-transform: uppercase;
+}
+
+.filters-sidebar__header > div {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filters-sidebar__reset {
+  padding: 3px 0;
+  color: var(--color-text-muted);
+  background-color: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 10px;
+  font-weight: 700;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.filters-sidebar__reset:hover {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 .filter-group {
