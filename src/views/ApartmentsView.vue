@@ -14,23 +14,16 @@ const maxPrice = ref(null)
 
 const applyPriceFilter = () => {
   minPrice.value =
-    priceFromInput.value === ''
-      ? null
-      : Number(priceFromInput.value)
+    priceFromInput.value === '' ? null : Number(priceFromInput.value)
 
-  maxPrice.value =
-    priceToInput.value === ''
-      ? null
-      : Number(priceToInput.value)
+  maxPrice.value = priceToInput.value === '' ? null : Number(priceToInput.value)
 }
 
-const cities = [...new Set(
-  apartments.map((apartment) => apartment.city)
-)]
+const cities = [...new Set(apartments.map((apartment) => apartment.city))]
 
-const rooms = [...new Set(
-  apartments.map((apartment) => apartment.rooms)
-)].sort((a, b) => a - b)
+const rooms = [...new Set(apartments.map((apartment) => apartment.rooms))].sort(
+  (a, b) => a - b
+)
 
 const statuses = [
   {
@@ -68,14 +61,18 @@ const filteredApartments = computed(() => {
       selectedStatuses.value.includes(apartment.status)
 
     const matchesMinPrice =
-      minPrice.value === null ||
-      apartment.price >= minPrice.value
+      minPrice.value === null || apartment.price >= minPrice.value
 
     const matchesMaxPrice =
-      maxPrice.value === null ||
-      apartment.price <= maxPrice.value
+      maxPrice.value === null || apartment.price <= maxPrice.value
 
-    return matchesCity && matchesRooms && matchesStatus && matchesMinPrice &&matchesMaxPrice
+    return (
+      matchesCity &&
+      matchesRooms &&
+      matchesStatus &&
+      matchesMinPrice &&
+      matchesMaxPrice
+    )
   })
 })
 </script>
@@ -84,16 +81,14 @@ const filteredApartments = computed(() => {
   <main class="apartments-page">
     <section class="apartments-header">
       <div class="container">
-        <p class="apartments-header__eyebrow">
-          Oferta mieszkań
-        </p>
+        <p class="apartments-header__eyebrow">Oferta mieszkań</p>
 
         <h1>Znajdź swoje mieszkanie</h1>
 
         <div class="apartments-header__bottom">
           <p>
-            Porównaj dostępne lokale i wybierz przestrzeń
-            dopasowaną do Twoich potrzeb.
+            Porównaj dostępne lokale i wybierz przestrzeń dopasowaną do Twoich
+            potrzeb.
           </p>
 
           <div class="apartments-header__count">
@@ -110,9 +105,7 @@ const filteredApartments = computed(() => {
           <div class="filters-sidebar__header">
             <p>Filtry mieszkań</p>
 
-            <span>
-              {{ filteredApartments.length }} ofert
-            </span>
+            <span> {{ filteredApartments.length }} ofert </span>
           </div>
 
           <fieldset class="filter-group">
@@ -127,7 +120,7 @@ const filteredApartments = computed(() => {
                 v-model="selectedCities"
                 type="checkbox"
                 :value="city"
-              >
+              />
 
               <span class="filter-checkbox__mark"></span>
               <span>{{ city }}</span>
@@ -145,7 +138,7 @@ const filteredApartments = computed(() => {
                 v-model="selectedRooms"
                 type="checkbox"
                 :value="room"
-              >
+              />
 
               <span class="filter-checkbox__mark"></span>
 
@@ -167,7 +160,7 @@ const filteredApartments = computed(() => {
                 v-model="selectedStatuses"
                 type="checkbox"
                 :value="status.value"
-              >
+              />
 
               <span class="filter-checkbox__mark"></span>
 
@@ -186,9 +179,7 @@ const filteredApartments = computed(() => {
             </label>
           </fieldset>
           <fieldset class="filter-group">
-            <legend class="filter-group__title">
-              Cena mieszkania
-            </legend>
+            <legend class="filter-group__title">Cena mieszkania</legend>
 
             <div class="price-filter">
               <label>
@@ -201,7 +192,7 @@ const filteredApartments = computed(() => {
                     min="0"
                     step="50000"
                     placeholder="np. 500 000"
-                  >
+                  />
 
                   <span>zł</span>
                 </div>
@@ -217,7 +208,7 @@ const filteredApartments = computed(() => {
                     min="0"
                     step="50000"
                     placeholder="np. 900 000"
-                  >
+                  />
 
                   <span>zł</span>
                 </div>
@@ -269,7 +260,7 @@ const filteredApartments = computed(() => {
   max-width: 780px;
   margin-bottom: 40px;
   color: #ffffff;
-  font-size: clamp(48pxreti,bal, 6vw, 76px);
+  font-size: clamp(48pxreti, bal, 6vw, 76px);
 }
 
 .apartments-header__bottom {
@@ -417,7 +408,7 @@ const filteredApartments = computed(() => {
   left: 5px;
   width: 5px;
   height: 9px;
-  content: "";
+  content: '';
   border-right: 2px solid #ffffff;
   border-bottom: 2px solid #ffffff;
   transform: rotate(45deg);
