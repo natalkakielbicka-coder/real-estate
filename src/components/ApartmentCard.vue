@@ -64,7 +64,10 @@ const floorLabel = computed(() => {
         <small>{{ floorLabel }}</small>
       </div>
 
-      <div v-if="apartment.featured" class="apartment-card__featured">
+      <div
+        v-if="apartment.featured"
+        class="apartment-card__featured"
+      >
         Polecane
       </div>
     </div>
@@ -109,17 +112,13 @@ const floorLabel = computed(() => {
           <small>{{ pricePerMeter }} zł/m²</small>
         </div>
 
-        <button
+        <RouterLink
           class="apartment-card__details"
-          type="button"
-          :disabled="apartment.status === 'sold'"
+          :to="`/mieszkania/${apartment.slug}`"
         >
-          <span>
-            {{ apartment.status === 'sold' ? 'Niedostępne' : 'Zobacz lokal' }}
-          </span>
-
+          <span>Zobacz lokal</span>
           <span aria-hidden="true">→</span>
-        </button>
+        </RouterLink>
       </div>
     </div>
   </article>
@@ -150,14 +149,17 @@ const floorLabel = computed(() => {
     linear-gradient(rgba(23, 63, 53, 0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(23, 63, 53, 0.05) 1px, transparent 1px),
     linear-gradient(135deg, #f2eee5, #e5ddcf);
-  background-size: 24px 24px, 24px 24px, cover;
+  background-size:
+    24px 24px,
+    24px 24px,
+    cover;
 }
 
 .apartment-card__visual::before {
   position: absolute;
   width: 190px;
   height: 190px;
-  content: "";
+  content: '';
   border: 1px solid rgba(23, 63, 53, 0.12);
   border-radius: 50%;
 }
@@ -373,15 +375,11 @@ const floorLabel = computed(() => {
   border: 0;
   font-size: 11px;
   font-weight: 700;
+  text-decoration: none;
 }
 
-.apartment-card__details:hover:not(:disabled) {
+.apartment-card__details:hover {
   background-color: var(--color-primary-light);
-}
-
-.apartment-card__details:disabled {
-  cursor: not-allowed;
-  background-color: #a5aaa8;
 }
 
 @media (max-width: 479px) {
