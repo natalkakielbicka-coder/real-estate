@@ -6,8 +6,23 @@ import { apartments } from '../data/apartments'
 const selectedCities = ref([])
 const selectedRooms = ref([])
 const selectedStatuses = ref([])
+
+const priceFromInput = ref('')
+const priceToInput = ref('')
 const minPrice = ref(null)
 const maxPrice = ref(null)
+
+const applyPriceFilter = () => {
+  minPrice.value =
+    priceFromInput.value === ''
+      ? null
+      : Number(priceFromInput.value)
+
+  maxPrice.value =
+    priceToInput.value === ''
+      ? null
+      : Number(priceToInput.value)
+}
 
 const cities = [...new Set(
   apartments.map((apartment) => apartment.city)
@@ -181,7 +196,7 @@ const filteredApartments = computed(() => {
 
                 <div class="price-filter__input">
                   <input
-                    v-model.number="minPrice"
+                    v-model="priceFromInput"
                     type="number"
                     min="0"
                     step="50000"
@@ -197,7 +212,7 @@ const filteredApartments = computed(() => {
 
                 <div class="price-filter__input">
                   <input
-                    v-model.number="maxPrice"
+                    v-model="priceToInput"
                     type="number"
                     min="0"
                     step="50000"
@@ -208,6 +223,13 @@ const filteredApartments = computed(() => {
                 </div>
               </label>
             </div>
+            <button
+              class="price-filter__button"
+              type="button"
+              @click="applyPriceFilter"
+            >
+              Zastosuj cenę
+            </button>
           </fieldset>
         </aside>
 
@@ -481,6 +503,24 @@ const filteredApartments = computed(() => {
   flex-shrink: 0;
   color: var(--color-text-muted);
   font-size: 9px;
+}
+
+.price-filter__button {
+  width: 100%;
+  min-height: 42px;
+  margin-top: 12px;
+  padding-inline: 16px;
+  color: #ffffff;
+  background-color: var(--color-primary);
+  border: 0;
+  border-radius: var(--radius-small);
+  font-size: 11px;
+  font-weight: 700;
+  transition: background-color 0.2s ease;
+}
+
+.price-filter__button:hover {
+  background-color: var(--color-primary-light);
 }
 
 .apartments-grid {
