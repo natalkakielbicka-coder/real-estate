@@ -4,18 +4,27 @@ import ApartmentCard from '../components/ApartmentCard.vue'
 import { apartments } from '../data/apartments'
 
 const selectedCities = ref([])
+const selectedRooms = ref([])
 
 const cities = [...new Set(
   apartments.map((apartment) => apartment.city)
 )]
 
-const filteredApartments = computed(() => {
-  if (selectedCities.value.length === 0) {
-    return apartments
-  }
+const rooms = [...new Set(
+  apartments.map((apartment) => apartment.rooms)
+)].sort((a, b) => a - b)
 
+const filteredApartments = computed(() => {
   return apartments.filter((apartment) => {
-    return selectedCities.value.includes(apartment.city)
+    const matchesCity =
+      selectedCities.value.length === 0 ||
+      selectedCities.value.includes(apartment.city)
+
+    const matchesRooms =
+      selectedRooms.value.length === 0 ||
+      selectedRooms.value.includes(apartment.rooms)
+
+    return matchesCity && matchesRooms
   })
 })
 </script>
@@ -71,6 +80,28 @@ const filteredApartments = computed(() => {
 
               <span class="filter-checkbox__mark"></span>
               <span>{{ city }}</span>
+            </label>
+          </fieldset>
+          <fieldset class="filter-group">
+            <legend>Liczba pokoi</legend>
+
+            <label
+              v-for="room in rooms"
+              :key="room"
+              class="filter-checkbox"
+            >
+              <input
+                v-model="selectedRooms"
+                type="checkbox"
+                :value="room"
+              >
+
+              <span class="filter-checkbox__mark"></span>
+
+              <span>
+                {{ room }}
+                {{ room === 1 ? 'pokój' : 'pokoje' }}
+              </span>
             </label>
           </fieldset>
         </aside>
@@ -201,7 +232,7 @@ const filteredApartments = computed(() => {
 }
 
 .filter-group {
-  margin: 0;
+  margin: 22px 0 0;
   padding: 22px 0 0;
   border: 0;
   border-top: 1px solid var(--color-border);
