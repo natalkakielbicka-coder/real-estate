@@ -5,6 +5,7 @@ import { apartments } from '../data/apartments'
 
 const selectedCities = ref([])
 const selectedRooms = ref([])
+const selectedStatuses = ref([])
 
 const cities = [...new Set(
   apartments.map((apartment) => apartment.city)
@@ -13,6 +14,27 @@ const cities = [...new Set(
 const rooms = [...new Set(
   apartments.map((apartment) => apartment.rooms)
 )].sort((a, b) => a - b)
+
+const statuses = [
+  {
+    value: 'available',
+    label: 'Dostępne'
+  },
+  {
+    value: 'reserved',
+    label: 'Zarezerwowane'
+  },
+  {
+    value: 'sold',
+    label: 'Sprzedane'
+  }
+]
+
+const getStatusCount = (status) => {
+  return apartments.filter((apartment) => {
+    return apartment.status === status
+  }).length
+}
 
 const filteredApartments = computed(() => {
   return apartments.filter((apartment) => {
@@ -24,7 +46,11 @@ const filteredApartments = computed(() => {
       selectedRooms.value.length === 0 ||
       selectedRooms.value.includes(apartment.rooms)
 
-    return matchesCity && matchesRooms
+    const matchesStatus =
+      selectedStatuses.value.length === 0 ||
+      selectedStatuses.value.includes(apartment.status)
+
+    return matchesCity && matchesRooms && matchesStatus
   })
 })
 </script>
@@ -102,6 +128,36 @@ const filteredApartments = computed(() => {
                 {{ room }}
                 {{ room === 1 ? 'pokój' : 'pokoje' }}
               </span>
+            </label>
+          </fieldset>
+          <fieldset class="filter-group">
+            <legend>Status mieszkania</legend>
+
+            <label
+              v-for="status in statuses"
+              :key="status.value"
+              class="filter-checkbox"
+            >
+              <input
+                v-model="selectedStatuses"
+                type="checkbox"
+                :value="status.value"
+              >
+
+              <span class="filter-checkbox__mark"></span>
+
+              <span
+                class="status-dot"
+                :class="`status-dot--${status.value}`"
+              ></span>
+
+              <span class="filter-checkbox__label">
+                {{ status.label }}
+              </span>
+
+              <small class="filter-checkbox__count">
+                {{ getStatusCount(status.value) }}
+              </small>
             </label>
           </fieldset>
         </aside>
@@ -239,8 +295,7 @@ const filteredApartments = computed(() => {
 }
 
 .filter-group legend {
-  margin-bottom: 16px;
-  padding: 0;
+  padding: 0 5px 0 0;
   color: var(--color-primary);
   font-size: 11px;
   font-weight: 700;
@@ -252,7 +307,7 @@ const filteredApartments = computed(() => {
   position: relative;
   display: flex;
   align-items: center;
-  width: fit-content;
+  width: 100%;
   margin-bottom: 12px;
   gap: 10px;
   color: var(--color-text-muted);
@@ -295,6 +350,33 @@ const filteredApartments = computed(() => {
   border-right: 2px solid #ffffff;
   border-bottom: 2px solid #ffffff;
   transform: rotate(45deg);
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+
+.status-dot--available {
+  background-color: #3d806d;
+}
+
+.status-dot--reserved {
+  background-color: #c28b3f;
+}
+
+.status-dot--sold {
+  background-color: #929896;
+}
+
+.filter-checkbox__count {
+  min-width: 20px;
+  margin-left: auto;
+  color: var(--color-text-muted);
+  font-size: 9px;
+  text-align: right;
 }
 
 .apartments-grid {
