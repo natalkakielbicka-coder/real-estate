@@ -1,6 +1,23 @@
 <script setup>
+import { computed, ref } from 'vue'
 import ApartmentCard from '../components/ApartmentCard.vue'
 import { apartments } from '../data/apartments'
+
+const selectedCities = ref([])
+
+const cities = [...new Set(
+  apartments.map((apartment) => apartment.city)
+)]
+
+const filteredApartments = computed(() => {
+  if (selectedCities.value.length === 0) {
+    return apartments
+  }
+
+  return apartments.filter((apartment) => {
+    return selectedCities.value.includes(apartment.city)
+  })
+})
 </script>
 
 <template>
@@ -30,12 +47,37 @@ import { apartments } from '../data/apartments'
     <section class="apartments-results">
       <div class="apartments-layout container">
         <aside class="filters-sidebar">
-          <p>Filtry mieszkań</p>
+          <div class="filters-sidebar__header">
+            <p>Filtry mieszkań</p>
+
+            <span>
+              {{ filteredApartments.length }} ofert
+            </span>
+          </div>
+
+          <fieldset class="filter-group">
+            <legend>Miasto</legend>
+
+            <label
+              v-for="city in cities"
+              :key="city"
+              class="filter-checkbox"
+            >
+              <input
+                v-model="selectedCities"
+                type="checkbox"
+                :value="city"
+              >
+
+              <span class="filter-checkbox__mark"></span>
+              <span>{{ city }}</span>
+            </label>
+          </fieldset>
         </aside>
 
         <div class="apartments-grid">
           <ApartmentCard
-            v-for="apartment in apartments"
+            v-for="apartment in filteredApartments"
             :key="apartment.id"
             :apartment="apartment"
           />
@@ -134,6 +176,94 @@ import { apartments } from '../data/apartments'
   color: var(--color-primary);
   font-size: 18px;
   font-weight: 700;
+}
+
+.filters-sidebar__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  gap: 15px;
+}
+
+.filters-sidebar__header p {
+  margin-bottom: 0;
+}
+
+.filters-sidebar__header span {
+  flex-shrink: 0;
+  padding: 5px 8px;
+  color: var(--color-primary);
+  background-color: var(--color-background);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.filter-group {
+  margin: 0;
+  padding: 22px 0 0;
+  border: 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.filter-group legend {
+  margin-bottom: 16px;
+  padding: 0;
+  color: var(--color-primary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.filter-checkbox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  margin-bottom: 12px;
+  gap: 10px;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.filter-checkbox:last-child {
+  margin-bottom: 0;
+}
+
+.filter-checkbox input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.filter-checkbox__mark {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  border: 1px solid #c7cbc8;
+  border-radius: 3px;
+}
+
+.filter-checkbox input:checked + .filter-checkbox__mark {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.filter-checkbox input:checked + .filter-checkbox__mark::after {
+  position: absolute;
+  top: 2px;
+  left: 5px;
+  width: 5px;
+  height: 9px;
+  content: "";
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+  transform: rotate(45deg);
 }
 
 .apartments-grid {
