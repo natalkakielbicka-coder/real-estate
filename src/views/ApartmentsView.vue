@@ -9,6 +9,7 @@ const selectedStatuses = ref([])
 const selectedOutdoorSpaces = ref([])
 const onlyWithParking = ref(false)
 const onlyWithStorage = ref(false)
+const selectedSort = ref('default')
 
 const outdoorSpaces = [
   {
@@ -123,6 +124,20 @@ const filteredApartments = computed(() => {
       matchesStorage
     )
   })
+})
+
+const sortedApartments = computed(() => {
+  const apartmentsToSort = [...filteredApartments.value]
+
+  if (selectedSort.value === 'price-asc') {
+    return apartmentsToSort.sort((a, b) => a.price - b.price)
+  }
+
+  if (selectedSort.value === 'price-desc') {
+    return apartmentsToSort.sort((a, b) => b.price - a.price)
+  }
+
+  return apartmentsToSort
 })
 </script>
 
@@ -329,37 +344,59 @@ const filteredApartments = computed(() => {
           </form>
         </aside>
 
-        <div
-          v-if="filteredApartments.length > 0"
-          class="apartments-grid"
-        >
-          <ApartmentCard
-            v-for="apartment in filteredApartments"
-            :key="apartment.id"
-            :apartment="apartment"
-          />
-        </div>
+        <div class="apartments-content">
+          <div class="apartments-toolbar">
+            <p>
+              Znaleziono
+              <strong>{{ sortedApartments.length }}</strong>
+              mieszkań
+            </p>
 
-        <div
-          v-else
-          class="apartments-empty"
-        >
-          <span class="apartments-empty__number">0</span>
+            <label class="apartments-sort">
+              <span>Sortuj</span>
 
-          <h2>Brak pasujących mieszkań</h2>
+              <select v-model="selectedSort">
+                <option value="default">Domyślna kolejność</option>
 
-          <p>
-            Nie znaleźliśmy lokali spełniających wszystkie wybrane kryteria.
-            Spróbuj zmienić filtry.
-          </p>
+                <option value="price-asc">Cena: od najniższej</option>
 
-          <button
-            type="button"
-            @click="resetFilters"
+                <option value="price-desc">Cena: od najwyższej</option>
+              </select>
+            </label>
+          </div>
+
+          <div
+            v-if="sortedApartments.length > 0"
+            class="apartments-grid"
           >
-            Wyczyść wszystkie filtry
-            <span aria-hidden="true">→</span>
-          </button>
+            <ApartmentCard
+              v-for="apartment in sortedApartments"
+              :key="apartment.id"
+              :apartment="apartment"
+            />
+          </div>
+
+          <div
+            v-else
+            class="apartments-empty"
+          >
+            <span class="apartments-empty__number">0</span>
+
+            <h2>Brak pasujących mieszkań</h2>
+
+            <p>
+              Nie znaleźliśmy lokali spełniających wszystkie wybrane kryteria.
+              Spróbuj zmienić filtry.
+            </p>
+
+            <button
+              type="button"
+              @click="resetFilters"
+            >
+              Wyczyść wszystkie filtry
+              <span aria-hidden="true">→</span>
+            </button>
+          </div>
         </div>
       </div>
     </section>
@@ -739,6 +776,61 @@ const filteredApartments = computed(() => {
   transform: translateX(4px);
 }
 
+.apartments-content {
+  min-width: 0;
+}
+
+.apartments-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 62px;
+  margin-bottom: 24px;
+  padding: 10px 12px 10px 20px;
+  gap: 24px;
+  background-color: var(--color-surface);
+}
+
+.apartments-toolbar p {
+  margin-bottom: 0;
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.apartments-toolbar p strong {
+  color: var(--color-primary);
+  font-size: 14px;
+}
+
+.apartments-sort {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.apartments-sort > span {
+  color: var(--color-text-muted);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.apartments-sort select {
+  height: 42px;
+  padding-inline: 14px 32px;
+  color: var(--color-primary);
+  background-color: var(--color-background);
+  border: 1px solid transparent;
+  border-radius: var(--radius-small);
+  outline: none;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.apartments-sort select:focus {
+  border-color: var(--color-accent);
+}
+
 @media (max-width: 1199px) {
   .apartments-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -779,6 +871,23 @@ const filteredApartments = computed(() => {
   .apartments-empty {
     min-height: 400px;
     padding: 40px 20px;
+  }
+
+  .apartments-toolbar {
+    align-items: stretch;
+    padding: 16px;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .apartments-sort {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .apartments-sort select {
+    width: 100%;
   }
 }
 </style>
