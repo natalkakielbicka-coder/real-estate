@@ -6,6 +6,26 @@ import { apartments } from '../data/apartments'
 const selectedCities = ref([])
 const selectedRooms = ref([])
 const selectedStatuses = ref([])
+const selectedOutdoorSpaces = ref([])
+
+const outdoorSpaces = [
+  {
+    value: 'balcony',
+    label: 'Balkon'
+  },
+  {
+    value: 'terrace',
+    label: 'Taras'
+  },
+  {
+    value: 'garden',
+    label: 'Ogródek'
+  },
+  {
+    value: 'loggia',
+    label: 'Loggia'
+  }
+]
 
 const priceFromInput = ref('')
 const priceToInput = ref('')
@@ -23,6 +43,7 @@ const resetFilters = () => {
   selectedCities.value = []
   selectedRooms.value = []
   selectedStatuses.value = []
+  selectedOutdoorSpaces.value = []
 
   priceFromInput.value = ''
   priceToInput.value = ''
@@ -78,12 +99,17 @@ const filteredApartments = computed(() => {
     const matchesMaxPrice =
       maxPrice.value === null || apartment.price <= maxPrice.value
 
+    const matchesOutdoorSpace =
+      selectedOutdoorSpaces.value.length === 0 ||
+      selectedOutdoorSpaces.value.includes(apartment.outdoorSpace.type)
+
     return (
       matchesCity &&
       matchesRooms &&
       matchesStatus &&
       matchesMinPrice &&
-      matchesMaxPrice
+      matchesMaxPrice &&
+      matchesOutdoorSpace
     )
   })
 })
@@ -196,6 +222,27 @@ const filteredApartments = computed(() => {
               <small class="filter-checkbox__count">
                 {{ getStatusCount(status.value) }}
               </small>
+            </label>
+          </fieldset>
+          <fieldset class="filter-group">
+            <legend>Przestrzeń dodatkowa</legend>
+
+            <label
+              v-for="space in outdoorSpaces"
+              :key="space.value"
+              class="filter-checkbox"
+            >
+              <input
+                v-model="selectedOutdoorSpaces"
+                type="checkbox"
+                :value="space.value"
+              />
+
+              <span class="filter-checkbox__mark"></span>
+
+              <span class="filter-checkbox__label">
+                {{ space.label }}
+              </span>
             </label>
           </fieldset>
           <form
