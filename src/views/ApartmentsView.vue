@@ -56,6 +56,7 @@ const resetFilters = () => {
 
   minPrice.value = null
   maxPrice.value = null
+  selectedSort.value = 'default'
 }
 
 const cities = [...new Set(apartments.map((apartment) => apartment.city))]
@@ -135,6 +136,23 @@ const sortedApartments = computed(() => {
 
   if (selectedSort.value === 'price-desc') {
     return apartmentsToSort.sort((a, b) => b.price - a.price)
+  }
+
+  if (selectedSort.value === 'area-asc') {
+    return apartmentsToSort.sort((a, b) => a.area - b.area)
+  }
+
+  if (selectedSort.value === 'area-desc') {
+    return apartmentsToSort.sort((a, b) => b.area - a.area)
+  }
+
+  if (selectedSort.value === 'price-per-meter-asc') {
+    return apartmentsToSort.sort((a, b) => {
+      const firstPricePerMeter = a.price / a.area
+      const secondPricePerMeter = b.price / b.area
+
+      return firstPricePerMeter - secondPricePerMeter
+    })
   }
 
   return apartmentsToSort
@@ -361,6 +379,14 @@ const sortedApartments = computed(() => {
                 <option value="price-asc">Cena: od najniższej</option>
 
                 <option value="price-desc">Cena: od najwyższej</option>
+
+                <option value="area-asc">Metraż: od najmniejszego</option>
+
+                <option value="area-desc">Metraż: od największego</option>
+
+                <option value="price-per-meter-asc">
+                  Najniższa cena za m²
+                </option>
               </select>
             </label>
           </div>
