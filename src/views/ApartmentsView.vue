@@ -246,12 +246,37 @@ const filteredApartments = computed(() => {
           </form>
         </aside>
 
-        <div class="apartments-grid">
+        <div
+          v-if="filteredApartments.length > 0"
+          class="apartments-grid"
+        >
           <ApartmentCard
             v-for="apartment in filteredApartments"
             :key="apartment.id"
             :apartment="apartment"
           />
+        </div>
+
+        <div
+          v-else
+          class="apartments-empty"
+        >
+          <span class="apartments-empty__number">0</span>
+
+          <h2>Brak pasujących mieszkań</h2>
+
+          <p>
+            Nie znaleźliśmy lokali spełniających wszystkie wybrane kryteria.
+            Spróbuj zmienić filtry.
+          </p>
+
+          <button
+            type="button"
+            @click="resetFilters"
+          >
+            Wyczyść wszystkie filtry
+            <span aria-hidden="true">→</span>
+          </button>
         </div>
       </div>
     </section>
@@ -568,6 +593,69 @@ const filteredApartments = computed(() => {
   gap: 24px;
 }
 
+.apartments-empty {
+  display: flex;
+  align-items: center;
+  min-height: 480px;
+  padding: 60px;
+  flex-direction: column;
+  justify-content: center;
+  background-color: var(--color-surface);
+  text-align: center;
+}
+
+.apartments-empty__number {
+  display: grid;
+  width: 100px;
+  height: 100px;
+  margin-bottom: 25px;
+  place-items: center;
+  color: var(--color-accent);
+  background-color: var(--color-background);
+  font-family: var(--font-heading);
+  font-size: 54px;
+  border-radius: 50%;
+}
+
+.apartments-empty h2 {
+  margin-bottom: 12px;
+  font-size: clamp(28px, 4vw, 40px);
+}
+
+.apartments-empty p {
+  max-width: 490px;
+  margin-bottom: 28px;
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.apartments-empty button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding-inline: 20px;
+  gap: 14px;
+  color: #ffffff;
+  background-color: var(--color-primary);
+  border: 0;
+  border-radius: var(--radius-small);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.apartments-empty button:hover {
+  background-color: var(--color-primary-light);
+}
+
+.apartments-empty button span {
+  font-size: 17px;
+  transition: transform 0.2s ease;
+}
+
+.apartments-empty button:hover span {
+  transform: translateX(4px);
+}
+
 @media (max-width: 1199px) {
   .apartments-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -603,6 +691,11 @@ const filteredApartments = computed(() => {
 
   .filters-sidebar {
     padding: 22px 18px;
+  }
+
+  .apartments-empty {
+    min-height: 400px;
+    padding: 40px 20px;
   }
 }
 </style>
