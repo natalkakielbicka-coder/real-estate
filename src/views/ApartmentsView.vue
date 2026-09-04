@@ -28,7 +28,11 @@ import { apartments } from '../data/apartments'
     </section>
 
     <section class="apartments-results">
-      <div class="container">
+      <div class="apartments-layout container">
+        <aside class="filters-sidebar">
+          <p>Filtry mieszkań</p>
+        </aside>
+
         <div class="apartments-grid">
           <ApartmentCard
             v-for="apartment in apartments"
@@ -109,15 +113,50 @@ import { apartments } from '../data/apartments'
   padding-block: clamp(60px, 8vw, 110px);
 }
 
+.apartments-layout {
+  display: grid;
+  grid-template-columns: 270px minmax(0, 1fr);
+  align-items: start;
+  gap: 32px;
+}
+
+.filters-sidebar {
+  position: sticky;
+  top: 118px;
+  min-height: 400px;
+  padding: 28px;
+  background-color: var(--color-surface);
+  box-shadow: 0 14px 45px rgba(23, 63, 53, 0.08);
+}
+
+.filters-sidebar p {
+  margin-bottom: 0;
+  color: var(--color-primary);
+  font-size: 18px;
+  font-weight: 700;
+}
+
 .apartments-grid {
   display: grid;
+  min-width: 0;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 28px;
+  gap: 24px;
+}
+
+@media (max-width: 1199px) {
+  .apartments-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 991px) {
-  .apartments-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .apartments-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .filters-sidebar {
+    position: static;
+    min-height: 150px;
   }
 }
 
@@ -125,6 +164,20 @@ import { apartments } from '../data/apartments'
   .apartments-header__bottom {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .apartments-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 479px) {
+  .apartments-layout {
+    gap: 24px;
+  }
+
+  .filters-sidebar {
+    padding: 22px 18px;
   }
 }
 </style>
