@@ -1,4 +1,4 @@
-export const apartments = [
+const apartmentsData = [
   {
     id: 1,
     slug: 'zielone-tarasy-a-01',
@@ -520,3 +520,8 @@ export const apartments = [
     features: ['Loggia', 'Dwie sypialnie', 'Osobna garderoba']
   }
 ]
+
+export const apartments = apartmentsData.map((apartment) => ({
+  ...apartment,
+  floorPlan: `/images/apartments/plans/${apartment.slug}.jpg`
+}))

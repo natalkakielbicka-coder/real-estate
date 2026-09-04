@@ -35,33 +35,12 @@ const formattedPrice = computed(() => {
 
       <div class="apartment-details__layout">
         <div class="apartment-details__visual">
-          <svg>
-            <rect
-              x="60"
-              y="60"
-              width="480"
-              height="360"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="3"
-            />
+          <img
+            :src="apartment.floorPlan"
+            :alt="`Rzut mieszkania ${apartment.number}`"
+          />
 
-            <path
-              d="M220 60V250H60M220 250H390V420M390 250H540"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="3"
-            />
-
-            <path
-              d="M285 60V150M390 330H480V420"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="3"
-            />
-          </svg>
-
-          <span>Przykładowy rzut mieszkania</span>
+          <span> Rzut mieszkania {{ apartment.number }} </span>
         </div>
 
         <div class="apartment-details__content">
@@ -149,9 +128,11 @@ const formattedPrice = computed(() => {
   background-color: var(--color-surface);
 }
 
-.apartment-details__visual svg {
+.apartment-details__visual img {
   width: 100%;
-  max-width: 580px;
+  max-width: 620px;
+  max-height: 520px;
+  object-fit: contain;
 }
 
 .apartment-details__visual span {
