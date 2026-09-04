@@ -7,6 +7,8 @@ const selectedCities = ref([])
 const selectedRooms = ref([])
 const selectedStatuses = ref([])
 const selectedOutdoorSpaces = ref([])
+const onlyWithParking = ref(false)
+const onlyWithStorage = ref(false)
 
 const outdoorSpaces = [
   {
@@ -44,6 +46,9 @@ const resetFilters = () => {
   selectedRooms.value = []
   selectedStatuses.value = []
   selectedOutdoorSpaces.value = []
+
+  onlyWithParking.value = false
+  onlyWithStorage.value = false
 
   priceFromInput.value = ''
   priceToInput.value = ''
@@ -103,13 +108,19 @@ const filteredApartments = computed(() => {
       selectedOutdoorSpaces.value.length === 0 ||
       selectedOutdoorSpaces.value.includes(apartment.outdoorSpace.type)
 
+    const matchesParking = !onlyWithParking.value || apartment.parkingSpace
+
+    const matchesStorage = !onlyWithStorage.value || apartment.storageRoom
+
     return (
       matchesCity &&
       matchesRooms &&
       matchesStatus &&
       matchesMinPrice &&
       matchesMaxPrice &&
-      matchesOutdoorSpace
+      matchesOutdoorSpace &&
+      matchesParking &&
+      matchesStorage
     )
   })
 })
@@ -243,6 +254,31 @@ const filteredApartments = computed(() => {
               <span class="filter-checkbox__label">
                 {{ space.label }}
               </span>
+            </label>
+          </fieldset>
+          <fieldset class="filter-group">
+            <legend>Dodatkowe udogodnienia</legend>
+
+            <label class="filter-checkbox">
+              <input
+                v-model="onlyWithParking"
+                type="checkbox"
+              />
+
+              <span class="filter-checkbox__mark"></span>
+
+              <span class="filter-checkbox__label"> Miejsce parkingowe </span>
+            </label>
+
+            <label class="filter-checkbox">
+              <input
+                v-model="onlyWithStorage"
+                type="checkbox"
+              />
+
+              <span class="filter-checkbox__mark"></span>
+
+              <span class="filter-checkbox__label"> Komórka lokatorska </span>
             </label>
           </fieldset>
           <form
