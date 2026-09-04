@@ -6,6 +6,8 @@ import { apartments } from '../data/apartments'
 const selectedCities = ref([])
 const selectedRooms = ref([])
 const selectedStatuses = ref([])
+const minPrice = ref(null)
+const maxPrice = ref(null)
 
 const cities = [...new Set(
   apartments.map((apartment) => apartment.city)
@@ -50,7 +52,15 @@ const filteredApartments = computed(() => {
       selectedStatuses.value.length === 0 ||
       selectedStatuses.value.includes(apartment.status)
 
-    return matchesCity && matchesRooms && matchesStatus
+    const matchesMinPrice =
+      minPrice.value === null ||
+      apartment.price >= minPrice.value
+
+    const matchesMaxPrice =
+      maxPrice.value === null ||
+      apartment.price <= maxPrice.value
+
+    return matchesCity && matchesRooms && matchesStatus && matchesMinPrice &&matchesMaxPrice
   })
 })
 </script>
@@ -159,6 +169,45 @@ const filteredApartments = computed(() => {
                 {{ getStatusCount(status.value) }}
               </small>
             </label>
+          </fieldset>
+          <fieldset class="filter-group">
+            <legend class="filter-group__title">
+              Cena mieszkania
+            </legend>
+
+            <div class="price-filter">
+              <label>
+                <span>Cena od</span>
+
+                <div class="price-filter__input">
+                  <input
+                    v-model.number="minPrice"
+                    type="number"
+                    min="0"
+                    step="50000"
+                    placeholder="np. 500 000"
+                  >
+
+                  <span>zł</span>
+                </div>
+              </label>
+
+              <label>
+                <span>Cena do</span>
+
+                <div class="price-filter__input">
+                  <input
+                    v-model.number="maxPrice"
+                    type="number"
+                    min="0"
+                    step="50000"
+                    placeholder="np. 900 000"
+                  >
+
+                  <span>zł</span>
+                </div>
+              </label>
+            </div>
           </fieldset>
         </aside>
 
@@ -377,6 +426,61 @@ const filteredApartments = computed(() => {
   color: var(--color-text-muted);
   font-size: 9px;
   text-align: right;
+}
+
+.filter-group__title {
+  margin-bottom: 15px;
+  color: var(--color-primary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.price-filter {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.price-filter label > span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--color-text-muted);
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.price-filter__input {
+  display: flex;
+  align-items: center;
+  height: 42px;
+  padding-inline: 10px;
+  background-color: var(--color-background);
+  border: 1px solid transparent;
+  border-radius: var(--radius-small);
+}
+
+.price-filter__input:focus-within {
+  border-color: var(--color-accent);
+}
+
+.price-filter__input input {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  color: var(--color-primary);
+  background: transparent;
+  border: 0;
+  outline: 0;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.price-filter__input > span {
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+  font-size: 9px;
 }
 
 .apartments-grid {
