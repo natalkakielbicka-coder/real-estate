@@ -10,6 +10,8 @@ const emit = defineEmits(['show-investment'])
 const mapContainer = ref(null)
 
 let mapInstance = null
+const initialMapCenter = [52.0, 19.1]
+const initialMapZoom = 6
 
 const getApartmentsCount = (investmentId) => {
   return apartments.filter((apartment) => {
@@ -104,6 +106,12 @@ const addInvestmentMarker = (investment) => {
     .addTo(mapInstance)
     .bindPopup(popupContent)
 
+  marker.on('click', () => {
+    mapInstance.flyTo(investment.coordinates, 11, {
+      duration: 0.8
+    })
+  })
+
   marker.on('popupopen', () => {
     const popupElement = marker.getPopup().getElement()
 
@@ -117,10 +125,19 @@ const addInvestmentMarker = (investment) => {
       { once: true }
     )
   })
+
+  marker.on('popupclose', () => {
+    mapInstance.flyTo(initialMapCenter, initialMapZoom, {
+      duration: 0.8
+    })
+  })
 }
 
 onMounted(() => {
-  mapInstance = L.map(mapContainer.value).setView([52.0, 19.1], 6)
+  mapInstance = L.map(mapContainer.value).setView(
+    initialMapCenter,
+    initialMapZoom
+  )
 
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
