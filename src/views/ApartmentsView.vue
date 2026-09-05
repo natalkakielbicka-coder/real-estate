@@ -5,6 +5,7 @@ import ApartmentGrid from '../components/ApartmentGrid.vue'
 import ApartmentList from '../components/ApartmentList.vue'
 import ApartmentTable from '../components/ApartmentTable.vue'
 import FloorPlanSelector from '../components/FloorPlanSelector.vue'
+import InvestmentsMap from '../components/InvestmentsMap.vue'
 import { floorPlans } from '../data/floorPlans'
 import { apartments } from '../data/apartments'
 
@@ -19,7 +20,7 @@ const selectedSort = ref('default')
 const route = useRoute()
 const router = useRouter()
 
-const availableViewModes = ['grid', 'list', 'table', 'plan']
+const availableViewModes = ['grid', 'list', 'table', 'plan', 'map']
 
 const viewMode = ref(
   availableViewModes.includes(route.query.view) ? route.query.view : 'grid'
@@ -440,6 +441,15 @@ const sortedApartments = computed(() => {
               >
                 Rzut
               </button>
+
+              <button
+                type="button"
+                :class="{ 'view-switcher__button--active': viewMode === 'map' }"
+                :aria-pressed="viewMode === 'map'"
+                @click="viewMode = 'map'"
+              >
+                Mapa
+              </button>
             </div>
 
             <label class="apartments-sort">
@@ -480,11 +490,13 @@ const sortedApartments = computed(() => {
             />
 
             <FloorPlanSelector
-              v-else
+              v-else-if="viewMode === 'plan'"
               :floor-plan="floorPlans[0]"
               :visible-apartments="sortedApartments"
               @reset-filters="resetFilters"
             />
+
+            <InvestmentsMap v-else />
           </template>
 
           <div
