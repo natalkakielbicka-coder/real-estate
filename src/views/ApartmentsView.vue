@@ -10,6 +10,7 @@ const selectedOutdoorSpaces = ref([])
 const onlyWithParking = ref(false)
 const onlyWithStorage = ref(false)
 const selectedSort = ref('default')
+const viewMode = ref('grid')
 
 const outdoorSpaces = [
   {
@@ -369,6 +370,33 @@ const sortedApartments = computed(() => {
               <strong>{{ sortedApartments.length }}</strong>
               mieszkań
             </p>
+
+            <div
+              class="view-switcher"
+              aria-label="Sposób wyświetlania mieszkań"
+            >
+              <button
+                type="button"
+                :class="{
+                  'view-switcher__button--active': viewMode === 'grid'
+                }"
+                :aria-pressed="viewMode === 'grid'"
+                @click="viewMode = 'grid'"
+              >
+                Grid
+              </button>
+
+              <button
+                type="button"
+                :class="{
+                  'view-switcher__button--active': viewMode === 'list'
+                }"
+                :aria-pressed="viewMode === 'list'"
+                @click="viewMode = 'list'"
+              >
+                Lista
+              </button>
+            </div>
 
             <label class="apartments-sort">
               <span>Sortuj</span>
@@ -842,6 +870,36 @@ const sortedApartments = computed(() => {
 
 .apartments-sort select:focus {
   border-color: var(--color-accent);
+}
+
+.view-switcher {
+  display: flex;
+  padding: 4px;
+  gap: 4px;
+  background-color: var(--color-background);
+  border-radius: var(--radius-small);
+}
+
+.view-switcher button {
+  min-height: 34px;
+  padding-inline: 13px;
+  color: var(--color-text-muted);
+  background-color: transparent;
+  border: 0;
+  border-radius: calc(var(--radius-small) - 2px);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.view-switcher button:hover {
+  color: var(--color-primary);
+  background-color: #fff;
+}
+
+.view-switcher .view-switcher__button--active {
+  color: #ffffff;
+  background-color: var(--color-primary);
 }
 
 @media (max-width: 991px) {
