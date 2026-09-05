@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import { apartments } from '../data/apartments'
 import { apartmentStatusLabels } from '../constants/apartmentStatuses'
 import ApartmentGallery from '../components/ApartmentGallery.vue'
+import ApartmentGrid from '../components/ApartmentGrid.vue'
 
 const route = useRoute()
 
@@ -11,6 +12,21 @@ const apartment = computed(() => {
   return apartments.find((item) => {
     return item.slug === route.params.slug
   })
+})
+
+const similarApartments = computed(() => {
+  if (!apartment.value) {
+    return []
+  }
+
+  return apartments
+    .filter((item) => {
+      return (
+        item.investmentId === apartment.value.investmentId &&
+        item.id !== apartment.value.id
+      )
+    })
+    .slice(0, 3)
 })
 
 const formattedPrice = computed(() => {
@@ -138,6 +154,26 @@ const exposureLabels = {
           </div>
         </div>
       </div>
+
+      <section
+        v-if="similarApartments.length > 0"
+        class="similar-apartments"
+      >
+        <div class="similar-apartments__header">
+          <div>
+            <p class="similar-apartments__eyebrow">Zobacz również</p>
+
+            <h2>Podobne mieszkania</h2>
+          </div>
+
+          <RouterLink to="/mieszkania">
+            Zobacz wszystkie
+            <span aria-hidden="true">→</span>
+          </RouterLink>
+        </div>
+
+        <ApartmentGrid :apartments="similarApartments" />
+      </section>
     </div>
 
     <div
@@ -318,6 +354,54 @@ const exposureLabels = {
   color: var(--color-primary);
   font-size: 12px;
   text-align: right;
+}
+
+.similar-apartments {
+  margin-top: clamp(80px, 10vw, 140px);
+  padding-top: clamp(50px, 7vw, 90px);
+  border-top: 1px solid var(--color-border);
+}
+
+.similar-apartments__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 35px;
+  gap: 30px;
+}
+
+.similar-apartments__eyebrow {
+  margin-bottom: 10px;
+  color: var(--color-accent);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.similar-apartments h2 {
+  margin-bottom: 0;
+  font-size: clamp(36px, 5vw, 56px);
+}
+
+.similar-apartments__header > a {
+  display: inline-flex;
+  align-items: center;
+  padding-bottom: 6px;
+  gap: 14px;
+  color: var(--color-primary);
+  border-bottom: 1px solid var(--color-border);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.similar-apartments__header > a span {
+  font-size: 18px;
+  transition: transform 0.2s ease;
+}
+
+.similar-apartments__header > a:hover span {
+  transform: translateX(4px);
 }
 
 @media (max-width: 991px) {
