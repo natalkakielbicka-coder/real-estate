@@ -15,6 +15,8 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits(['reset-filters'])
+
 const router = useRouter()
 
 const activeApartment = ref(null)
@@ -190,6 +192,14 @@ const formattedTooltipPrice = computed(() => {
         <strong>Brak mieszkań na tym rzucie</strong>
 
         <p>Zmień lub wyczyść wybrane filtry.</p>
+
+        <button
+          type="button"
+          @click="emit('reset-filters')"
+        >
+          Wyczyść filtry
+          <span aria-hidden="true">→</span>
+        </button>
       </div>
     </div>
 
@@ -470,7 +480,7 @@ const formattedTooltipPrice = computed(() => {
   backdrop-filter: blur(3px);
 }
 
-.floor-selector__empty span {
+.floor-selector__empty > span {
   display: grid;
   width: 70px;
   height: 70px;
@@ -495,6 +505,33 @@ const formattedTooltipPrice = computed(() => {
   margin-bottom: 0;
   color: var(--color-text-muted);
   font-size: 11px;
+}
+
+.floor-selector__empty button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 20px;
+  padding-inline: 17px;
+  gap: 12px;
+  color: #ffffff;
+  background-color: var(--color-primary);
+  border: 0;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.floor-selector__empty button:hover {
+  background-color: var(--color-primary-light);
+}
+
+.floor-selector__empty button span {
+  font-size: 17px;
+  transition: transform 0.2s ease;
+}
+
+.floor-selector__empty button:hover span {
+  transform: translateX(4px);
 }
 
 @media (max-width: 767px) {

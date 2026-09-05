@@ -483,6 +483,7 @@ const sortedApartments = computed(() => {
               v-else
               :floor-plan="floorPlans[0]"
               :visible-apartments="sortedApartments"
+              @reset-filters="resetFilters"
             />
           </template>
 
