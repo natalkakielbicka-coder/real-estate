@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import ApartmentGrid from '../components/ApartmentGrid.vue'
+import ApartmentList from '../components/ApartmentList.vue'
 import { apartments } from '../data/apartments'
 
 const selectedCities = ref([])
@@ -419,10 +420,17 @@ const sortedApartments = computed(() => {
             </label>
           </div>
 
-          <ApartmentGrid
-            v-if="sortedApartments.length > 0"
-            :apartments="sortedApartments"
-          />
+          <template v-if="sortedApartments.length > 0">
+            <ApartmentGrid
+              v-if="viewMode === 'grid'"
+              :apartments="sortedApartments"
+            />
+
+            <ApartmentList
+              v-else
+              :apartments="sortedApartments"
+            />
+          </template>
 
           <div
             v-else
