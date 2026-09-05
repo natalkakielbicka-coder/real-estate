@@ -12,7 +12,10 @@ defineProps({
 </script>
 
 <template>
-  <article class="investment-card">
+  <RouterLink
+    class="investment-card"
+    :to="`/inwestycje/${investment.id}`"
+  >
     <div class="investment-card__number">
       {{ String(investment.id).slice(0, 2).toUpperCase() }}
     </div>
@@ -49,7 +52,7 @@ defineProps({
         </strong>
       </div>
     </div>
-  </article>
+  </RouterLink>
 </template>
 
 <style scoped>
@@ -59,6 +62,15 @@ defineProps({
   grid-template-rows: 1fr auto;
   color: #ffffff;
   background-color: var(--color-primary);
+  text-decoration: none;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.investment-card:hover {
+  box-shadow: 0 24px 55px rgba(23, 63, 53, 0.2);
+  transform: translateY(-6px);
 }
 
 .investment-card__number {

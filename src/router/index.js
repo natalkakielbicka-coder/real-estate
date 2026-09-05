@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import ApartmentsView from '../views/ApartmentsView.vue'
 import ApartmentDetailsView from '../views/ApartmentDetailsView.vue'
 import InvestmentsView from '../views/InvestmentsView.vue'
+import InvestmentDetailsView from '../views/InvestmentDetailsView.vue'
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: '/inwestycje',
     name: 'investments',
     component: InvestmentsView
+  },
+  {
+    path: '/inwestycje/:id',
+    name: 'investment-details',
+    component: InvestmentDetailsView
   }
 ]
 
