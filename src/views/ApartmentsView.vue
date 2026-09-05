@@ -4,6 +4,8 @@ import { useRoute, useRouter } from 'vue-router'
 import ApartmentGrid from '../components/ApartmentGrid.vue'
 import ApartmentList from '../components/ApartmentList.vue'
 import ApartmentTable from '../components/ApartmentTable.vue'
+import FloorPlanSelector from '../components/FloorPlanSelector.vue'
+import { floorPlans } from '../data/floorPlans'
 import { apartments } from '../data/apartments'
 
 const selectedCities = ref([])
@@ -17,7 +19,7 @@ const selectedSort = ref('default')
 const route = useRoute()
 const router = useRouter()
 
-const availableViewModes = ['grid', 'list', 'table']
+const availableViewModes = ['grid', 'list', 'table', 'plan']
 
 const viewMode = ref(
   availableViewModes.includes(route.query.view) ? route.query.view : 'grid'
@@ -427,6 +429,17 @@ const sortedApartments = computed(() => {
               >
                 Tabela
               </button>
+
+              <button
+                type="button"
+                :class="{
+                  'view-switcher__button--active': viewMode === 'plan'
+                }"
+                :aria-pressed="viewMode === 'plan'"
+                @click="viewMode = 'plan'"
+              >
+                Rzut
+              </button>
             </div>
 
             <label class="apartments-sort">
@@ -462,8 +475,13 @@ const sortedApartments = computed(() => {
             />
 
             <ApartmentTable
-              v-else
+              v-else-if="viewMode === 'table'"
               :apartments="sortedApartments"
+            />
+
+            <FloorPlanSelector
+              v-else
+              :floor-plan="floorPlans[0]"
             />
           </template>
 
