@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue'
+import { apartmentStatusLabels } from '../constants/apartmentStatuses'
 
 const props = defineProps({
   apartment: {
@@ -7,12 +8,6 @@ const props = defineProps({
     required: true
   }
 })
-
-const statusLabels = {
-  available: 'Dostępne',
-  reserved: 'Rezerwacja',
-  sold: 'Sprzedane'
-}
 
 const outdoorSpaceLabels = {
   balcony: 'Balkon',
@@ -47,7 +42,7 @@ const floorLabel = computed(() => {
         class="apartment-card__status"
         :class="`apartment-card__status--${apartment.status}`"
       >
-        {{ statusLabels[apartment.status] }}
+        {{ apartmentStatusLabels[apartment.status] }}
       </div>
 
       <button
@@ -178,7 +173,7 @@ const floorLabel = computed(() => {
 }
 
 .apartment-card__status--available {
-  background-color: var(--color-primary);
+  background-color: #3d806d;
 }
 
 .apartment-card__status--reserved {

@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { apartments } from '../data/apartments'
+import { apartmentStatusLabels } from '../constants/apartmentStatuses'
 import ApartmentGallery from '../components/ApartmentGallery.vue'
 
 const route = useRoute()
@@ -41,6 +42,13 @@ const formattedPrice = computed(() => {
           <p class="apartment-details__eyebrow">
             {{ apartment.investment }} · budynek {{ apartment.building }}
           </p>
+
+          <span
+            class="apartment-details__status"
+            :class="`apartment-details__status--${apartment.status}`"
+          >
+            {{ apartmentStatusLabels[apartment.status] }}
+          </span>
 
           <h1>Mieszkanie {{ apartment.number }}</h1>
 
@@ -165,6 +173,29 @@ const formattedPrice = computed(() => {
 .apartment-details__missing {
   padding-block: 100px;
   text-align: center;
+}
+
+.apartment-details__status {
+  display: inline-flex;
+  margin-bottom: 18px;
+  padding: 7px 12px;
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.apartment-details__status--available {
+  background-color: #3d806d;
+}
+
+.apartment-details__status--reserved {
+  background-color: #c28b3f;
+}
+
+.apartment-details__status--sold {
+  background-color: #929896;
 }
 
 @media (max-width: 991px) {
