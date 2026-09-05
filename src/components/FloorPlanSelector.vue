@@ -1,7 +1,8 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { apartments } from '../data/apartments'
+import { apartmentStatusLabels } from '../constants/apartmentStatuses'
 
 const props = defineProps({
   floorPlan: {
@@ -11,6 +12,15 @@ const props = defineProps({
 })
 
 const router = useRouter()
+
+const activeApartment = ref(null)
+
+const tooltipPosition = ref({
+  x: 0,
+  y: 0
+})
+
+const tooltipBelowCursor = ref(false)
 
 const mappedAreas = computed(() => {
   return props.floorPlan.apartmentAreas
@@ -30,6 +40,39 @@ const mappedAreas = computed(() => {
 const openApartment = (apartment) => {
   router.push(`/mieszkania/${apartment.slug}`)
 }
+
+const moveTooltip = (event) => {
+  const tooltipWidth = 245
+  const screenPadding = 16
+  const halfTooltipWidth = tooltipWidth / 2
+
+  const minX = halfTooltipWidth + screenPadding
+  const maxX = window.innerWidth - halfTooltipWidth - screenPadding
+
+  tooltipPosition.value = {
+    x: Math.min(Math.max(event.clientX, minX), maxX),
+    y: event.clientY
+  }
+
+  tooltipBelowCursor.value = event.clientY < 210
+}
+
+const showTooltip = (apartment, event) => {
+  activeApartment.value = apartment
+  moveTooltip(event)
+}
+
+const hideTooltip = () => {
+  activeApartment.value = null
+}
+
+const formattedTooltipPrice = computed(() => {
+  if (!activeApartment.value) {
+    return ''
+  }
+
+  return new Intl.NumberFormat('pl-PL').format(activeApartment.value.price)
+})
 </script>
 
 <template>
@@ -82,9 +125,52 @@ const openApartment = (apartment) => {
           @click="openApartment(area.apartment)"
           @keydown.enter="openApartment(area.apartment)"
           @keydown.space.prevent="openApartment(area.apartment)"
+          @mouseenter="showTooltip(area.apartment, $event)"
+          @mousemove="moveTooltip"
+          @mouseleave="hideTooltip"
+          @blur="hideTooltip"
         />
       </svg>
     </div>
+
+    <Teleport to="body">
+      <div
+        v-if="activeApartment"
+        class="floor-selector__tooltip"
+        :class="{
+          'floor-selector__tooltip--below': tooltipBelowCursor
+        }"
+        :style="{
+          left: `${tooltipPosition.x}px`,
+          top: `${tooltipPosition.y}px`
+        }"
+      >
+        <div class="floor-selector__tooltip-heading">
+          <strong>Mieszkanie {{ activeApartment.number }}</strong>
+
+          <span :class="`status--${activeApartment.status}`">
+            {{ apartmentStatusLabels[activeApartment.status] }}
+          </span>
+        </div>
+
+        <div class="floor-selector__tooltip-parameters">
+          <span>{{ activeApartment.rooms }} pokoje</span>
+          <span>{{ activeApartment.area }} m²</span>
+
+          <span>
+            {{
+              activeApartment.floor === 0
+                ? 'Parter'
+                : `${activeApartment.floor}. piętro`
+            }}
+          </span>
+        </div>
+
+        <p>{{ formattedTooltipPrice }} zł</p>
+
+        <small>Kliknij, aby zobaczyć mieszkanie</small>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -198,6 +284,96 @@ const openApartment = (apartment) => {
   fill-opacity: 0.58;
   stroke-width: 8;
   outline: none;
+}
+
+.floor-selector__tooltip {
+  position: fixed;
+  z-index: 1000;
+  width: 245px;
+  padding: 18px;
+  color: #ffffff;
+  background-color: var(--color-primary);
+  box-shadow: 0 15px 40px rgba(23, 63, 53, 0.25);
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - 16px));
+}
+
+.floor-selector__tooltip::after {
+  position: absolute;
+  bottom: -7px;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  content: '';
+  background-color: var(--color-primary);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.floor-selector__tooltip--below {
+  transform: translate(-50%, 18px);
+}
+
+.floor-selector__tooltip--below::after {
+  top: -7px;
+  bottom: auto;
+}
+
+.floor-selector__tooltip-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  gap: 12px;
+}
+
+.floor-selector__tooltip-heading strong {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.floor-selector__tooltip-heading span {
+  padding: 5px 7px;
+  font-size: 7px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.floor-selector__tooltip-heading .status--available {
+  background-color: #3d806d;
+}
+
+.floor-selector__tooltip-heading .status--reserved {
+  background-color: #c28b3f;
+}
+
+.floor-selector__tooltip-heading .status--sold {
+  background-color: #929896;
+}
+
+.floor-selector__tooltip-parameters {
+  display: flex;
+  margin-bottom: 14px;
+  padding-block: 11px;
+  gap: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.floor-selector__tooltip-parameters span {
+  font-size: 9px;
+}
+
+.floor-selector__tooltip p {
+  margin-bottom: 5px;
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-size: 22px;
+}
+
+.floor-selector__tooltip small {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 8px;
 }
 
 @media (max-width: 767px) {
