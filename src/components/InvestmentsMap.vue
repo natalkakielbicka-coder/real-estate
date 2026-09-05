@@ -31,26 +31,56 @@ const createMarkerIcon = (apartmentsCount) => {
   })
 }
 
-const createPopupContent = (investment, apartmentsCount) => {
+const getStatusCounts = (investmentId) => {
+  const investmentApartments = apartments.filter((apartment) => {
+    return apartment.investmentId === investmentId
+  })
+
+  return {
+    available: investmentApartments.filter((apartment) => {
+      return apartment.status === 'available'
+    }).length,
+
+    reserved: investmentApartments.filter((apartment) => {
+      return apartment.status === 'reserved'
+    }).length,
+
+    sold: investmentApartments.filter((apartment) => {
+      return apartment.status === 'sold'
+    }).length
+  }
+}
+
+const createPopupContent = (investment, apartmentsCount, statusCounts) => {
   return `
     <div class="investment-popup">
-      <span>Inwestycja</span>
+      <p class="investment-popup__eyebrow">Inwestycja</p>
 
-      <strong>${investment.name}</strong>
+      <h3>${investment.name}</h3>
 
       <p>
         ${investment.city}, ${investment.district}<br>
         ${investment.address}
       </p>
 
-      <small>${apartmentsCount} mieszkań w ofercie</small>
+      <strong>${apartmentsCount} mieszkań</strong>
 
-      <button
-        class="investment-popup__button"
-        type="button"
-        >
-        Pokaż mieszkania
-        <span>→</span>
+      <div class="investment-popup__statuses">
+        <span class="investment-popup__status investment-popup__status--available">
+          ${statusCounts.available} dostępnych
+        </span>
+
+        <span class="investment-popup__status investment-popup__status--reserved">
+          ${statusCounts.reserved} rezerwacji
+        </span>
+
+        <span class="investment-popup__status investment-popup__status--sold">
+          ${statusCounts.sold} sprzedanych
+        </span>
+      </div>
+
+      <button class="investment-popup__button" type="button">
+        Pokaż mieszkania <span>→</span>
       </button>
     </div>
   `
@@ -58,8 +88,15 @@ const createPopupContent = (investment, apartmentsCount) => {
 
 const addInvestmentMarker = (investment) => {
   const apartmentsCount = getApartmentsCount(investment.id)
+  const statusCounts = getStatusCounts(investment.id)
+
   const markerIcon = createMarkerIcon(apartmentsCount)
-  const popupContent = createPopupContent(investment, apartmentsCount)
+
+  const popupContent = createPopupContent(
+    investment,
+    apartmentsCount,
+    statusCounts
+  )
 
   const marker = L.marker(investment.coordinates, {
     icon: markerIcon
@@ -77,9 +114,7 @@ const addInvestmentMarker = (investment) => {
       () => {
         emit('show-investment', investment.city)
       },
-      {
-        once: true
-      }
+      { once: true }
     )
   })
 }
@@ -231,6 +266,40 @@ onBeforeUnmount(() => {
 
 :deep(.investment-popup__button:hover span) {
   transform: translateX(4px);
+}
+
+:deep(.investment-popup__statuses) {
+  display: flex;
+  flex-direction: column;
+  margin-block: 14px;
+  gap: 6px;
+}
+
+:deep(.investment-popup__status) {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+}
+
+:deep(.investment-popup__status::before) {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  content: '';
+}
+
+:deep(.investment-popup__status--available::before) {
+  background-color: #3d806d;
+}
+
+:deep(.investment-popup__status--reserved::before) {
+  background-color: #c28b3f;
+}
+
+:deep(.investment-popup__status--sold::before) {
+  background-color: #929896;
 }
 
 @media (max-width: 991px) {
