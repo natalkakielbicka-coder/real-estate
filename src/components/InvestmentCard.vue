@@ -3,6 +3,10 @@ defineProps({
   investment: {
     type: Object,
     required: true
+  },
+  apartmentsCount: {
+    type: Number,
+    default: 0
   }
 })
 </script>
@@ -23,6 +27,14 @@ defineProps({
       <p class="investment-card__address">
         {{ investment.address }}
       </p>
+
+      <div class="investment-card__apartments">
+        <strong>{{ apartmentsCount }}</strong>
+
+        <span>
+          {{ apartmentsCount === 1 ? 'mieszkanie' : 'mieszkań' }}
+        </span>
+      </div>
 
       <div class="investment-card__footer">
         <span> Planowane zakończenie </span>
@@ -107,6 +119,29 @@ defineProps({
   font-family: var(--font-heading);
   font-size: 19px;
   font-weight: 400;
+}
+
+.investment-card__apartments {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 28px;
+  gap: 8px;
+}
+
+.investment-card__apartments strong {
+  color: var(--color-accent);
+  font-family: var(--font-heading);
+  font-size: 38px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.investment-card__apartments span {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 @media (max-width: 479px) {

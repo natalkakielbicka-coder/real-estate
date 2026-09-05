@@ -1,6 +1,13 @@
 <script setup>
 import { investments } from '../data/investments'
+import { apartments } from '../data/apartments'
 import InvestmentCard from '../components/InvestmentCard.vue'
+
+const getApartmentsCount = (investmentId) => {
+  return apartments.filter((apartment) => {
+    return apartment.investmentId === investmentId
+  }).length
+}
 </script>
 
 <template>
@@ -24,6 +31,7 @@ import InvestmentCard from '../components/InvestmentCard.vue'
           v-for="investment in investments"
           :key="investment.id"
           :investment="investment"
+          :apartments-count="getApartmentsCount(investment.id)"
         />
       </div>
     </section>
