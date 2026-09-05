@@ -1,7 +1,10 @@
 <template>
   <header class="header">
     <div class="header__container container">
-      <RouterLink class="logo" to="/">
+      <RouterLink
+        class="logo"
+        to="/"
+      >
         <span class="logo__mark">R</span>
 
         <span class="logo__text">
@@ -10,14 +13,20 @@
         </span>
       </RouterLink>
 
-      <nav class="navigation" aria-label="Główna nawigacja">
+      <nav
+        class="navigation"
+        aria-label="Główna nawigacja"
+      >
         <RouterLink to="/">Strona główna</RouterLink>
         <RouterLink to="/mieszkania">Mieszkania</RouterLink>
-        <a href="#">Inwestycje</a>
+        <RouterLink to="/inwestycje"> Inwestycje </RouterLink>
         <a href="#">Kontakt</a>
       </nav>
 
-      <RouterLink class="header__button" to="/mieszkania">
+      <RouterLink
+        class="header__button"
+        to="/mieszkania"
+      >
         Znajdź mieszkanie
         <span aria-hidden="true">→</span>
       </RouterLink>
@@ -105,7 +114,7 @@
   bottom: -8px;
   left: 0;
   height: 1px;
-  content: "";
+  content: '';
   background-color: var(--color-accent);
   transform: scaleX(0);
   transform-origin: right;
