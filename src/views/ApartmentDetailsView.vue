@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { apartments } from '../data/apartments'
+import ApartmentGallery from '../components/ApartmentGallery.vue'
 
 const route = useRoute()
 
@@ -34,14 +35,7 @@ const formattedPrice = computed(() => {
       </RouterLink>
 
       <div class="apartment-details__layout">
-        <div class="apartment-details__visual">
-          <img
-            :src="apartment.floorPlan"
-            :alt="`Rzut mieszkania ${apartment.number}`"
-          />
-
-          <span> Rzut mieszkania {{ apartment.number }} </span>
-        </div>
+        <ApartmentGallery :apartment="apartment" />
 
         <div class="apartment-details__content">
           <p class="apartment-details__eyebrow">
@@ -115,32 +109,6 @@ const formattedPrice = computed(() => {
   grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
   align-items: center;
   gap: clamp(50px, 7vw, 100px);
-}
-
-.apartment-details__visual {
-  display: flex;
-  align-items: center;
-  min-height: 580px;
-  padding: 60px;
-  flex-direction: column;
-  justify-content: center;
-  color: rgba(23, 63, 53, 0.38);
-  background-color: var(--color-surface);
-}
-
-.apartment-details__visual img {
-  width: 100%;
-  max-width: 620px;
-  max-height: 520px;
-  object-fit: contain;
-}
-
-.apartment-details__visual span {
-  margin-top: 24px;
-  color: var(--color-text-muted);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
 }
 
 .apartment-details__eyebrow {
