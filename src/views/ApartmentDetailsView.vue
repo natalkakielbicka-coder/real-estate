@@ -37,6 +37,29 @@ const formattedPrice = computed(() => {
   return new Intl.NumberFormat('pl-PL').format(apartment.value.price)
 })
 
+const formattedPricePerMeter = computed(() => {
+  if (!apartment.value) {
+    return ''
+  }
+
+  const pricePerMeter = apartment.value.price / apartment.value.area
+
+  return new Intl.NumberFormat('pl-PL', {
+    maximumFractionDigits: 0
+  }).format(pricePerMeter)
+})
+
+const formattedCompletionDate = computed(() => {
+  if (!apartment.value) {
+    return ''
+  }
+
+  return new Intl.DateTimeFormat('pl-PL', {
+    month: 'long',
+    year: 'numeric'
+  }).format(new Date(apartment.value.completionDate))
+})
+
 const outdoorSpaceLabels = {
   balcony: 'Balkon',
   terrace: 'Taras',
@@ -107,6 +130,16 @@ const exposureLabels = {
             <div>
               <span>Cena</span>
               <strong>{{ formattedPrice }} zł</strong>
+            </div>
+
+            <div>
+              <span>Cena za m²</span>
+              <strong>{{ formattedPricePerMeter }} zł</strong>
+            </div>
+
+            <div>
+              <span>Termin oddania</span>
+              <strong>{{ formattedCompletionDate }}</strong>
             </div>
           </div>
 
