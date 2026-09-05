@@ -62,6 +62,12 @@ const planStatusCounts = computed(() => {
   return counts
 })
 
+const visiblePlanApartmentsCount = computed(() => {
+  return mappedAreas.value.filter((area) => {
+    return area.matchesFilters
+  }).length
+})
+
 const openApartment = (apartment) => {
   router.push(`/mieszkania/${apartment.slug}`)
 }
@@ -174,6 +180,17 @@ const formattedTooltipPrice = computed(() => {
           @blur="hideTooltip"
         />
       </svg>
+
+      <div
+        v-if="visiblePlanApartmentsCount === 0"
+        class="floor-selector__empty"
+      >
+        <span>0</span>
+
+        <strong>Brak mieszkań na tym rzucie</strong>
+
+        <p>Zmień lub wyczyść wybrane filtry.</p>
+      </div>
     </div>
 
     <Teleport to="body">
@@ -437,6 +454,47 @@ const formattedTooltipPrice = computed(() => {
 .floor-selector__tooltip small {
   color: rgba(255, 255, 255, 0.6);
   font-size: 8px;
+}
+
+.floor-selector__empty {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding: 30px;
+  flex-direction: column;
+  justify-content: center;
+  background-color: rgba(245, 243, 238, 0.9);
+  text-align: center;
+  backdrop-filter: blur(3px);
+}
+
+.floor-selector__empty span {
+  display: grid;
+  width: 70px;
+  height: 70px;
+  margin-bottom: 18px;
+  place-items: center;
+  color: var(--color-accent);
+  background-color: #ffffff;
+  font-family: var(--font-heading);
+  font-size: 38px;
+  border-radius: 50%;
+}
+
+.floor-selector__empty strong {
+  margin-bottom: 7px;
+  color: var(--color-primary);
+  font-family: var(--font-heading);
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 400;
+}
+
+.floor-selector__empty p {
+  margin-bottom: 0;
+  color: var(--color-text-muted);
+  font-size: 11px;
 }
 
 @media (max-width: 767px) {
