@@ -20,6 +20,20 @@ const formattedPrice = computed(() => {
 
   return new Intl.NumberFormat('pl-PL').format(apartment.value.price)
 })
+
+const outdoorSpaceLabels = {
+  balcony: 'Balkon',
+  terrace: 'Taras',
+  garden: 'Ogródek',
+  loggia: 'Loggia'
+}
+
+const exposureLabels = {
+  north: 'Północ',
+  south: 'Południe',
+  east: 'Wschód',
+  west: 'Zachód'
+}
 </script>
 
 <template>
@@ -77,6 +91,49 @@ const formattedPrice = computed(() => {
             <div>
               <span>Cena</span>
               <strong>{{ formattedPrice }} zł</strong>
+            </div>
+          </div>
+
+          <div class="apartment-details__features">
+            <h2>Cechy mieszkania</h2>
+
+            <ul>
+              <li
+                v-for="feature in apartment.features"
+                :key="feature"
+              >
+                <span aria-hidden="true">✓</span>
+                {{ feature }}
+              </li>
+
+              <li>
+                <span aria-hidden="true">✓</span>
+
+                {{ outdoorSpaceLabels[apartment.outdoorSpace.type] }}
+                {{ apartment.outdoorSpace.area }} m²
+              </li>
+
+              <li v-if="apartment.parkingSpace">
+                <span aria-hidden="true">✓</span>
+                Miejsce parkingowe
+              </li>
+
+              <li v-if="apartment.storageRoom">
+                <span aria-hidden="true">✓</span>
+                Komórka lokatorska
+              </li>
+            </ul>
+
+            <div class="apartment-details__exposure">
+              <span>Ekspozycja okien</span>
+
+              <strong>
+                {{
+                  apartment.exposure
+                    .map((direction) => exposureLabels[direction])
+                    .join(', ')
+                }}
+              </strong>
             </div>
           </div>
         </div>
@@ -198,6 +255,71 @@ const formattedPrice = computed(() => {
   background-color: #929896;
 }
 
+.apartment-details__features {
+  margin-top: 38px;
+  padding-top: 30px;
+  border-top: 1px solid var(--color-border);
+}
+
+.apartment-details__features h2 {
+  margin-bottom: 20px;
+  font-family: var(--font-body);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.apartment-details__features ul {
+  display: grid;
+  margin: 0 0 26px;
+  padding: 0;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 20px;
+  list-style: none;
+}
+
+.apartment-details__features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.apartment-details__features li > span {
+  display: grid;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  place-items: center;
+  color: #ffffff;
+  background-color: var(--color-primary);
+  font-size: 9px;
+  border-radius: 50%;
+}
+
+.apartment-details__exposure {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  gap: 20px;
+  background-color: var(--color-surface);
+}
+
+.apartment-details__exposure span {
+  color: var(--color-text-muted);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.apartment-details__exposure strong {
+  color: var(--color-primary);
+  font-size: 12px;
+  text-align: right;
+}
+
 @media (max-width: 991px) {
   .apartment-details__layout {
     grid-template-columns: 1fr;
@@ -217,6 +339,10 @@ const formattedPrice = computed(() => {
 
 @media (max-width: 479px) {
   .apartment-details__parameters {
+    grid-template-columns: 1fr;
+  }
+
+  .apartment-details__features ul {
     grid-template-columns: 1fr;
   }
 }
