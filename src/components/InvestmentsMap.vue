@@ -104,7 +104,13 @@ const addInvestmentMarker = (investment) => {
     icon: markerIcon
   })
     .addTo(mapInstance)
-    .bindPopup(popupContent)
+    .bindPopup(popupContent, {
+      autoPan: true,
+      keepInView: true,
+      autoPanPaddingTopLeft: [30, 30],
+      autoPanPaddingBottomRight: [30, 30],
+      maxWidth: 280
+    })
 
   marker.on('click', () => {
     mapInstance.flyTo(investment.coordinates, 11, {
