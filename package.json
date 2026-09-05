@@ -11,6 +11,7 @@
   "dependencies": {
     "swiper": "^14.2.0",
     "vue": "^3.5.41",
+    "vue-easy-lightbox": "^1.19.0",
     "vue-router": "^5.3.1"
   },
   "devDependencies": {

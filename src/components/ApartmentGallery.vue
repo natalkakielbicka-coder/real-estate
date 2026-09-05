@@ -6,6 +6,7 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/thumbs'
+import VueEasyLightbox from 'vue-easy-lightbox'
 
 const props = defineProps({
   apartment: {
@@ -17,6 +18,9 @@ const props = defineProps({
 const modules = [Navigation, Thumbs, Keyboard, A11y]
 
 const thumbsSwiper = ref(null)
+
+const lightboxVisible = ref(false)
+const lightboxIndex = ref(0)
 
 const images = computed(() => {
   const galleryImages = props.apartment.gallery.map((image, index) => ({
@@ -37,6 +41,22 @@ const images = computed(() => {
 const setThumbsSwiper = (swiper) => {
   thumbsSwiper.value = swiper
 }
+
+const lightboxImages = computed(() => {
+  return images.value.map((image) => ({
+    src: image.src,
+    title: image.alt
+  }))
+})
+
+const openLightbox = (index) => {
+  lightboxIndex.value = index
+  lightboxVisible.value = true
+}
+
+const closeLightbox = () => {
+  lightboxVisible.value = false
+}
 </script>
 
 <template>
@@ -54,7 +74,7 @@ const setThumbsSwiper = (swiper) => {
       :space-between="10"
     >
       <SwiperSlide
-        v-for="image in images"
+        v-for="(image, index) in images"
         :key="image.src"
       >
         <div
@@ -66,6 +86,7 @@ const setThumbsSwiper = (swiper) => {
           <img
             :src="image.src"
             :alt="image.alt"
+            @click="openLightbox(index)"
           />
 
           <span v-if="image.type === 'floor-plan'"> Rzut mieszkania </span>
@@ -100,6 +121,14 @@ const setThumbsSwiper = (swiper) => {
         </button>
       </SwiperSlide>
     </Swiper>
+
+    <VueEasyLightbox
+      :visible="lightboxVisible"
+      :imgs="lightboxImages"
+      :index="lightboxIndex"
+      :loop="true"
+      @hide="closeLightbox"
+    />
   </div>
 </template>
 
@@ -113,6 +142,10 @@ const setThumbsSwiper = (swiper) => {
   background-color: var(--color-surface);
   --swiper-navigation-color: var(--color-primary);
   --swiper-navigation-size: 18px;
+}
+
+.gallery__main img {
+  cursor: zoom-in;
 }
 
 .gallery__slide {
