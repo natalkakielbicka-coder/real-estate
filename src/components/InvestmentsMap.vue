@@ -5,6 +5,8 @@ import 'leaflet/dist/leaflet.css'
 import { investments } from '../data/investments'
 import { apartments } from '../data/apartments'
 
+const emit = defineEmits(['show-investment'])
+
 const mapContainer = ref(null)
 
 let mapInstance = null
@@ -42,6 +44,14 @@ const createPopupContent = (investment, apartmentsCount) => {
       </p>
 
       <small>${apartmentsCount} mieszkań w ofercie</small>
+
+      <button
+        class="investment-popup__button"
+        type="button"
+        >
+        Pokaż mieszkania
+        <span>→</span>
+      </button>
     </div>
   `
 }
@@ -51,11 +61,27 @@ const addInvestmentMarker = (investment) => {
   const markerIcon = createMarkerIcon(apartmentsCount)
   const popupContent = createPopupContent(investment, apartmentsCount)
 
-  L.marker(investment.coordinates, {
+  const marker = L.marker(investment.coordinates, {
     icon: markerIcon
   })
     .addTo(mapInstance)
     .bindPopup(popupContent)
+
+  marker.on('popupopen', () => {
+    const popupElement = marker.getPopup().getElement()
+
+    const button = popupElement.querySelector('.investment-popup__button')
+
+    button.addEventListener(
+      'click',
+      () => {
+        emit('show-investment', investment.city)
+      },
+      {
+        once: true
+      }
+    )
+  })
 }
 
 onMounted(() => {
@@ -175,6 +201,36 @@ onBeforeUnmount(() => {
   font-size: 9px;
   font-weight: 700;
   text-transform: uppercase;
+}
+
+:deep(.investment-popup__button) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 42px;
+  margin-top: 16px;
+  padding-inline: 14px;
+  gap: 12px;
+  color: #ffffff;
+  background-color: var(--color-primary);
+  border: 0;
+  font-size: 9px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+:deep(.investment-popup__button:hover) {
+  background-color: var(--color-primary-light);
+}
+
+:deep(.investment-popup__button span) {
+  font-size: 16px;
+  transition: transform 0.2s ease;
+}
+
+:deep(.investment-popup__button:hover span) {
+  transform: translateX(4px);
 }
 
 @media (max-width: 991px) {

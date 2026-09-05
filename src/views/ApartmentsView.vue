@@ -83,6 +83,13 @@ const resetFilters = () => {
   selectedSort.value = 'default'
 }
 
+const showInvestmentApartments = (city) => {
+  resetFilters()
+
+  selectedCities.value = [city]
+  viewMode.value = 'grid'
+}
+
 const cities = [...new Set(apartments.map((apartment) => apartment.city))]
 
 const rooms = [...new Set(apartments.map((apartment) => apartment.rooms))].sort(
@@ -496,7 +503,10 @@ const sortedApartments = computed(() => {
               @reset-filters="resetFilters"
             />
 
-            <InvestmentsMap v-else />
+            <InvestmentsMap
+              v-else
+              @show-investment="showInvestmentApartments"
+            />
           </template>
 
           <div
