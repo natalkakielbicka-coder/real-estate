@@ -482,6 +482,7 @@ const sortedApartments = computed(() => {
             <FloorPlanSelector
               v-else
               :floor-plan="floorPlans[0]"
+              :visible-apartments="sortedApartments"
             />
           </template>
 

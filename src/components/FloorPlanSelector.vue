@@ -8,6 +8,10 @@ const props = defineProps({
   floorPlan: {
     type: Object,
     required: true
+  },
+  visibleApartments: {
+    type: Array,
+    default: () => []
   }
 })
 
@@ -29,9 +33,14 @@ const mappedAreas = computed(() => {
         return item.id === area.apartmentId
       })
 
+      const matchesFilters = props.visibleApartments.some((item) => {
+        return item.id === area.apartmentId
+      })
+
       return {
         ...area,
-        apartment
+        apartment,
+        matchesFilters
       }
     })
     .filter((area) => area.apartment)
@@ -117,16 +126,25 @@ const formattedTooltipPrice = computed(() => {
           v-for="area in mappedAreas"
           :key="area.apartmentId"
           class="floor-selector__area"
-          :class="`floor-selector__area--${area.apartment.status}`"
+          :class="[
+            `floor-selector__area--${area.apartment.status}`,
+            {
+              'floor-selector__area--filtered-out': !area.matchesFilters
+            }
+          ]"
           :points="area.points"
-          tabindex="0"
+          :tabindex="area.matchesFilters ? 0 : -1"
           role="link"
           :aria-label="`Mieszkanie ${area.apartment.number}, ${area.apartment.area} metrów kwadratowych`"
-          @click="openApartment(area.apartment)"
-          @keydown.enter="openApartment(area.apartment)"
-          @keydown.space.prevent="openApartment(area.apartment)"
-          @mouseenter="showTooltip(area.apartment, $event)"
-          @mousemove="moveTooltip"
+          @click="area.matchesFilters && openApartment(area.apartment)"
+          @keydown.enter="area.matchesFilters && openApartment(area.apartment)"
+          @keydown.space.prevent="
+            area.matchesFilters && openApartment(area.apartment)
+          "
+          @mouseenter="
+            area.matchesFilters && showTooltip(area.apartment, $event)
+          "
+          @mousemove="area.matchesFilters && moveTooltip($event)"
           @mouseleave="hideTooltip"
           @blur="hideTooltip"
         />
@@ -284,6 +302,14 @@ const formattedTooltipPrice = computed(() => {
   fill-opacity: 0.58;
   stroke-width: 8;
   outline: none;
+}
+
+.floor-selector__area--filtered-out {
+  fill: #ffffff;
+  fill-opacity: 0.72;
+  stroke: rgba(146, 152, 150, 0.35);
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .floor-selector__tooltip {
