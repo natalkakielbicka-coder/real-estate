@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
-import ApartmentCard from '../components/ApartmentCard.vue'
+import ApartmentGrid from '../components/ApartmentGrid.vue'
 import { apartments } from '../data/apartments'
 
 const selectedCities = ref([])
@@ -391,16 +391,10 @@ const sortedApartments = computed(() => {
             </label>
           </div>
 
-          <div
+          <ApartmentGrid
             v-if="sortedApartments.length > 0"
-            class="apartments-grid"
-          >
-            <ApartmentCard
-              v-for="apartment in sortedApartments"
-              :key="apartment.id"
-              :apartment="apartment"
-            />
-          </div>
+            :apartments="sortedApartments"
+          />
 
           <div
             v-else
@@ -732,13 +726,6 @@ const sortedApartments = computed(() => {
   background-color: var(--color-primary-light);
 }
 
-.apartments-grid {
-  display: grid;
-  min-width: 0;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
-}
-
 .apartments-empty {
   display: flex;
   align-items: center;
@@ -857,12 +844,6 @@ const sortedApartments = computed(() => {
   border-color: var(--color-accent);
 }
 
-@media (max-width: 1199px) {
-  .apartments-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
 @media (max-width: 991px) {
   .apartments-layout {
     grid-template-columns: 1fr;
@@ -878,10 +859,6 @@ const sortedApartments = computed(() => {
   .apartments-header__bottom {
     align-items: flex-start;
     flex-direction: column;
-  }
-
-  .apartments-grid {
-    grid-template-columns: 1fr;
   }
 }
 
