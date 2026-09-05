@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import ApartmentGrid from '../components/ApartmentGrid.vue'
 import ApartmentList from '../components/ApartmentList.vue'
+import ApartmentTable from '../components/ApartmentTable.vue'
 import { apartments } from '../data/apartments'
 
 const selectedCities = ref([])
@@ -397,6 +398,17 @@ const sortedApartments = computed(() => {
               >
                 Lista
               </button>
+
+              <button
+                type="button"
+                :class="{
+                  'view-switcher__button--active': viewMode === 'table'
+                }"
+                :aria-pressed="viewMode === 'table'"
+                @click="viewMode = 'table'"
+              >
+                Tabela
+              </button>
             </div>
 
             <label class="apartments-sort">
@@ -427,6 +439,11 @@ const sortedApartments = computed(() => {
             />
 
             <ApartmentList
+              v-else-if="viewMode === 'list'"
+              :apartments="sortedApartments"
+            />
+
+            <ApartmentTable
               v-else
               :apartments="sortedApartments"
             />
