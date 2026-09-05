@@ -1,5 +1,6 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import ApartmentGrid from '../components/ApartmentGrid.vue'
 import ApartmentList from '../components/ApartmentList.vue'
 import ApartmentTable from '../components/ApartmentTable.vue'
@@ -12,7 +13,24 @@ const selectedOutdoorSpaces = ref([])
 const onlyWithParking = ref(false)
 const onlyWithStorage = ref(false)
 const selectedSort = ref('default')
-const viewMode = ref('grid')
+
+const route = useRoute()
+const router = useRouter()
+
+const availableViewModes = ['grid', 'list', 'table']
+
+const viewMode = ref(
+  availableViewModes.includes(route.query.view) ? route.query.view : 'grid'
+)
+
+watch(viewMode, (newViewMode) => {
+  router.replace({
+    query: {
+      ...route.query,
+      view: newViewMode === 'grid' ? undefined : newViewMode
+    }
+  })
+})
 
 const outdoorSpaces = [
   {
