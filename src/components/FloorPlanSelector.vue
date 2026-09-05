@@ -46,6 +46,22 @@ const mappedAreas = computed(() => {
     .filter((area) => area.apartment)
 })
 
+const planStatusCounts = computed(() => {
+  const counts = {
+    available: 0,
+    reserved: 0,
+    sold: 0
+  }
+
+  mappedAreas.value.forEach((area) => {
+    if (area.matchesFilters) {
+      counts[area.apartment.status]++
+    }
+  })
+
+  return counts
+})
+
 const openApartment = (apartment) => {
   router.push(`/mieszkania/${apartment.slug}`)
 }
@@ -95,17 +111,26 @@ const formattedTooltipPrice = computed(() => {
       <div class="floor-selector__legend">
         <span class="floor-selector__legend-item">
           <i class="floor-selector__dot floor-selector__dot--available"></i>
+
           Dostępne
+
+          <strong>{{ planStatusCounts.available }}</strong>
         </span>
 
         <span class="floor-selector__legend-item">
           <i class="floor-selector__dot floor-selector__dot--reserved"></i>
+
           Rezerwacja
+
+          <strong>{{ planStatusCounts.reserved }}</strong>
         </span>
 
         <span class="floor-selector__legend-item">
           <i class="floor-selector__dot floor-selector__dot--sold"></i>
+
           Sprzedane
+
+          <strong>{{ planStatusCounts.sold }}</strong>
         </span>
       </div>
     </div>
@@ -234,6 +259,18 @@ const formattedTooltipPrice = computed(() => {
   color: var(--color-text-muted);
   font-size: 10px;
   font-weight: 600;
+}
+
+.floor-selector__legend-item strong {
+  display: grid;
+  min-width: 20px;
+  height: 20px;
+  padding-inline: 5px;
+  place-items: center;
+  color: var(--color-primary);
+  background-color: var(--color-background);
+  font-size: 9px;
+  border-radius: 10px;
 }
 
 .floor-selector__dot {
