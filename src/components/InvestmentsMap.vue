@@ -9,6 +9,55 @@ const mapContainer = ref(null)
 
 let mapInstance = null
 
+const getApartmentsCount = (investmentId) => {
+  return apartments.filter((apartment) => {
+    return apartment.investmentId === investmentId
+  }).length
+}
+
+const createMarkerIcon = (apartmentsCount) => {
+  return L.divIcon({
+    className: 'investment-marker-wrapper',
+    html: `
+      <div class="investment-marker">
+        <span>${apartmentsCount}</span>
+      </div>
+    `,
+    iconSize: [48, 48],
+    iconAnchor: [24, 48],
+    popupAnchor: [0, -50]
+  })
+}
+
+const createPopupContent = (investment, apartmentsCount) => {
+  return `
+    <div class="investment-popup">
+      <span>Inwestycja</span>
+
+      <strong>${investment.name}</strong>
+
+      <p>
+        ${investment.city}, ${investment.district}<br>
+        ${investment.address}
+      </p>
+
+      <small>${apartmentsCount} mieszkań w ofercie</small>
+    </div>
+  `
+}
+
+const addInvestmentMarker = (investment) => {
+  const apartmentsCount = getApartmentsCount(investment.id)
+  const markerIcon = createMarkerIcon(apartmentsCount)
+  const popupContent = createPopupContent(investment, apartmentsCount)
+
+  L.marker(investment.coordinates, {
+    icon: markerIcon
+  })
+    .addTo(mapInstance)
+    .bindPopup(popupContent)
+}
+
 onMounted(() => {
   mapInstance = L.map(mapContainer.value).setView([52.0, 19.1], 6)
 
@@ -18,46 +67,16 @@ onMounted(() => {
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(mapInstance)
 
-  investments.forEach((investment) => {
-    const apartmentsCount = apartments.filter((apartment) => {
-      return apartment.investmentId === investment.id
-    }).length
+  investments.forEach(addInvestmentMarker)
 
-    const markerIcon = L.divIcon({
-      className: 'investment-marker-wrapper',
-      html: `
-      <div class="investment-marker">
-        <span>${apartmentsCount}</span>
-      </div>
-    `,
-      iconSize: [48, 48],
-      iconAnchor: [24, 48],
-      popupAnchor: [0, -50]
-    })
+  //   const investmentCoordinates = investments.map((investment) => {
+  //     return investment.coordinates
+  //   })
 
-    L.marker(investment.coordinates, {
-      icon: markerIcon
-    }).addTo(mapInstance).bindPopup(`
-      <div class="investment-popup">
-        <span>Inwestycja</span>
-        <strong>${investment.name}</strong>
-        <p>
-          ${investment.city}, ${investment.district}<br>
-          ${investment.address}
-        </p>
-        <small>${apartmentsCount} mieszkań w ofercie</small>
-      </div>
-    `)
-  })
-
-  const investmentCoordinates = investments.map((investment) => {
-    return investment.coordinates
-  })
-
-  mapInstance.fitBounds(investmentCoordinates, {
-    padding: [60, 60],
-    maxZoom: 7
-  })
+  //   mapInstance.fitBounds(investmentCoordinates, {
+  //     padding: [60, 60],
+  //     maxZoom: 7
+  //   })
 })
 
 onBeforeUnmount(() => {
