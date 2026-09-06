@@ -89,7 +89,10 @@ const exposureLabels = {
       </RouterLink>
 
       <div class="apartment-details__layout">
-        <ApartmentGallery :apartment="apartment" />
+        <ApartmentGallery
+          :key="apartment.id"
+          :apartment="apartment"
+        />
 
         <div class="apartment-details__content">
           <p class="apartment-details__eyebrow">
