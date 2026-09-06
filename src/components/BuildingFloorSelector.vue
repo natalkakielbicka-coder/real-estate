@@ -9,13 +9,16 @@ const props = defineProps({
   apartments: {
     type: Array,
     default: () => []
+  },
+  selectedFloorNumber: {
+    type: Number,
+    default: null
   }
 })
 
 const emit = defineEmits(['select-floor'])
 
 const hoveredFloor = ref(null)
-const selectedFloor = ref(null)
 
 const tooltipPosition = ref({
   x: 0,
@@ -39,16 +42,12 @@ const moveTooltip = (event) => {
   tooltipBelow.value = cursorY < 100
 }
 
-const activeLabel = computed(() => {
-  if (hoveredFloor.value) {
-    return hoveredFloor.value.label
-  }
+const selectedFloorLabel = computed(() => {
+  const selectedFloor = props.plan.floors.find((floor) => {
+    return floor.floor === props.selectedFloorNumber
+  })
 
-  if (selectedFloor.value) {
-    return selectedFloor.value.label
-  }
-
-  return 'Najedź na wybrane piętro'
+  return selectedFloor?.label ?? 'Nie wybrano piętra'
 })
 
 const hoveredFloorApartmentsCount = computed(() => {
@@ -62,16 +61,9 @@ const hoveredFloorApartmentsCount = computed(() => {
 })
 
 const selectFloor = (floor) => {
-  const isAlreadySelected = selectedFloor.value?.floor === floor.floor
+  const isAlreadySelected = props.selectedFloorNumber === floor.floor
 
-  if (isAlreadySelected) {
-    selectedFloor.value = null
-    emit('select-floor', null)
-    return
-  }
-
-  selectedFloor.value = floor
-  emit('select-floor', floor)
+  emit('select-floor', isAlreadySelected ? null : floor)
 }
 </script>
 
@@ -111,13 +103,13 @@ const selectFloor = (floor) => {
           class="building-selector__floor"
           :class="{
             'building-selector__floor--selected':
-              selectedFloor?.floor === floor.floor
+              selectedFloorNumber === floor.floor
           }"
           :points="floor.points"
           tabindex="0"
           role="button"
           :aria-label="`Wybierz ${floor.label}`"
-          :aria-pressed="selectedFloor?.floor === floor.floor"
+          :aria-pressed="selectedFloorNumber === floor.floor"
           @mouseenter="hoveredFloor = floor"
           @mouseleave="hoveredFloor = null"
           @focus="hoveredFloor = floor"

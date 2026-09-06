@@ -200,6 +200,7 @@ const selectedFloorLabel = computed(() => {
         <BuildingFloorSelector
           :plan="buildingPlan"
           :apartments="investmentApartments"
+          :selected-floor-number="selectedFloorNumber"
           @select-floor="handleFloorSelect"
         />
       </div>
@@ -228,6 +229,14 @@ const selectedFloorLabel = computed(() => {
             <span v-if="selectedFloorLabel">
               {{ selectedFloorLabel }}
             </span>
+
+            <button
+              v-if="selectedFloorLabel"
+              type="button"
+              @click="selectedFloorNumber = null"
+            >
+              Wyczyść piętro
+            </button>
 
             <strong>
               {{ displayedApartments.length }}
@@ -417,6 +426,23 @@ const selectedFloorLabel = computed(() => {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.investment-details__results-summary button {
+  padding: 8px 11px;
+  border: 1px solid rgba(23, 63, 53, 0.18);
+  color: var(--color-primary);
+  background-color: transparent;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.investment-details__results-summary button:hover {
+  color: #ffffff;
+  background-color: var(--color-primary);
 }
 
 .investment-details__stats {
