@@ -6,7 +6,8 @@ export const investments = [
     district: 'Prądnik Biały',
     address: 'ul. Zielona 18',
     coordinates: [50.0953, 19.9366],
-    completionDate: '2027-06-30'
+    completionDate: '2027-06-30',
+    image: '/images/investments/zielone-tarasy.png'
   },
   {
     id: 'miejski-park',
@@ -15,7 +16,8 @@ export const investments = [
     district: 'Mokotów',
     address: 'ul. Parkowa 7',
     coordinates: [52.2058, 21.0268],
-    completionDate: '2028-03-31'
+    completionDate: '2028-03-31',
+    image: '/images/investments/miejski-park.png'
   },
   {
     id: 'nad-odra',
@@ -24,6 +26,7 @@ export const investments = [
     district: 'Śródmieście',
     address: 'ul. Nadbrzeżna 12',
     coordinates: [51.1252, 17.0364],
-    completionDate: '2027-12-31'
+    completionDate: '2027-12-31',
+    image: '/images/investments/nad-odra.png'
   }
 ]

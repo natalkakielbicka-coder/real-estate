@@ -16,8 +16,15 @@ defineProps({
     class="investment-card"
     :to="`/inwestycje/${investment.id}`"
   >
-    <div class="investment-card__number">
-      {{ String(investment.id).slice(0, 2).toUpperCase() }}
+    <div class="investment-card__image">
+      <img
+        :src="investment.image"
+        :alt="`Wizualizacja inwestycji ${investment.name}`"
+      />
+
+      <span>
+        {{ investment.city }}
+      </span>
     </div>
 
     <div class="investment-card__content">
@@ -59,7 +66,7 @@ defineProps({
 .investment-card {
   display: grid;
   min-height: 360px;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: 250px 1fr;
   color: #ffffff;
   background-color: var(--color-primary);
   text-decoration: none;
@@ -71,16 +78,6 @@ defineProps({
 .investment-card:hover {
   box-shadow: 0 24px 55px rgba(23, 63, 53, 0.2);
   transform: translateY(-6px);
-}
-
-.investment-card__number {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgba(255, 255, 255, 0.08);
-  font-family: var(--font-heading);
-  font-size: clamp(90px, 12vw, 150px);
-  line-height: 1;
 }
 
 .investment-card__content {
@@ -156,9 +153,51 @@ defineProps({
   text-transform: uppercase;
 }
 
+.investment-card__image {
+  position: relative;
+  overflow: hidden;
+}
+
+.investment-card__image::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  background: linear-gradient(
+    180deg,
+    transparent 50%,
+    rgba(23, 63, 53, 0.55) 100%
+  );
+}
+
+.investment-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.investment-card:hover .investment-card__image img {
+  transform: scale(1.05);
+}
+
+.investment-card__image span {
+  position: absolute;
+  z-index: 1;
+  right: 18px;
+  bottom: 18px;
+  padding: 8px 11px;
+  color: var(--color-primary);
+  background-color: var(--color-accent);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 @media (max-width: 479px) {
   .investment-card {
     min-height: 320px;
+    grid-template-rows: 210px 1fr;
   }
 
   .investment-card__content {
