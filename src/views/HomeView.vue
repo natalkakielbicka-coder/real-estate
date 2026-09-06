@@ -1,11 +1,13 @@
+<script setup>
+import { apartments } from '../data/apartments'
+</script>
+
 <template>
   <main>
     <section class="hero">
       <div class="hero__container container">
         <div class="hero__content">
-          <p class="hero__eyebrow">
-            Nowoczesne inwestycje
-          </p>
+          <p class="hero__eyebrow">Nowoczesne inwestycje</p>
 
           <h1 class="hero__title">
             Mieszkania stworzone
@@ -13,8 +15,8 @@
           </h1>
 
           <p class="hero__description">
-            Odkryj starannie wybrane mieszkania w najlepszych
-            lokalizacjach i znajdź przestrzeń dopasowaną do Twojego życia.
+            Odkryj starannie wybrane mieszkania w najlepszych lokalizacjach i
+            znajdź przestrzeń dopasowaną do Twojego życia.
           </p>
 
           <form class="search">
@@ -63,16 +65,16 @@
           <img
             src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=85"
             alt="Nowoczesne wnętrze apartamentu"
-          >
+          />
 
           <div class="hero__badge">
-            <strong>48</strong>
+            <strong>{{ apartments.length }}</strong>
             <span>
-                dostępnych
-                <br>
-                mieszkań
+              mieszkań
+              <br />
+              w ofercie
             </span>
-        </div>
+          </div>
 
           <div class="hero__location">
             <span class="hero__location-icon">⌖</span>
@@ -125,7 +127,7 @@
 .hero__eyebrow::before {
   width: 38px;
   height: 1px;
-  content: "";
+  content: '';
   background-color: var(--color-accent);
 }
 
@@ -157,7 +159,7 @@
   bottom: -9px;
   width: 38%;
   height: 2px;
-  content: "";
+  content: '';
   background-color: var(--color-accent);
 }
 
@@ -181,7 +183,7 @@
   right: -80px;
   width: 75%;
   height: 55%;
-  content: "";
+  content: '';
   background-color: #e5ddcf;
   border-radius: 50% 0 0 50%;
 }
