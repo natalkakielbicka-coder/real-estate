@@ -3,7 +3,9 @@ import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { investments } from '../data/investments'
 import { apartments } from '../data/apartments'
+import { buildingPlans } from '../data/buildingPlans'
 import ApartmentGrid from '../components/ApartmentGrid.vue'
+import BuildingFloorSelector from '../components/BuildingFloorSelector.vue'
 
 const route = useRoute()
 
@@ -44,6 +46,12 @@ const displayedApartments = computed(() => {
 
   return investmentApartments.value.filter((apartment) => {
     return apartment.status === selectedStatus.value
+  })
+})
+
+const buildingPlan = computed(() => {
+  return buildingPlans.find((plan) => {
+    return plan.investmentId === route.params.id
   })
 })
 </script>
@@ -136,6 +144,15 @@ const displayedApartments = computed(() => {
             <strong>{{ feature }}</strong>
           </div>
         </div>
+      </div>
+    </section>
+
+    <section
+      v-if="buildingPlan"
+      class="investment-details__building"
+    >
+      <div class="container">
+        <BuildingFloorSelector :plan="buildingPlan" />
       </div>
     </section>
 
@@ -463,6 +480,11 @@ const displayedApartments = computed(() => {
   color: var(--color-primary);
   font-size: 14px;
   font-weight: 600;
+}
+
+.investment-details__building {
+  padding-block: clamp(60px, 8vw, 110px);
+  background-color: #f3f1eb;
 }
 
 @media (max-width: 991px) {
