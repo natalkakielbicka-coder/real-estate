@@ -71,6 +71,18 @@ const handleFloorSelect = async (floor) => {
     block: 'start'
   })
 }
+
+const selectedFloorLabel = computed(() => {
+  if (selectedFloorNumber.value === null) {
+    return null
+  }
+
+  if (selectedFloorNumber.value === 0) {
+    return 'Parter'
+  }
+
+  return `${selectedFloorNumber.value}. piętro`
+})
 </script>
 
 <template>
@@ -188,10 +200,16 @@ const handleFloorSelect = async (floor) => {
             <h2>Mieszkania w tej inwestycji</h2>
           </div>
 
-          <span>
-            {{ investmentApartments.length }}
-            ofert
-          </span>
+          <div class="investment-details__results-summary">
+            <span v-if="selectedFloorLabel">
+              {{ selectedFloorLabel }}
+            </span>
+
+            <strong>
+              {{ displayedApartments.length }}
+              ofert
+            </strong>
+          </div>
         </div>
 
         <div class="investment-details__filters">
@@ -353,7 +371,23 @@ const handleFloorSelect = async (floor) => {
   font-size: clamp(34px, 5vw, 52px);
 }
 
-.investment-details__apartments-header > span {
+.investment-details__results-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.investment-details__results-summary span {
+  padding: 8px 11px;
+  color: #ffffff;
+  background-color: var(--color-primary);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.investment-details__results-summary strong {
   color: var(--color-text-muted);
   font-size: 11px;
   font-weight: 700;
@@ -540,6 +574,11 @@ const handleFloorSelect = async (floor) => {
 
   .investment-details__hero-overlay {
     background: rgba(23, 63, 53, 0.78);
+  }
+
+  .investment-details__results-summary {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
 
