@@ -9,8 +9,6 @@ import InvestmentsMap from '../components/InvestmentsMap.vue'
 import { floorPlans } from '../data/floorPlans'
 import { apartments } from '../data/apartments'
 
-const selectedCities = ref([])
-const selectedRooms = ref([])
 const selectedStatuses = ref([])
 const selectedOutdoorSpaces = ref([])
 const onlyWithParking = ref(false)
@@ -19,6 +17,10 @@ const selectedSort = ref('default')
 
 const route = useRoute()
 const router = useRouter()
+
+const selectedCities = ref(route.query.city ? [route.query.city] : [])
+
+const selectedRooms = ref(route.query.rooms ? [Number(route.query.rooms)] : [])
 
 const availableViewModes = ['grid', 'list', 'table', 'plan', 'map']
 
@@ -55,9 +57,10 @@ const outdoorSpaces = [
 ]
 
 const priceFromInput = ref('')
-const priceToInput = ref('')
+const priceToInput = ref(route.query.maxPrice ?? '')
 const minPrice = ref(null)
-const maxPrice = ref(null)
+
+const maxPrice = ref(route.query.maxPrice ? Number(route.query.maxPrice) : null)
 
 const applyPriceFilter = () => {
   minPrice.value =

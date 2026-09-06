@@ -1,5 +1,24 @@
 <script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { apartments } from '../data/apartments'
+
+const router = useRouter()
+
+const selectedCity = ref('')
+const selectedRooms = ref('')
+const selectedMaxPrice = ref('')
+
+const searchApartments = () => {
+  router.push({
+    name: 'apartments',
+    query: {
+      city: selectedCity.value || undefined,
+      rooms: selectedRooms.value || undefined,
+      maxPrice: selectedMaxPrice.value || undefined
+    }
+  })
+}
 </script>
 
 <template>
@@ -19,38 +38,51 @@ import { apartments } from '../data/apartments'
             znajdź przestrzeń dopasowaną do Twojego życia.
           </p>
 
-          <form class="search">
+          <form
+            class="search"
+            @submit.prevent="searchApartments"
+          >
             <div class="search__field">
               <label for="location">Lokalizacja</label>
 
-              <select id="location">
+              <select
+                id="location"
+                v-model="selectedCity"
+              >
                 <option value="">Wszystkie lokalizacje</option>
-                <option value="krakow">Kraków</option>
-                <option value="warszawa">Warszawa</option>
-                <option value="wroclaw">Wrocław</option>
+                <option value="Kraków">Kraków</option>
+                <option value="Warszawa">Warszawa</option>
+                <option value="Wrocław">Wrocław</option>
               </select>
             </div>
 
             <div class="search__field">
               <label for="rooms">Liczba pokoi</label>
 
-              <select id="rooms">
+              <select
+                id="rooms"
+                v-model="selectedRooms"
+              >
                 <option value="">Dowolna</option>
-                <option value="1">1 pokój</option>
-                <option value="2">2 pokoje</option>
-                <option value="3">3 pokoje</option>
-                <option value="4">4+ pokoje</option>
+                <option :value="1">1 pokój</option>
+                <option :value="2">2 pokoje</option>
+                <option :value="3">3 pokoje</option>
+                <option :value="4">4+ pokoje</option>
               </select>
             </div>
 
             <div class="search__field">
               <label for="price">Cena do</label>
 
-              <select id="price">
+              <select
+                id="price"
+                v-model="selectedMaxPrice"
+              >
                 <option value="">Bez limitu</option>
-                <option value="500000">500 000 zł</option>
-                <option value="700000">700 000 zł</option>
-                <option value="900000">900 000 zł</option>
+                <option :value="500000">500 000 zł</option>
+                <option :value="800000">800 000 zł</option>
+                <option :value="1100000">1 100 000 zł</option>
+                <option :value="1400000">1 400 000 zł</option>
               </select>
             </div>
 
