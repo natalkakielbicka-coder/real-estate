@@ -12,8 +12,6 @@ const props = defineProps({
   }
 })
 
-console.table(props.apartments)
-
 const emit = defineEmits(['select-floor'])
 
 const hoveredFloor = ref(null)
@@ -25,6 +23,7 @@ const tooltipPosition = ref({
 })
 
 const tooltipOnLeft = ref(false)
+const tooltipBelow = ref(false)
 
 const moveTooltip = (event) => {
   const imageRect = event.currentTarget.getBoundingClientRect()
@@ -37,6 +36,7 @@ const moveTooltip = (event) => {
   }
 
   tooltipOnLeft.value = cursorX > imageRect.width - 230
+  tooltipBelow.value = cursorY < 100
 }
 
 const activeLabel = computed(() => {
@@ -124,7 +124,8 @@ const selectFloor = (floor) => {
         v-if="hoveredFloor"
         class="building-selector__tooltip"
         :class="{
-          'building-selector__tooltip--left': tooltipOnLeft
+          'building-selector__tooltip--left': tooltipOnLeft,
+          'building-selector__tooltip--below': tooltipBelow
         }"
         :style="{
           left: `${tooltipPosition.x}px`,
@@ -262,6 +263,14 @@ const selectFloor = (floor) => {
 
 .building-selector__tooltip--left {
   transform: translate(calc(-100% - 16px), calc(-100% - 16px));
+}
+
+.building-selector__tooltip--below {
+  transform: translate(16px, 16px);
+}
+
+.building-selector__tooltip--left.building-selector__tooltip--below {
+  transform: translate(calc(-100% - 16px), 16px);
 }
 
 @media (max-width: 767px) {
