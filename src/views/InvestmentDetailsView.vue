@@ -110,6 +110,37 @@ const displayedApartments = computed(() => {
 
     <section
       v-if="investment"
+      class="investment-details__about"
+    >
+      <div class="investment-details__about-layout container">
+        <div class="investment-details__about-content">
+          <p class="investment-details__eyebrow">O inwestycji</p>
+
+          <h2>Przestrzeń zaprojektowana do życia</h2>
+
+          <p class="investment-details__description">
+            {{ investment.description }}
+          </p>
+        </div>
+
+        <div class="investment-details__features">
+          <div
+            v-for="(feature, index) in investment.features"
+            :key="feature"
+            class="investment-details__feature"
+          >
+            <span>
+              {{ String(index + 1).padStart(2, '0') }}
+            </span>
+
+            <strong>{{ feature }}</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section
+      v-if="investment"
       class="investment-details__apartments"
     >
       <div class="container">
@@ -371,6 +402,69 @@ const displayedApartments = computed(() => {
   background-color: var(--color-surface);
 }
 
+.investment-details__about {
+  padding-block: clamp(70px, 9vw, 120px);
+  background-color: var(--color-surface);
+}
+
+.investment-details__about-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  align-items: start;
+  gap: clamp(50px, 8vw, 110px);
+}
+
+.investment-details__eyebrow {
+  margin-bottom: 16px;
+  color: var(--color-accent);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.investment-details__about h2 {
+  margin-bottom: 26px;
+  font-size: clamp(38px, 5vw, 58px);
+}
+
+.investment-details__description {
+  max-width: 560px;
+  margin-bottom: 0;
+  color: var(--color-text-muted);
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.investment-details__features {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.investment-details__feature {
+  min-height: 125px;
+  padding: 24px;
+  border-top: 1px solid rgba(23, 63, 53, 0.14);
+}
+
+.investment-details__feature:nth-child(odd) {
+  border-right: 1px solid rgba(23, 63, 53, 0.14);
+}
+
+.investment-details__feature span {
+  display: block;
+  margin-bottom: 20px;
+  color: var(--color-accent);
+  font-family: var(--font-heading);
+  font-size: 18px;
+}
+
+.investment-details__feature strong {
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
 @media (max-width: 991px) {
   .investment-details__hero-image {
     width: 100%;
@@ -383,6 +477,10 @@ const displayedApartments = computed(() => {
       rgba(23, 63, 53, 0.8) 65%,
       rgba(23, 63, 53, 0.5) 100%
     );
+  }
+
+  .investment-details__about-layout {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -431,6 +529,19 @@ const displayedApartments = computed(() => {
 
   .investment-details__filters button {
     justify-content: space-between;
+  }
+
+  .investment-details__features {
+    grid-template-columns: 1fr;
+  }
+
+  .investment-details__feature:nth-child(odd) {
+    border-right: 0;
+  }
+
+  .investment-details__feature {
+    min-height: auto;
+    padding-inline: 0;
   }
 }
 </style>
