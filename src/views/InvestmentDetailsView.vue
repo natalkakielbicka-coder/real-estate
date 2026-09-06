@@ -1,11 +1,13 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { investments } from '../data/investments'
 import { apartments } from '../data/apartments'
 import ApartmentGrid from '../components/ApartmentGrid.vue'
 
 const route = useRoute()
+
+const selectedStatus = ref('all')
 
 const investment = computed(() => {
   return investments.find((item) => {
@@ -16,6 +18,32 @@ const investment = computed(() => {
 const investmentApartments = computed(() => {
   return apartments.filter((apartment) => {
     return apartment.investmentId === route.params.id
+  })
+})
+
+const statusCounts = computed(() => {
+  return {
+    available: investmentApartments.value.filter((apartment) => {
+      return apartment.status === 'available'
+    }).length,
+
+    reserved: investmentApartments.value.filter((apartment) => {
+      return apartment.status === 'reserved'
+    }).length,
+
+    sold: investmentApartments.value.filter((apartment) => {
+      return apartment.status === 'sold'
+    }).length
+  }
+})
+
+const displayedApartments = computed(() => {
+  if (selectedStatus.value === 'all') {
+    return investmentApartments.value
+  }
+
+  return investmentApartments.value.filter((apartment) => {
+    return apartment.status === selectedStatus.value
   })
 })
 </script>
@@ -43,6 +71,23 @@ const investmentApartments = computed(() => {
         <p class="investment-details__address">
           {{ investment.address }}
         </p>
+
+        <div class="investment-details__stats">
+          <div class="investment-details__stat">
+            <strong>{{ statusCounts.available }}</strong>
+            <span>Dostępne</span>
+          </div>
+
+          <div class="investment-details__stat">
+            <strong>{{ statusCounts.reserved }}</strong>
+            <span>Rezerwacja</span>
+          </div>
+
+          <div class="investment-details__stat">
+            <strong>{{ statusCounts.sold }}</strong>
+            <span>Sprzedane</span>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -72,7 +117,55 @@ const investmentApartments = computed(() => {
           </span>
         </div>
 
-        <ApartmentGrid :apartments="investmentApartments" />
+        <div class="investment-details__filters">
+          <button
+            type="button"
+            :class="{ active: selectedStatus === 'all' }"
+            @click="selectedStatus = 'all'"
+          >
+            Wszystkie
+            <span>{{ investmentApartments.length }}</span>
+          </button>
+
+          <button
+            type="button"
+            :class="{ active: selectedStatus === 'available' }"
+            @click="selectedStatus = 'available'"
+          >
+            Dostępne
+            <span>{{ statusCounts.available }}</span>
+          </button>
+
+          <button
+            type="button"
+            :class="{ active: selectedStatus === 'reserved' }"
+            @click="selectedStatus = 'reserved'"
+          >
+            Rezerwacja
+            <span>{{ statusCounts.reserved }}</span>
+          </button>
+
+          <button
+            type="button"
+            :class="{ active: selectedStatus === 'sold' }"
+            @click="selectedStatus = 'sold'"
+          >
+            Sprzedane
+            <span>{{ statusCounts.sold }}</span>
+          </button>
+        </div>
+
+        <ApartmentGrid
+          v-if="displayedApartments.length"
+          :apartments="displayedApartments"
+        />
+
+        <p
+          v-else
+          class="investment-details__empty"
+        >
+          Brak mieszkań z wybranym statusem.
+        </p>
       </div>
     </section>
   </main>
@@ -161,10 +254,123 @@ const investmentApartments = computed(() => {
   text-transform: uppercase;
 }
 
+.investment-details__stats {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 60px;
+  gap: 18px;
+}
+
+.investment-details__stat {
+  display: flex;
+  min-width: 145px;
+  align-items: center;
+  padding: 18px 22px;
+  gap: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.investment-details__stat strong {
+  color: var(--color-accent);
+  font-family: var(--font-heading);
+  font-size: 34px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.investment-details__stat span {
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.investment-details__filters {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+  gap: 8px;
+}
+
+.investment-details__filters button {
+  display: flex;
+  align-items: center;
+  padding: 11px 15px;
+  gap: 9px;
+  border: 1px solid rgba(23, 63, 53, 0.16);
+  color: var(--color-primary);
+  background-color: transparent;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.investment-details__filters button:hover,
+.investment-details__filters button.active {
+  color: #ffffff;
+  background-color: var(--color-primary);
+}
+
+.investment-details__filters span {
+  display: grid;
+  min-width: 20px;
+  height: 20px;
+  place-items: center;
+  border-radius: 50%;
+  background-color: rgba(23, 63, 53, 0.1);
+  font-size: 9px;
+}
+
+.investment-details__filters button.active span {
+  background-color: rgba(255, 255, 255, 0.16);
+}
+
+.investment-details__empty {
+  padding: 50px 25px;
+  text-align: center;
+  background-color: var(--color-surface);
+}
+
 @media (max-width: 767px) {
   .investment-details__apartments-header {
     align-items: flex-start;
     flex-direction: column;
+  }
+}
+
+@media (max-width: 479px) {
+  .investment-details__stats {
+    display: grid;
+    margin-top: 40px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .investment-details__stat {
+    min-width: 0;
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 14px 10px;
+  }
+
+  .investment-details__stat strong {
+    font-size: 28px;
+  }
+
+  .investment-details__stat span {
+    font-size: 7px;
+  }
+
+  .investment-details__filters {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .investment-details__filters button {
+    justify-content: space-between;
   }
 }
 </style>
