@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import { investments } from '../data/investments'
 import { apartments } from '../data/apartments'
@@ -10,6 +10,8 @@ import BuildingFloorSelector from '../components/BuildingFloorSelector.vue'
 const route = useRoute()
 
 const selectedStatus = ref('all')
+const selectedFloorNumber = ref(null)
+const apartmentsSection = ref(null)
 
 const investment = computed(() => {
   return investments.find((item) => {
@@ -40,12 +42,16 @@ const statusCounts = computed(() => {
 })
 
 const displayedApartments = computed(() => {
-  if (selectedStatus.value === 'all') {
-    return investmentApartments.value
-  }
-
   return investmentApartments.value.filter((apartment) => {
-    return apartment.status === selectedStatus.value
+    const matchesFloor =
+      selectedFloorNumber.value === null ||
+      apartment.floor === selectedFloorNumber.value
+
+    const matchesStatus =
+      selectedStatus.value === 'all' ||
+      apartment.status === selectedStatus.value
+
+    return matchesFloor && matchesStatus
   })
 })
 
@@ -54,6 +60,17 @@ const buildingPlan = computed(() => {
     return plan.investmentId === route.params.id
   })
 })
+
+const handleFloorSelect = async (floor) => {
+  selectedFloorNumber.value = floor?.floor ?? null
+
+  await nextTick()
+
+  apartmentsSection.value?.scrollIntoView({
+    behavior: 'smooth',
+    block: 'start'
+  })
+}
 </script>
 
 <template>
@@ -152,12 +169,16 @@ const buildingPlan = computed(() => {
       class="investment-details__building"
     >
       <div class="container">
-        <BuildingFloorSelector :plan="buildingPlan" />
+        <BuildingFloorSelector
+          :plan="buildingPlan"
+          @select-floor="handleFloorSelect"
+        />
       </div>
     </section>
 
     <section
       v-if="investment"
+      ref="apartmentsSection"
       class="investment-details__apartments"
     >
       <div class="container">
@@ -307,6 +328,7 @@ const buildingPlan = computed(() => {
 
 .investment-details__apartments {
   padding-block: clamp(60px, 8vw, 110px);
+  scroll-margin-top: 88px;
 }
 
 .investment-details__apartments-header {
