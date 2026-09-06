@@ -62,6 +62,14 @@ const hoveredFloorApartmentsCount = computed(() => {
 })
 
 const selectFloor = (floor) => {
+  const isAlreadySelected = selectedFloor.value?.floor === floor.floor
+
+  if (isAlreadySelected) {
+    selectedFloor.value = null
+    emit('select-floor', null)
+    return
+  }
+
   selectedFloor.value = floor
   emit('select-floor', floor)
 }
