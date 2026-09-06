@@ -1,6 +1,5 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { apartments } from '../data/apartments'
 
 const props = defineProps({
   plan: {
@@ -99,12 +98,12 @@ const selectFloor = (floor) => {
         />
       </svg>
 
-      <div class="building-selector__hint">
-        <strong>{{ activeLabel }}</strong>
-
-        <span v-if="hoveredFloor">
-          Liczba mieszkań: {{ hoveredFloorApartmentsCount }}
-        </span>
+      <div
+        v-if="hoveredFloor"
+        class="building-selector__tooltip"
+      >
+        <strong>{{ hoveredFloor.label }}</strong>
+        <span>Liczba mieszkań: {{ hoveredFloorApartmentsCount }}</span>
       </div>
     </div>
   </div>
@@ -203,30 +202,30 @@ const selectFloor = (floor) => {
   stroke: #ffffff;
 }
 
-.building-selector__hint {
+.building-selector__tooltip {
   position: absolute;
   z-index: 2;
-  right: 18px;
-  bottom: 18px;
-  padding: 11px 15px;
-  color: #ffffff;
-  background-color: var(--color-primary);
-  pointer-events: none;
+  top: 18px;
+  left: 18px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
+  padding: 13px 16px;
+  color: #ffffff;
+  background-color: var(--color-primary);
+  box-shadow: 0 12px 30px rgba(23, 63, 53, 0.22);
+  pointer-events: none;
 }
 
-.building-selector__hint strong {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+.building-selector__tooltip strong {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 400;
 }
 
-.building-selector__hint span {
-  color: rgba(255, 255, 255, 0.65);
-  font-size: 8px;
+.building-selector__tooltip span {
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 9px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -245,13 +244,6 @@ const selectFloor = (floor) => {
 @media (max-width: 479px) {
   .building-selector {
     padding: 18px;
-  }
-
-  .building-selector__hint {
-    right: 10px;
-    bottom: 10px;
-    padding: 9px 11px;
-    font-size: 8px;
   }
 }
 </style>
