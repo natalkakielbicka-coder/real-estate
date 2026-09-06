@@ -134,7 +134,13 @@ const filteredApartments = computed(() => {
 
     const matchesRooms =
       selectedRooms.value.length === 0 ||
-      selectedRooms.value.includes(apartment.rooms)
+      selectedRooms.value.some((rooms) => {
+        if (rooms === 4) {
+          return apartment.rooms >= 4
+        }
+
+        return apartment.rooms === rooms
+      })
 
     const matchesStatus =
       selectedStatuses.value.length === 0 ||
