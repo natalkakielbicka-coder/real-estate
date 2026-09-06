@@ -19,6 +19,20 @@ const emit = defineEmits(['select-floor'])
 const hoveredFloor = ref(null)
 const selectedFloor = ref(null)
 
+const tooltipPosition = ref({
+  x: 0,
+  y: 0
+})
+
+const moveTooltip = (event) => {
+  const imageRect = event.currentTarget.getBoundingClientRect()
+
+  tooltipPosition.value = {
+    x: event.clientX - imageRect.left,
+    y: event.clientY - imageRect.top
+  }
+}
+
 const activeLabel = computed(() => {
   if (hoveredFloor.value) {
     return hoveredFloor.value.label
@@ -64,6 +78,7 @@ const selectFloor = (floor) => {
     <div
       class="building-selector__image"
       @mouseleave="hoveredFloor = null"
+      @mousemove="moveTooltip"
     >
       <img
         :src="plan.image"
@@ -101,6 +116,10 @@ const selectFloor = (floor) => {
       <div
         v-if="hoveredFloor"
         class="building-selector__tooltip"
+        :style="{
+          left: `${tooltipPosition.x}px`,
+          top: `${tooltipPosition.y}px`
+        }"
       >
         <strong>{{ hoveredFloor.label }}</strong>
         <span>Liczba mieszkań: {{ hoveredFloorApartmentsCount }}</span>
@@ -205,8 +224,7 @@ const selectFloor = (floor) => {
 .building-selector__tooltip {
   position: absolute;
   z-index: 2;
-  top: 18px;
-  left: 18px;
+  transform: translate(16px, calc(-100% - 16px));
   display: flex;
   flex-direction: column;
   gap: 5px;
