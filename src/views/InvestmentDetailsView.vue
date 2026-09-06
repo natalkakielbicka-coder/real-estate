@@ -54,7 +54,15 @@ const displayedApartments = computed(() => {
       v-if="investment"
       class="investment-details__hero"
     >
-      <div class="container">
+      <img
+        class="investment-details__hero-image"
+        :src="investment.image"
+        :alt="`Wizualizacja inwestycji ${investment.name}`"
+      />
+
+      <div class="investment-details__hero-overlay"></div>
+
+      <div class="investment-details__hero-content container">
         <RouterLink
           class="investment-details__back"
           to="/inwestycje"
@@ -177,10 +185,39 @@ const displayedApartments = computed(() => {
 }
 
 .investment-details__hero {
-  min-height: 520px;
+  position: relative;
+  min-height: 620px;
+  overflow: hidden;
   padding-block: clamp(70px, 10vw, 140px);
   color: #ffffff;
   background-color: var(--color-primary);
+}
+
+.investment-details__hero-image {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 55%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.investment-details__hero-overlay {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    var(--color-primary) 0%,
+    var(--color-primary) 42%,
+    rgba(23, 63, 53, 0.88) 56%,
+    rgba(23, 63, 53, 0.12) 100%
+  );
+}
+
+.investment-details__hero-content {
+  position: relative;
+  z-index: 2;
 }
 
 .investment-details__back {
@@ -334,10 +371,33 @@ const displayedApartments = computed(() => {
   background-color: var(--color-surface);
 }
 
+@media (max-width: 991px) {
+  .investment-details__hero-image {
+    width: 100%;
+  }
+
+  .investment-details__hero-overlay {
+    background: linear-gradient(
+      90deg,
+      rgba(23, 63, 53, 0.96) 0%,
+      rgba(23, 63, 53, 0.8) 65%,
+      rgba(23, 63, 53, 0.5) 100%
+    );
+  }
+}
+
 @media (max-width: 767px) {
   .investment-details__apartments-header {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .investment-details__hero {
+    min-height: 560px;
+  }
+
+  .investment-details__hero-overlay {
+    background: rgba(23, 63, 53, 0.78);
   }
 }
 
