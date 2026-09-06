@@ -3,7 +3,8 @@ export const floorPlans = [
     id: 'zielone-tarasy-a',
     investmentId: 'zielone-tarasy',
     building: 'A',
-    name: 'Budynek A',
+    floor: 0,
+    name: 'Budynek A — parter',
     image: '/images/floors/zielone-tarasy-a-parter.jpg',
     viewBox: '0 0 1536 1024',
     apartmentAreas: [

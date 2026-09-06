@@ -4,8 +4,10 @@ import { useRoute } from 'vue-router'
 import { investments } from '../data/investments'
 import { apartments } from '../data/apartments'
 import { buildingPlans } from '../data/buildingPlans'
+import { floorPlans } from '../data/floorPlans'
 import ApartmentGrid from '../components/ApartmentGrid.vue'
 import BuildingFloorSelector from '../components/BuildingFloorSelector.vue'
+import FloorPlanSelector from '../components/FloorPlanSelector.vue'
 
 const route = useRoute()
 
@@ -58,6 +60,20 @@ const displayedApartments = computed(() => {
 const buildingPlan = computed(() => {
   return buildingPlans.find((plan) => {
     return plan.investmentId === route.params.id
+  })
+})
+
+const selectedFloorPlan = computed(() => {
+  if (selectedFloorNumber.value === null) {
+    return null
+  }
+
+  return floorPlans.find((plan) => {
+    return (
+      plan.investmentId === route.params.id &&
+      plan.building === buildingPlan.value?.building &&
+      plan.floor === selectedFloorNumber.value
+    )
   })
 })
 
@@ -194,6 +210,13 @@ const selectedFloorLabel = computed(() => {
       class="investment-details__apartments"
     >
       <div class="container">
+        <FloorPlanSelector
+          v-if="selectedFloorPlan"
+          class="investment-details__floor-plan"
+          :floor-plan="selectedFloorPlan"
+          :visible-apartments="displayedApartments"
+        />
+
         <div class="investment-details__apartments-header">
           <div>
             <p>Dostępne lokale</p>
@@ -541,6 +564,10 @@ const selectedFloorLabel = computed(() => {
 .investment-details__building {
   padding-block: clamp(60px, 8vw, 110px);
   background-color: #f3f1eb;
+}
+
+.investment-details__floor-plan {
+  margin-bottom: clamp(50px, 7vw, 90px);
 }
 
 @media (max-width: 991px) {
