@@ -199,6 +199,7 @@ const selectedFloorLabel = computed(() => {
       <div class="container">
         <BuildingFloorSelector
           :plan="buildingPlan"
+          :apartments="investmentApartments"
           @select-floor="handleFloorSelect"
         />
       </div>

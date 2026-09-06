@@ -1,12 +1,19 @@
 <script setup>
 import { computed, ref } from 'vue'
+import { apartments } from '../data/apartments'
 
 const props = defineProps({
   plan: {
     type: Object,
     required: true
+  },
+  apartments: {
+    type: Array,
+    default: () => []
   }
 })
+
+console.table(props.apartments)
 
 const emit = defineEmits(['select-floor'])
 
@@ -23,6 +30,16 @@ const activeLabel = computed(() => {
   }
 
   return 'Najedź na wybrane piętro'
+})
+
+const hoveredFloorApartmentsCount = computed(() => {
+  if (!hoveredFloor.value) {
+    return 0
+  }
+
+  return props.apartments.filter((apartment) => {
+    return apartment.floor === hoveredFloor.value.floor
+  }).length
 })
 
 const selectFloor = (floor) => {
@@ -83,7 +100,11 @@ const selectFloor = (floor) => {
       </svg>
 
       <div class="building-selector__hint">
-        {{ activeLabel }}
+        <strong>{{ activeLabel }}</strong>
+
+        <span v-if="hoveredFloor">
+          Liczba mieszkań: {{ hoveredFloorApartmentsCount }}
+        </span>
       </div>
     </div>
   </div>
@@ -190,10 +211,23 @@ const selectFloor = (floor) => {
   padding: 11px 15px;
   color: #ffffff;
   background-color: var(--color-primary);
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.building-selector__hint strong {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.06em;
-  pointer-events: none;
+  text-transform: uppercase;
+}
+
+.building-selector__hint span {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 8px;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
