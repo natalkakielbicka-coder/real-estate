@@ -24,13 +24,19 @@ const tooltipPosition = ref({
   y: 0
 })
 
+const tooltipOnLeft = ref(false)
+
 const moveTooltip = (event) => {
   const imageRect = event.currentTarget.getBoundingClientRect()
+  const cursorX = event.clientX - imageRect.left
+  const cursorY = event.clientY - imageRect.top
 
   tooltipPosition.value = {
-    x: event.clientX - imageRect.left,
-    y: event.clientY - imageRect.top
+    x: cursorX,
+    y: cursorY
   }
+
+  tooltipOnLeft.value = cursorX > imageRect.width - 230
 }
 
 const activeLabel = computed(() => {
@@ -105,6 +111,7 @@ const selectFloor = (floor) => {
           :aria-label="`Wybierz ${floor.label}`"
           :aria-pressed="selectedFloor?.floor === floor.floor"
           @mouseenter="hoveredFloor = floor"
+          @mouseleave="hoveredFloor = null"
           @focus="hoveredFloor = floor"
           @blur="hoveredFloor = null"
           @click="selectFloor(floor)"
@@ -116,6 +123,9 @@ const selectFloor = (floor) => {
       <div
         v-if="hoveredFloor"
         class="building-selector__tooltip"
+        :class="{
+          'building-selector__tooltip--left': tooltipOnLeft
+        }"
         :style="{
           left: `${tooltipPosition.x}px`,
           top: `${tooltipPosition.y}px`
@@ -233,6 +243,8 @@ const selectFloor = (floor) => {
   background-color: var(--color-primary);
   box-shadow: 0 12px 30px rgba(23, 63, 53, 0.22);
   pointer-events: none;
+  width: 130px;
+  box-sizing: border-box;
 }
 
 .building-selector__tooltip strong {
@@ -246,6 +258,10 @@ const selectFloor = (floor) => {
   font-size: 9px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+
+.building-selector__tooltip--left {
+  transform: translate(calc(-100% - 16px), calc(-100% - 16px));
 }
 
 @media (max-width: 767px) {
