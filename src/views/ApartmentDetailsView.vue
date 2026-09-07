@@ -10,6 +10,10 @@ import {
   formatPrice,
   formatPricePerMeter
 } from '../utils/apartmentFormatters'
+import {
+  exposureLabels,
+  outdoorSpaceLabels
+} from '../constants/apartmentAttributes'
 
 const route = useRoute()
 
@@ -44,20 +48,6 @@ const formattedCompletionDate = computed(() => {
     year: 'numeric'
   }).format(new Date(apartment.value.completionDate))
 })
-
-const outdoorSpaceLabels = {
-  balcony: 'Balkon',
-  terrace: 'Taras',
-  garden: 'Ogródek',
-  loggia: 'Loggia'
-}
-
-const exposureLabels = {
-  north: 'Północ',
-  south: 'Południe',
-  east: 'Wschód',
-  west: 'Zachód'
-}
 </script>
 
 <template>

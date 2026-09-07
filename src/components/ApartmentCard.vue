@@ -1,6 +1,6 @@
 <script setup>
-import { computed } from 'vue'
 import { apartmentStatusLabels } from '../constants/apartmentStatuses'
+import { outdoorSpaceLabels } from '../constants/apartmentAttributes'
 import {
   getFloorLabel,
   formatPrice,
@@ -13,13 +13,6 @@ defineProps({
     required: true
   }
 })
-
-const outdoorSpaceLabels = {
-  balcony: 'Balkon',
-  terrace: 'Taras',
-  garden: 'Ogródek',
-  loggia: 'Loggia'
-}
 </script>
 
 <template>
