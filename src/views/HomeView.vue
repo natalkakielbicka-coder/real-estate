@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { apartments } from '../data/apartments'
 import { investments } from '../data/investments'
 import InvestmentCard from '../components/InvestmentCard.vue'
+import ApartmentGrid from '../components/ApartmentGrid.vue'
 
 const router = useRouter()
 
@@ -73,6 +74,13 @@ const getInvestmentApartmentsCount = (investmentId) => {
     return apartment.investmentId === investmentId
   }).length
 }
+
+const featuredApartments = computed(() => {
+  return apartments
+    .filter((apartment) => apartment.featured)
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 3)
+})
 </script>
 
 <template>
@@ -218,6 +226,24 @@ const getInvestmentApartmentsCount = (investmentId) => {
         </div>
       </div>
     </section>
+
+    <section class="featured-apartments">
+      <div class="container">
+        <div class="featured-apartments__header">
+          <div>
+            <p>Wybrane oferty</p>
+            <h2>Polecane mieszkania</h2>
+          </div>
+
+          <RouterLink to="/mieszkania">
+            Zobacz wszystkie mieszkania
+            <span aria-hidden="true">→</span>
+          </RouterLink>
+        </div>
+
+        <ApartmentGrid :apartments="featuredApartments" />
+      </div>
+    </section>
   </main>
 </template>
 
@@ -225,7 +251,6 @@ const getInvestmentApartmentsCount = (investmentId) => {
 .hero {
   display: flex;
   align-items: center;
-  min-height: 100vh;
   padding-top: 138px;
   padding-bottom: 50px;
   overflow: hidden;
@@ -526,6 +551,53 @@ const getInvestmentApartmentsCount = (investmentId) => {
   gap: 24px;
 }
 
+.featured-apartments {
+  padding-block: clamp(70px, 9vw, 120px);
+  background-color: var(--color-background);
+}
+
+.featured-apartments__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 42px;
+  gap: 30px;
+}
+
+.featured-apartments__header p {
+  margin-bottom: 10px;
+  color: var(--color-accent);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.featured-apartments__header h2 {
+  margin-bottom: 0;
+  font-size: clamp(38px, 5vw, 58px);
+}
+
+.featured-apartments__header > a {
+  display: inline-flex;
+  align-items: center;
+  padding-bottom: 7px;
+  gap: 14px;
+  color: var(--color-primary);
+  border-bottom: 1px solid rgba(23, 63, 53, 0.25);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.featured-apartments__header > a span {
+  font-size: 18px;
+  transition: transform 0.2s ease;
+}
+
+.featured-apartments__header > a:hover span {
+  transform: translateX(4px);
+}
+
 @media (max-width: 991px) {
   .hero {
     padding-top: 130px;
@@ -627,6 +699,11 @@ const getInvestmentApartmentsCount = (investmentId) => {
 
   .home-investments__grid {
     grid-template-columns: 1fr;
+  }
+
+  .featured-apartments__header {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
 
