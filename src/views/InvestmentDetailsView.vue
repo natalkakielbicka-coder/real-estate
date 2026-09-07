@@ -88,6 +88,10 @@ const handleFloorSelect = async (floor) => {
   })
 }
 
+const resetApartmentFilters = () => {
+  selectedStatus.value = 'all'
+}
+
 const selectedFloorLabel = computed(() => {
   if (selectedFloorNumber.value === null) {
     return null
@@ -217,6 +221,7 @@ const selectedFloorLabel = computed(() => {
           class="investment-details__floor-plan"
           :floor-plan="selectedFloorPlan"
           :visible-apartments="displayedApartments"
+          @reset-filters="resetApartmentFilters"
         />
 
         <div class="investment-details__apartments-header">

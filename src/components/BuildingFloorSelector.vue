@@ -77,7 +77,7 @@ const selectFloor = (floor) => {
 
       <div class="building-selector__current">
         <span>Wybrane piętro</span>
-        <strong>{{ activeLabel }}</strong>
+        <strong>{{ selectedFloorLabel }}</strong>
       </div>
     </div>
 

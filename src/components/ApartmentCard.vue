@@ -227,7 +227,7 @@ const floorLabel = computed(() => {
 }
 
 .apartment-card__plan strong {
-  color: varlk;
+  color: var(--color-primary);
   font-family: var(--font-heading);
   font-size: 58px;
   font-weight: 400;
@@ -246,7 +246,7 @@ const floorLabel = computed(() => {
   right: 0;
   bottom: 0;
   padding: 8px 14px;
-  color: var(--être-color-primary);
+  color: var(--color-primary);
   background-color: var(--color-accent);
   font-size: 10px;
   font-weight: 700;
