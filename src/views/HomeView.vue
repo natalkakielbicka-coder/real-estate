@@ -43,6 +43,28 @@ const matchingApartmentsCount = computed(() => {
     return matchesCity && matchesRooms && matchesMaxPrice
   }).length
 })
+
+const searchButtonLabel = computed(() => {
+  const count = matchingApartmentsCount.value
+
+  if (count === 0) {
+    return 'Brak pasujących ofert'
+  }
+
+  if (count === 1) {
+    return 'Pokaż 1 ofertę'
+  }
+
+  const lastDigit = count % 10
+  const lastTwoDigits = count % 100
+
+  const usesOferty =
+    lastDigit >= 2 &&
+    lastDigit <= 4 &&
+    (lastTwoDigits < 12 || lastTwoDigits > 14)
+
+  return `Pokaż ${count} ${usesOferty ? 'oferty' : 'ofert'}`
+})
 </script>
 
 <template>
@@ -121,9 +143,18 @@ const matchingApartmentsCount = computed(() => {
               </select>
             </div>
 
-            <button type="submit">
-              Pokaż {{ matchingApartmentsCount }} ofert
-              <span aria-hidden="true">→</span>
+            <button
+              type="submit"
+              :disabled="matchingApartmentsCount === 0"
+            >
+              {{ searchButtonLabel }}
+
+              <span
+                v-if="matchingApartmentsCount > 0"
+                aria-hidden="true"
+              >
+                →
+              </span>
             </button>
           </form>
         </div>
@@ -389,6 +420,12 @@ const matchingApartmentsCount = computed(() => {
   transition: background-color 0.25s ease;
 }
 
+.search button:disabled {
+  color: rgba(255, 255, 255, 0.65);
+  background-color: #929896;
+  cursor: not-allowed;
+}
+
 .search button:hover {
   background-color: var(--color-primary-light);
 }
@@ -398,7 +435,7 @@ const matchingApartmentsCount = computed(() => {
   transition: transform 0.25s ease;
 }
 
-.search button:hover span {
+.search button:not(:disabled):hover span {
   transform: translateX(4px);
 }
 
