@@ -229,8 +229,7 @@ onBeforeUnmount(() => {
   margin: 20px;
 }
 
-:deep(.investment-popup > span) {
-  display: block;
+:deep(.investment-popup .investment-popup__eyebrow) {
   margin-bottom: 5px;
   color: var(--color-accent);
   font-size: 8px;
