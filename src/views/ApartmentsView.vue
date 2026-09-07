@@ -364,7 +364,7 @@ const sortedApartments = computed(() => {
             class="filter-group"
             @submit.prevent="applyPriceFilter"
           >
-            <legend class="filter-group__title">Cena mieszkania</legend>
+            <h3 class="filter-group__title">Cena mieszkania</h3>
 
             <div class="price-filter">
               <label>
@@ -575,7 +575,7 @@ const sortedApartments = computed(() => {
   max-width: 780px;
   margin-bottom: 40px;
   color: #ffffff;
-  font-size: clamp(48pxreti, bal, 6vw, 76px);
+  font-size: clamp(48px, 6vw, 76px);
 }
 
 .apartments-header__bottom {
@@ -785,6 +785,7 @@ const sortedApartments = computed(() => {
   margin-bottom: 15px;
   color: var(--color-primary);
   font-size: 11px;
+  font-family: var(--font-body);
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
