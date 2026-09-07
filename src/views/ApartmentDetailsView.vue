@@ -126,7 +126,11 @@ const exposureLabels = {
             <div>
               <span>Piętro</span>
               <strong>
-                {{ apartment.floor === 0 ? 'Parter' : apartment.floor }}
+                {{
+                  apartment.floor === 0
+                    ? 'Parter'
+                    : `${apartment.floor}. piętro`
+                }}
               </strong>
             </div>
 
