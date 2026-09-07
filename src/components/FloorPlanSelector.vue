@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { apartments } from '../data/apartments'
 import { apartmentStatusLabels } from '../constants/apartmentStatuses'
+import { getFloorLabel, formatPrice } from '../utils/apartmentFormatters'
 
 const props = defineProps({
   floorPlan: {
@@ -98,14 +99,6 @@ const showTooltip = (apartment, event) => {
 const hideTooltip = () => {
   activeApartment.value = null
 }
-
-const formattedTooltipPrice = computed(() => {
-  if (!activeApartment.value) {
-    return ''
-  }
-
-  return new Intl.NumberFormat('pl-PL').format(activeApartment.value.price)
-})
 </script>
 
 <template>
@@ -227,16 +220,10 @@ const formattedTooltipPrice = computed(() => {
           <span>{{ activeApartment.rooms }} pokoje</span>
           <span>{{ activeApartment.area }} m²</span>
 
-          <span>
-            {{
-              activeApartment.floor === 0
-                ? 'Parter'
-                : `${activeApartment.floor}. piętro`
-            }}
-          </span>
+          <span>{{ getFloorLabel(activeApartment.floor) }} </span>
         </div>
 
-        <p>{{ formattedTooltipPrice }} zł</p>
+        <p>{{ formatPrice(activeApartment.price) }} zł</p>
 
         <small>Kliknij, aby zobaczyć mieszkanie</small>
       </div>

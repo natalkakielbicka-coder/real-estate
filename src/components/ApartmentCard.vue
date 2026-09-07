@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { apartmentStatusLabels } from '../constants/apartmentStatuses'
-import { getFloorLabel } from '../utils/apartmentFormatters'
+import { getFloorLabel, formatPrice } from '../utils/apartmentFormatters'
 
 const props = defineProps({
   apartment: {
@@ -16,10 +16,6 @@ const outdoorSpaceLabels = {
   garden: 'Ogródek',
   loggia: 'Loggia'
 }
-
-const formattedPrice = computed(() => {
-  return new Intl.NumberFormat('pl-PL').format(props.apartment.price)
-})
 
 const pricePerMeter = computed(() => {
   const price = props.apartment.price / props.apartment.area
@@ -98,7 +94,7 @@ const pricePerMeter = computed(() => {
       <div class="apartment-card__footer">
         <div class="apartment-card__price">
           <span>cena mieszkania</span>
-          <strong>{{ formattedPrice }} zł</strong>
+          <strong>{{ formatPrice(apartment.price) }} zł</strong>
           <small>{{ pricePerMeter }} zł/m²</small>
         </div>
 

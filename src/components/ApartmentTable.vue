@@ -1,6 +1,6 @@
 <script setup>
 import { apartmentStatusLabels } from '../constants/apartmentStatuses'
-import { getFloorLabel } from '../utils/apartmentFormatters'
+import { getFloorLabel, formatPrice } from '../utils/apartmentFormatters'
 
 defineProps({
   apartments: {
@@ -8,10 +8,6 @@ defineProps({
     required: true
   }
 })
-
-const formatPrice = (price) => {
-  return new Intl.NumberFormat('pl-PL').format(price)
-}
 
 const getPricePerMeter = (apartment) => {
   const price = apartment.price / apartment.area
