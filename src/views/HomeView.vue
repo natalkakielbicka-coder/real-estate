@@ -296,6 +296,20 @@ const purchaseSteps = [
         </div>
       </div>
     </section>
+
+    <section class="home-cta">
+      <div class="home-cta__content container">
+        <div>
+          <p>Znajdź swoje miejsce</p>
+          <h2>Gotowy na wybór mieszkania?</h2>
+        </div>
+
+        <RouterLink to="/mieszkania">
+          Przeglądaj mieszkania
+          <span aria-hidden="true">→</span>
+        </RouterLink>
+      </div>
+    </section>
   </main>
 </template>
 
@@ -720,6 +734,56 @@ const purchaseSteps = [
   line-height: 1.7;
 }
 
+.home-cta {
+  padding-block: clamp(60px, 8vw, 95px);
+  background-color: var(--color-accent);
+}
+
+.home-cta__content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.home-cta p {
+  margin-bottom: 10px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.home-cta h2 {
+  max-width: 700px;
+  margin-bottom: 0;
+  color: #ffffff;
+  font-size: clamp(36px, 5vw, 56px);
+}
+
+.home-cta a {
+  display: inline-flex;
+  min-height: 58px;
+  align-items: center;
+  flex-shrink: 0;
+  padding-inline: 26px;
+  gap: 18px;
+  color: #ffffff;
+  background-color: var(--color-primary);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.home-cta a span {
+  font-size: 19px;
+  transition: transform 0.2s ease;
+}
+
+.home-cta a:hover span {
+  transform: translateX(5px);
+}
+
 @media (max-width: 991px) {
   .hero {
     padding-top: 130px;
@@ -844,6 +908,16 @@ const purchaseSteps = [
 
   .purchase-process__step {
     border-right: 0;
+  }
+
+  .home-cta__content {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .home-cta a {
+    width: 100%;
+    justify-content: center;
   }
 }
 
