@@ -81,6 +81,33 @@ const featuredApartments = computed(() => {
     .sort(() => Math.random() - 0.5)
     .slice(0, 3)
 })
+
+const purchaseSteps = [
+  {
+    number: '01',
+    title: 'Wybierz mieszkanie',
+    description:
+      'Skorzystaj z filtrów, porównaj lokale i wybierz przestrzeń dopasowaną do swoich potrzeb.'
+  },
+  {
+    number: '02',
+    title: 'Umów spotkanie',
+    description:
+      'Porozmawiaj z doradcą i poznaj szczegóły inwestycji, finansowania oraz dostępnych lokali.'
+  },
+  {
+    number: '03',
+    title: 'Podpisz umowę',
+    description:
+      'Zarezerwuj mieszkanie i przejdź przez proces formalny ze wsparciem naszego zespołu.'
+  },
+  {
+    number: '04',
+    title: 'Odbierz klucze',
+    description:
+      'Po zakończeniu inwestycji odbierz swoje mieszkanie i rozpocznij nowy etap.'
+  }
+]
 </script>
 
 <template>
@@ -242,6 +269,31 @@ const featuredApartments = computed(() => {
         </div>
 
         <ApartmentGrid :apartments="featuredApartments" />
+      </div>
+    </section>
+
+    <section class="purchase-process">
+      <div class="container">
+        <div class="purchase-process__header">
+          <p>Prosta droga do własnego mieszkania</p>
+          <h2>Jak wygląda proces zakupu?</h2>
+        </div>
+
+        <div class="purchase-process__steps">
+          <article
+            v-for="step in purchaseSteps"
+            :key="step.number"
+            class="purchase-process__step"
+          >
+            <span class="purchase-process__number">
+              {{ step.number }}
+            </span>
+
+            <h3>{{ step.title }}</h3>
+
+            <p>{{ step.description }}</p>
+          </article>
+        </div>
       </div>
     </section>
   </main>
@@ -598,6 +650,76 @@ const featuredApartments = computed(() => {
   transform: translateX(4px);
 }
 
+.purchase-process {
+  padding-block: clamp(70px, 9vw, 120px);
+  color: #ffffff;
+  background-color: var(--color-primary);
+}
+
+.purchase-process__header {
+  max-width: 700px;
+  margin-bottom: 55px;
+}
+
+.purchase-process__header > p {
+  margin-bottom: 12px;
+  color: var(--color-accent);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.purchase-process__header h2 {
+  margin-bottom: 0;
+  color: #ffffff;
+  font-size: clamp(38px, 5vw, 58px);
+}
+
+.purchase-process__steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.purchase-process__step {
+  position: relative;
+  padding: 34px 28px 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.purchase-process__step:not(:last-child) {
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.purchase-process__number {
+  position: absolute;
+  top: 0;
+  left: 28px;
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  color: var(--color-primary);
+  background-color: var(--color-accent);
+  border-radius: 50%;
+  font-family: var(--font-heading);
+  font-size: 15px;
+  transform: translateY(-50%);
+}
+
+.purchase-process__step h3 {
+  margin: 18px 0 14px;
+  color: #ffffff;
+  font-size: 18px;
+}
+
+.purchase-process__step p {
+  margin-bottom: 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
 @media (max-width: 991px) {
   .hero {
     padding-top: 130px;
@@ -629,6 +751,15 @@ const featuredApartments = computed(() => {
 
   .home-investments__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .purchase-process__steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 50px 0;
+  }
+
+  .purchase-process__step:nth-child(2) {
+    border-right: 0;
   }
 }
 
@@ -704,6 +835,15 @@ const featuredApartments = computed(() => {
   .featured-apartments__header {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .purchase-process__steps {
+    grid-template-columns: 1fr;
+    gap: 50px;
+  }
+
+  .purchase-process__step {
+    border-right: 0;
   }
 }
 
