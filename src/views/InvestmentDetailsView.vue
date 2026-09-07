@@ -8,6 +8,7 @@ import { floorPlans } from '../data/floorPlans'
 import ApartmentGrid from '../components/ApartmentGrid.vue'
 import BuildingFloorSelector from '../components/BuildingFloorSelector.vue'
 import FloorPlanSelector from '../components/FloorPlanSelector.vue'
+import { getInvestmentStatusCounts } from '../utils/investmentHelpers'
 
 const route = useRoute()
 
@@ -28,19 +29,7 @@ const investmentApartments = computed(() => {
 })
 
 const statusCounts = computed(() => {
-  return {
-    available: investmentApartments.value.filter((apartment) => {
-      return apartment.status === 'available'
-    }).length,
-
-    reserved: investmentApartments.value.filter((apartment) => {
-      return apartment.status === 'reserved'
-    }).length,
-
-    sold: investmentApartments.value.filter((apartment) => {
-      return apartment.status === 'sold'
-    }).length
-  }
+  return getInvestmentStatusCounts(apartments, route.params.id)
 })
 
 const displayedApartments = computed(() => {

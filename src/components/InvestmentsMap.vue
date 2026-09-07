@@ -4,7 +4,10 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { investments } from '../data/investments'
 import { apartments } from '../data/apartments'
-import { getApartmentsCountByInvestment } from '../utils/investmentHelpers'
+import {
+  getApartmentsCountByInvestment,
+  getInvestmentStatusCounts
+} from '../utils/investmentHelpers'
 
 const emit = defineEmits(['show-investment'])
 
@@ -26,26 +29,6 @@ const createMarkerIcon = (apartmentsCount) => {
     iconAnchor: [24, 48],
     popupAnchor: [0, -50]
   })
-}
-
-const getStatusCounts = (investmentId) => {
-  const investmentApartments = apartments.filter((apartment) => {
-    return apartment.investmentId === investmentId
-  })
-
-  return {
-    available: investmentApartments.filter((apartment) => {
-      return apartment.status === 'available'
-    }).length,
-
-    reserved: investmentApartments.filter((apartment) => {
-      return apartment.status === 'reserved'
-    }).length,
-
-    sold: investmentApartments.filter((apartment) => {
-      return apartment.status === 'sold'
-    }).length
-  }
 }
 
 const createPopupContent = (investment, apartmentsCount, statusCounts) => {
@@ -88,7 +71,7 @@ const addInvestmentMarker = (investment) => {
     apartments,
     investment.id
   )
-  const statusCounts = getStatusCounts(investment.id)
+  const statusCounts = getInvestmentStatusCounts(apartments, investment.id)
 
   const markerIcon = createMarkerIcon(apartmentsCount)
 
