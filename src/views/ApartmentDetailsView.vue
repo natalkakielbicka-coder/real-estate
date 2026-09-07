@@ -5,7 +5,11 @@ import { apartments } from '../data/apartments'
 import { apartmentStatusLabels } from '../constants/apartmentStatuses'
 import ApartmentGallery from '../components/ApartmentGallery.vue'
 import ApartmentGrid from '../components/ApartmentGrid.vue'
-import { getFloorLabel, formatPrice } from '../utils/apartmentFormatters'
+import {
+  getFloorLabel,
+  formatPrice,
+  formatPricePerMeter
+} from '../utils/apartmentFormatters'
 
 const route = useRoute()
 
@@ -28,18 +32,6 @@ const similarApartments = computed(() => {
       )
     })
     .slice(0, 3)
-})
-
-const formattedPricePerMeter = computed(() => {
-  if (!apartment.value) {
-    return ''
-  }
-
-  const pricePerMeter = apartment.value.price / apartment.value.area
-
-  return new Intl.NumberFormat('pl-PL', {
-    maximumFractionDigits: 0
-  }).format(pricePerMeter)
 })
 
 const formattedCompletionDate = computed(() => {
@@ -130,7 +122,12 @@ const exposureLabels = {
 
             <div>
               <span>Cena za m²</span>
-              <strong>{{ formattedPricePerMeter }} zł</strong>
+              <strong
+                >{{
+                  formatPricePerMeter(apartment.price, apartment.area)
+                }}
+                zł</strong
+              >
             </div>
 
             <div>

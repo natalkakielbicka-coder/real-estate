@@ -1,21 +1,16 @@
 <script setup>
-import { computed } from 'vue'
 import { apartmentStatusLabels } from '../constants/apartmentStatuses'
-import { getFloorLabel, formatPrice } from '../utils/apartmentFormatters'
+import {
+  getFloorLabel,
+  formatPrice,
+  formatPricePerMeter
+} from '../utils/apartmentFormatters'
 
-const props = defineProps({
+defineProps({
   apartment: {
     type: Object,
     required: true
   }
-})
-
-const pricePerMeter = computed(() => {
-  const price = props.apartment.price / props.apartment.area
-
-  return new Intl.NumberFormat('pl-PL', {
-    maximumFractionDigits: 0
-  }).format(price)
 })
 </script>
 
@@ -64,7 +59,12 @@ const pricePerMeter = computed(() => {
       <div>
         <span>Cena mieszkania</span>
         <strong>{{ formatPrice(apartment.price) }} zł</strong>
-        <small>{{ pricePerMeter }} zł/m²</small>
+        <small
+          >{{
+            formatPricePerMeter(apartment.price, apartment.area)
+          }}
+          zł/m²</small
+        >
       </div>
 
       <RouterLink :to="`/mieszkania/${apartment.slug}`">
