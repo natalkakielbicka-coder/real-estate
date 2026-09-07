@@ -1,4 +1,6 @@
 <script setup>
+import { formatCompletionDate } from '../utils/dateFormatters'
+
 defineProps({
   investment: {
     type: Object,
@@ -50,12 +52,7 @@ defineProps({
         <span> Planowane zakończenie </span>
 
         <strong>
-          {{
-            new Intl.DateTimeFormat('pl-PL', {
-              month: 'long',
-              year: 'numeric'
-            }).format(new Date(investment.completionDate))
-          }}
+          {{ formatCompletionDate(investment.completionDate) }}
         </strong>
       </div>
     </div>

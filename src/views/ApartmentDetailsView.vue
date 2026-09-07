@@ -14,6 +14,7 @@ import {
   exposureLabels,
   outdoorSpaceLabels
 } from '../constants/apartmentAttributes'
+import { formatCompletionDate } from '../utils/dateFormatters'
 
 const route = useRoute()
 
@@ -36,17 +37,6 @@ const similarApartments = computed(() => {
       )
     })
     .slice(0, 3)
-})
-
-const formattedCompletionDate = computed(() => {
-  if (!apartment.value) {
-    return ''
-  }
-
-  return new Intl.DateTimeFormat('pl-PL', {
-    month: 'long',
-    year: 'numeric'
-  }).format(new Date(apartment.value.completionDate))
 })
 </script>
 
@@ -122,7 +112,9 @@ const formattedCompletionDate = computed(() => {
 
             <div>
               <span>Termin oddania</span>
-              <strong>{{ formattedCompletionDate }}</strong>
+              <strong>
+                {{ formatCompletionDate(apartment.completionDate) }}</strong
+              >
             </div>
           </div>
 
