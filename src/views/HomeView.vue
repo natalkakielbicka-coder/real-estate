@@ -5,6 +5,7 @@ import { apartments } from '../data/apartments'
 import { investments } from '../data/investments'
 import InvestmentCard from '../components/InvestmentCard.vue'
 import ApartmentGrid from '../components/ApartmentGrid.vue'
+import { getApartmentsCountByInvestment } from '../utils/investmentHelpers'
 
 const router = useRouter()
 
@@ -68,12 +69,6 @@ const searchButtonLabel = computed(() => {
 
   return `Pokaż ${count} ${usesOferty ? 'oferty' : 'ofert'}`
 })
-
-const getInvestmentApartmentsCount = (investmentId) => {
-  return apartments.filter((apartment) => {
-    return apartment.investmentId === investmentId
-  }).length
-}
 
 const featuredApartments = computed(() => {
   return apartments
@@ -248,7 +243,9 @@ const purchaseSteps = [
             v-for="investment in investments"
             :key="investment.id"
             :investment="investment"
-            :apartments-count="getInvestmentApartmentsCount(investment.id)"
+            :apartments-count="
+              getApartmentsCountByInvestment(apartments, investment.id)
+            "
           />
         </div>
       </div>

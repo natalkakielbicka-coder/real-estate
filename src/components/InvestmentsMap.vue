@@ -4,6 +4,7 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { investments } from '../data/investments'
 import { apartments } from '../data/apartments'
+import { getApartmentsCountByInvestment } from '../utils/investmentHelpers'
 
 const emit = defineEmits(['show-investment'])
 
@@ -12,12 +13,6 @@ const mapContainer = ref(null)
 let mapInstance = null
 const initialMapCenter = [52.0, 19.1]
 const initialMapZoom = 6
-
-const getApartmentsCount = (investmentId) => {
-  return apartments.filter((apartment) => {
-    return apartment.investmentId === investmentId
-  }).length
-}
 
 const createMarkerIcon = (apartmentsCount) => {
   return L.divIcon({
@@ -89,7 +84,10 @@ const createPopupContent = (investment, apartmentsCount, statusCounts) => {
 }
 
 const addInvestmentMarker = (investment) => {
-  const apartmentsCount = getApartmentsCount(investment.id)
+  const apartmentsCount = getApartmentsCountByInvestment(
+    apartments,
+    investment.id
+  )
   const statusCounts = getStatusCounts(investment.id)
 
   const markerIcon = createMarkerIcon(apartmentsCount)
