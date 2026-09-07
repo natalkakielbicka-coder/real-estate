@@ -2,6 +2,8 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { apartments } from '../data/apartments'
+import { investments } from '../data/investments'
+import InvestmentCard from '../components/InvestmentCard.vue'
 
 const router = useRouter()
 
@@ -65,6 +67,12 @@ const searchButtonLabel = computed(() => {
 
   return `Pokaż ${count} ${usesOferty ? 'oferty' : 'ofert'}`
 })
+
+const getInvestmentApartmentsCount = (investmentId) => {
+  return apartments.filter((apartment) => {
+    return apartment.investmentId === investmentId
+  }).length
+}
 </script>
 
 <template>
@@ -182,6 +190,31 @@ const searchButtonLabel = computed(() => {
               <strong>Zielone Tarasy, Kraków</strong>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-investments">
+      <div class="container">
+        <div class="home-investments__header">
+          <div>
+            <p>Nasze inwestycje</p>
+            <h2>Znajdź miejsce dla siebie</h2>
+          </div>
+
+          <RouterLink to="/inwestycje">
+            Zobacz wszystkie
+            <span aria-hidden="true">→</span>
+          </RouterLink>
+        </div>
+
+        <div class="home-investments__grid">
+          <InvestmentCard
+            v-for="investment in investments"
+            :key="investment.id"
+            :investment="investment"
+            :apartments-count="getInvestmentApartmentsCount(investment.id)"
+          />
         </div>
       </div>
     </section>
@@ -439,6 +472,60 @@ const searchButtonLabel = computed(() => {
   transform: translateX(4px);
 }
 
+.home-investments {
+  padding-block: clamp(70px, 9vw, 120px);
+  background-color: #f3f1eb;
+}
+
+.home-investments__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 42px;
+  gap: 30px;
+}
+
+.home-investments__header p {
+  margin-bottom: 10px;
+  color: var(--color-accent);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.home-investments__header h2 {
+  max-width: 650px;
+  margin-bottom: 0;
+  font-size: clamp(38px, 5vw, 58px);
+}
+
+.home-investments__header > a {
+  display: inline-flex;
+  align-items: center;
+  padding-bottom: 7px;
+  gap: 14px;
+  color: var(--color-primary);
+  border-bottom: 1px solid rgba(23, 63, 53, 0.25);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.home-investments__header > a span {
+  font-size: 18px;
+  transition: transform 0.2s ease;
+}
+
+.home-investments__header > a:hover span {
+  transform: translateX(4px);
+}
+
+.home-investments__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
 @media (max-width: 991px) {
   .hero {
     padding-top: 130px;
@@ -466,6 +553,10 @@ const searchButtonLabel = computed(() => {
 
   .search {
     width: 100%;
+  }
+
+  .home-investments__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -527,6 +618,15 @@ const searchButtonLabel = computed(() => {
   .hero__location {
     right: 16px;
     bottom: 20px;
+  }
+
+  .home-investments__header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .home-investments__grid {
+    grid-template-columns: 1fr;
   }
 }
 
