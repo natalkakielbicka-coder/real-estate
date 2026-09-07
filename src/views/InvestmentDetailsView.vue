@@ -103,6 +103,11 @@ const selectedFloorLabel = computed(() => {
 
   return `${selectedFloorNumber.value}. piętro`
 })
+
+const clearFloorSelection = () => {
+  selectedFloorNumber.value = null
+  selectedStatus.value = 'all'
+}
 </script>
 
 <template>
@@ -238,9 +243,9 @@ const selectedFloorLabel = computed(() => {
             <button
               v-if="selectedFloorLabel"
               type="button"
-              @click="selectedFloorNumber = null"
+              @click="clearFloorSelection"
             >
-              Wyczyść piętro
+              Wyczyść wybór
             </button>
 
             <strong>
