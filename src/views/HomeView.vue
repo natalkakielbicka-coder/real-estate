@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { apartments } from '../data/apartments'
 
@@ -19,6 +19,30 @@ const searchApartments = () => {
     }
   })
 }
+
+const cities = [...new Set(apartments.map((apartment) => apartment.city))]
+
+const roomOptions = [
+  ...new Set(apartments.map((apartment) => apartment.rooms))
+].sort((a, b) => a - b)
+
+const matchingApartmentsCount = computed(() => {
+  return apartments.filter((apartment) => {
+    const matchesCity =
+      selectedCity.value === '' || apartment.city === selectedCity.value
+
+    const matchesRooms =
+      selectedRooms.value === '' ||
+      (selectedRooms.value === 4
+        ? apartment.rooms >= 4
+        : apartment.rooms === selectedRooms.value)
+
+    const matchesMaxPrice =
+      selectedMaxPrice.value === '' || apartment.price <= selectedMaxPrice.value
+
+    return matchesCity && matchesRooms && matchesMaxPrice
+  }).length
+})
 </script>
 
 <template>
@@ -50,9 +74,13 @@ const searchApartments = () => {
                 v-model="selectedCity"
               >
                 <option value="">Wszystkie lokalizacje</option>
-                <option value="Kraków">Kraków</option>
-                <option value="Warszawa">Warszawa</option>
-                <option value="Wrocław">Wrocław</option>
+                <option
+                  v-for="city in cities"
+                  :key="city"
+                  :value="city"
+                >
+                  {{ city }}
+                </option>
               </select>
             </div>
 
@@ -64,10 +92,17 @@ const searchApartments = () => {
                 v-model="selectedRooms"
               >
                 <option value="">Dowolna</option>
-                <option :value="1">1 pokój</option>
-                <option :value="2">2 pokoje</option>
-                <option :value="3">3 pokoje</option>
-                <option :value="4">4+ pokoje</option>
+                <option
+                  v-for="rooms in roomOptions"
+                  :key="rooms"
+                  :value="rooms"
+                >
+                  {{
+                    rooms === 1
+                      ? '1 pokój'
+                      : `${rooms}${rooms === 4 ? '+' : ''} pokoje`
+                  }}
+                </option>
               </select>
             </div>
 
@@ -87,7 +122,7 @@ const searchApartments = () => {
             </div>
 
             <button type="submit">
-              Szukaj
+              Pokaż {{ matchingApartmentsCount }} ofert
               <span aria-hidden="true">→</span>
             </button>
           </form>
