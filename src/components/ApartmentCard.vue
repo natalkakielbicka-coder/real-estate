@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { apartmentStatusLabels } from '../constants/apartmentStatuses'
+import { getFloorLabel } from '../utils/apartmentFormatters'
 
 const props = defineProps({
   apartment: {
@@ -27,12 +28,6 @@ const pricePerMeter = computed(() => {
     maximumFractionDigits: 0
   }).format(price)
 })
-
-const floorLabel = computed(() => {
-  return props.apartment.floor === 0
-    ? 'Parter'
-    : `${props.apartment.floor}. piętro`
-})
 </script>
 
 <template>
@@ -56,7 +51,7 @@ const floorLabel = computed(() => {
       <div class="apartment-card__plan">
         <span>{{ apartment.building }}</span>
         <strong>{{ apartment.number }}</strong>
-        <small>{{ floorLabel }}</small>
+        <small>{{ getFloorLabel(apartment.floor) }}</small>
       </div>
 
       <div
@@ -87,7 +82,7 @@ const floorLabel = computed(() => {
         </div>
 
         <div>
-          <strong>{{ floorLabel }}</strong>
+          <strong>{{ getFloorLabel(apartment.floor) }}</strong>
           <span>kondygnacja</span>
         </div>
       </div>

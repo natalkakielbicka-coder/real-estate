@@ -5,6 +5,7 @@ import { apartments } from '../data/apartments'
 import { apartmentStatusLabels } from '../constants/apartmentStatuses'
 import ApartmentGallery from '../components/ApartmentGallery.vue'
 import ApartmentGrid from '../components/ApartmentGrid.vue'
+import { getFloorLabel } from '../utils/apartmentFormatters'
 
 const route = useRoute()
 
@@ -126,11 +127,7 @@ const exposureLabels = {
             <div>
               <span>Piętro</span>
               <strong>
-                {{
-                  apartment.floor === 0
-                    ? 'Parter'
-                    : `${apartment.floor}. piętro`
-                }}
+                {{ getFloorLabel(apartment.floor) }}
               </strong>
             </div>
 
