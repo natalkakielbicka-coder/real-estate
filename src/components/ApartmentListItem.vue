@@ -15,59 +15,98 @@ defineProps({
 </script>
 
 <template>
-  <article class="apartment-list-item">
-    <div class="apartment-list-item__number">
-      <span>Budynek {{ apartment.building }}</span>
-      <strong>{{ apartment.number }}</strong>
-      <small>{{ getFloorLabel(apartment.floor) }}</small>
+  <article
+    class="grid min-h-[190px] grid-cols-1 bg-panel shadow-[0_12px_35px_rgba(23,63,53,0.07)] transition-shadow duration-[250ms] hover:shadow-[0_18px_45px_rgba(23,63,53,0.12)] xs:grid-cols-[110px_minmax(0,1fr)] sm:grid-cols-[140px_minmax(0,1fr)] md:grid-cols-[170px_minmax(0,1fr)_210px]"
+  >
+    <div
+      class="apartment-list-item__number flex min-h-[150px] flex-col items-center justify-center p-6 xs:min-h-0"
+    >
+      <span class="text-[9px] font-bold text-muted uppercase">
+        Budynek {{ apartment.building }}
+      </span>
+
+      <strong class="my-[5px] font-display text-[45px] font-normal text-brand">
+        {{ apartment.number }}
+      </strong>
+
+      <small class="text-[9px] font-bold text-muted uppercase">
+        {{ getFloorLabel(apartment.floor) }}
+      </small>
     </div>
 
-    <div class="apartment-list-item__content">
-      <div class="apartment-list-item__heading">
+    <div class="p-[22px] sm:p-7">
+      <div
+        class="flex flex-col-reverse items-start justify-between gap-2.5 sm:flex-row sm:gap-5"
+      >
         <div>
-          <p>{{ apartment.investment }}</p>
-          <h2>Mieszkanie {{ apartment.number }}</h2>
+          <p class="mb-[5px] text-[10px] font-bold text-gold uppercase">
+            {{ apartment.investment }}
+          </p>
+
+          <h2 class="mb-0 text-[28px]">Mieszkanie {{ apartment.number }}</h2>
         </div>
 
         <span
-          class="apartment-list-item__status"
-          :class="`apartment-list-item__status--${apartment.status}`"
+          class="shrink-0 px-2.5 py-[7px] text-[8px] font-bold text-white uppercase"
+          :class="{
+            'bg-[#3d806d]': apartment.status === 'available',
+            'bg-[#c28b3f]': apartment.status === 'reserved',
+            'bg-[#929896]': apartment.status === 'sold'
+          }"
         >
           {{ apartmentStatusLabels[apartment.status] }}
         </span>
       </div>
 
-      <p class="apartment-list-item__location">
+      <p class="mt-2 mb-[22px] text-[11px] text-muted">
         {{ apartment.city }}, {{ apartment.district }}
       </p>
 
-      <div class="apartment-list-item__parameters">
-        <span
-          ><strong>{{ apartment.rooms }}</strong> pokoje</span
-        >
-        <span
-          ><strong>{{ apartment.area }} m²</strong> powierzchni</span
-        >
-        <span
-          ><strong>{{ getFloorLabel(apartment.floor) }}</strong>
-          kondygnacja</span
-        >
+      <div class="flex flex-wrap gap-x-[25px] gap-y-2.5 text-[10px] text-muted">
+        <span>
+          <strong class="mr-[3px] text-xs text-brand">
+            {{ apartment.rooms }}
+          </strong>
+          pokoje
+        </span>
+
+        <span>
+          <strong class="mr-[3px] text-xs text-brand">
+            {{ apartment.area }} m²
+          </strong>
+          powierzchni
+        </span>
+
+        <span>
+          <strong class="mr-[3px] text-xs text-brand">
+            {{ getFloorLabel(apartment.floor) }}
+          </strong>
+          kondygnacja
+        </span>
       </div>
     </div>
 
-    <div class="apartment-list-item__footer">
+    <div
+      class="flex flex-col items-stretch justify-between gap-5 border-t border-line p-[22px] text-left xs:col-span-full xs:flex-row xs:items-center xs:p-7 md:col-auto md:flex-col md:items-end md:border-t-0 md:border-l md:text-right"
+    >
       <div>
-        <span>Cena mieszkania</span>
-        <strong>{{ formatPrice(apartment.price) }} zł</strong>
-        <small
-          >{{
-            formatPricePerMeter(apartment.price, apartment.area)
-          }}
-          zł/m²</small
+        <span class="block text-[9px] text-muted">Cena mieszkania</span>
+
+        <strong
+          class="my-1 block font-display text-[23px] font-normal text-brand"
         >
+          {{ formatPrice(apartment.price) }} zł
+        </strong>
+
+        <small class="block text-[9px] text-muted">
+          {{ formatPricePerMeter(apartment.price, apartment.area) }} zł/m²
+        </small>
       </div>
 
-      <RouterLink :to="`/mieszkania/${apartment.slug}`">
+      <RouterLink
+        class="inline-flex min-h-[43px] items-center justify-center gap-3 bg-brand px-4 text-[10px] font-bold text-white transition-colors hover:bg-brand-light xs:justify-start"
+        :to="`/mieszkania/${apartment.slug}`"
+      >
         Zobacz lokal
         <span aria-hidden="true">→</span>
       </RouterLink>
@@ -76,205 +115,10 @@ defineProps({
 </template>
 
 <style scoped>
-.apartment-list-item {
-  display: grid;
-  grid-template-columns: 170px minmax(0, 1fr) 210px;
-  min-height: 190px;
-  background-color: var(--color-surface);
-  box-shadow: 0 12px 35px rgba(23, 63, 53, 0.07);
-  transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
-}
-
-.apartment-list-item:hover {
-  box-shadow: 0 18px 45px rgba(23, 63, 53, 0.12);
-  transform: translateY(-3px);
-}
-
 .apartment-list-item__number {
-  display: flex;
-  align-items: center;
-  padding: 24px;
-  flex-direction: column;
-  justify-content: center;
   background:
     linear-gradient(rgba(23, 63, 53, 0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(23, 63, 53, 0.05) 1px, transparent 1px), #f2eee5;
   background-size: 22px 22px;
-}
-
-.apartment-list-item__number span,
-.apartment-list-item__number small {
-  color: var(--color-text-muted);
-  font-size: 9px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.apartment-list-item__number strong {
-  margin-block: 5px;
-  color: var(--color-primary);
-  font-family: var(--font-heading);
-  font-size: 45px;
-  font-weight: 400;
-}
-
-.apartment-list-item__content {
-  padding: 28px;
-}
-
-.apartment-list-item__heading {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-.apartment-list-item__heading p {
-  margin-bottom: 5px;
-  color: var(--color-accent);
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.apartment-list-item h2 {
-  margin-bottom: 0;
-  font-size: 28px;
-}
-
-.apartment-list-item__status {
-  flex-shrink: 0;
-  padding: 7px 10px;
-  color: #ffffff;
-  font-size: 8px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.apartment-list-item__status--available {
-  background-color: #3d806d;
-}
-
-.apartment-list-item__status--reserved {
-  background-color: #c28b3f;
-}
-
-.apartment-list-item__status--sold {
-  background-color: #929896;
-}
-
-.apartment-list-item__location {
-  margin-block: 8px 22px;
-  color: var(--color-text-muted);
-  font-size: 11px;
-}
-
-.apartment-list-item__parameters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 25px;
-  color: var(--color-text-muted);
-  font-size: 10px;
-}
-
-.apartment-list-item__parameters strong {
-  margin-right: 3px;
-  color: var(--color-primary);
-  font-size: 12px;
-}
-
-.apartment-list-item__footer {
-  display: flex;
-  align-items: flex-end;
-  padding: 28px;
-  flex-direction: column;
-  justify-content: space-between;
-  border-left: 1px solid var(--color-border);
-  text-align: right;
-}
-
-.apartment-list-item__footer div > span,
-.apartment-list-item__footer small {
-  display: block;
-  color: var(--color-text-muted);
-  font-size: 9px;
-}
-
-.apartment-list-item__footer strong {
-  display: block;
-  margin-block: 4px;
-  color: var(--color-primary);
-  font-family: var(--font-heading);
-  font-size: 23px;
-  font-weight: 400;
-}
-
-.apartment-list-item__footer a {
-  display: inline-flex;
-  align-items: center;
-  min-height: 43px;
-  padding-inline: 16px;
-  gap: 12px;
-  color: #ffffff;
-  background-color: var(--color-primary);
-  font-size: 10px;
-  font-weight: 700;
-}
-
-.apartment-list-item__footer a:hover {
-  background-color: var(--color-primary-light);
-}
-
-@media (max-width: 991px) {
-  .apartment-list-item {
-    grid-template-columns: 140px minmax(0, 1fr);
-  }
-
-  .apartment-list-item__footer {
-    grid-column: 1 / -1;
-    align-items: center;
-    flex-direction: row;
-    border-top: 1px solid var(--color-border);
-    border-left: 0;
-    text-align: left;
-  }
-}
-
-@media (max-width: 767px) {
-  .apartment-list-item {
-    grid-template-columns: 110px minmax(0, 1fr);
-  }
-
-  .apartment-list-item__content,
-  .apartment-list-item__footer {
-    padding: 22px;
-  }
-
-  .apartment-list-item__heading {
-    flex-direction: column-reverse;
-    gap: 10px;
-  }
-}
-
-@media (max-width: 479px) {
-  .apartment-list-item {
-    grid-template-columns: 1fr;
-  }
-
-  .apartment-list-item__number {
-    min-height: 150px;
-  }
-
-  .apartment-list-item__footer {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .apartment-list-item__footer a {
-    justify-content: center;
-  }
 }
 </style>
