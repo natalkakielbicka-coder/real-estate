@@ -143,7 +143,17 @@ const renderMarkers = () => {
   }
 
   markersLayer.clearLayers()
-  investments.forEach(addInvestmentMarker)
+
+  investments.forEach((investment) => {
+    const apartmentsCount = getApartmentsCountByInvestment(
+      props.apartments,
+      investment.id
+    )
+
+    if (apartmentsCount > 0) {
+      addInvestmentMarker(investment)
+    }
+  })
 }
 
 onMounted(() => {
