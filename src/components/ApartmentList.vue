@@ -10,7 +10,7 @@ defineProps({
 </script>
 
 <template>
-  <div class="apartment-list">
+  <div class="grid gap-[18px]">
     <ApartmentListItem
       v-for="apartment in apartments"
       :key="apartment.id"
@@ -18,10 +18,3 @@ defineProps({
     />
   </div>
 </template>
-
-<style scoped>
-.apartment-list {
-  display: grid;
-  gap: 18px;
-}
-</style>

@@ -6,22 +6,36 @@ import { getApartmentsCountByInvestment } from '../utils/investmentHelpers'
 </script>
 
 <template>
-  <main class="investments-page">
-    <section class="investments-page__header">
+  <main class="investments-page pt-[88px]">
+    <section
+      class="investments-page__header text-white bg-brand py-[clamp(70px,9vw,130px)]"
+    >
       <div class="container">
-        <p class="investments-page__eyebrow">Nasze realizacje</p>
+        <p
+          class="investments-page__eyebrow mb-5 text-[11px] font-bold tracking-[0.16em] text-gold uppercase"
+        >
+          Nasze realizacje
+        </p>
 
-        <h1>Inwestycje stworzone do życia</h1>
+        <h1
+          class="mb-[30px] max-w-[850px] text-[clamp(48px,6vw,76px)] text-white"
+        >
+          Inwestycje stworzone do życia
+        </h1>
 
-        <p class="investments-page__description">
+        <p
+          class="investments-page__description mb-0 max-w-[600px] text-[17px] text-[rgba(255,255,255,0.68)]"
+        >
           Poznaj nasze aktualne inwestycje i wybierz lokalizację dopasowaną do
           swojego stylu życia.
         </p>
       </div>
     </section>
 
-    <section class="investments-page__content">
-      <div class="investments-grid container">
+    <section class="investments-page__content py-[clamp(60px,8vw,110px)]">
+      <div
+        class="container grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+      >
         <InvestmentCard
           v-for="investment in investments"
           :key="investment.id"
@@ -34,60 +48,3 @@ import { getApartmentsCountByInvestment } from '../utils/investmentHelpers'
     </section>
   </main>
 </template>
-
-<style scoped>
-.investments-page {
-  padding-top: 88px;
-}
-
-.investments-page__header {
-  padding-block: clamp(70px, 9vw, 130px);
-  color: #ffffff;
-  background-color: var(--color-primary);
-}
-
-.investments-page__eyebrow {
-  margin-bottom: 20px;
-  color: var(--color-accent);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-.investments-page__header h1 {
-  max-width: 850px;
-  margin-bottom: 30px;
-  color: #ffffff;
-  font-size: clamp(48px, 6vw, 76px);
-}
-
-.investments-page__description {
-  max-width: 600px;
-  margin-bottom: 0;
-  color: rgba(255, 255, 255, 0.68);
-  font-size: 17px;
-}
-
-.investments-page__content {
-  padding-block: clamp(60px, 8vw, 110px);
-}
-
-.investments-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
-}
-
-@media (max-width: 991px) {
-  .investments-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 767px) {
-  .investments-grid {
-    grid-template-columns: 1fr;
-  }
-}
-</style>
