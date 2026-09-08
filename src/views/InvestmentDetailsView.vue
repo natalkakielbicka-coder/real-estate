@@ -9,6 +9,7 @@ import ApartmentGrid from '../components/ApartmentGrid.vue'
 import BuildingFloorSelector from '../components/BuildingFloorSelector.vue'
 import FloorPlanSelector from '../components/FloorPlanSelector.vue'
 import { getInvestmentStatusCounts } from '../utils/investmentHelpers'
+import { getOffersLabel } from '../utils/apartmentFormatters'
 
 const route = useRoute()
 
@@ -108,51 +109,90 @@ const clearFloorSelection = () => {
 </script>
 
 <template>
-  <main class="investment-details">
+  <main class="pt-[88px]">
     <section
       v-if="investment"
-      class="investment-details__hero"
+      class="relative min-h-[620px] overflow-hidden bg-brand py-[clamp(70px,10vw,140px)] text-white max-sm:min-h-[560px]"
     >
       <img
-        class="investment-details__hero-image"
+        class="absolute top-0 right-0 h-full w-full object-cover md:w-[55%]"
         :src="investment.image"
         :alt="`Wizualizacja inwestycji ${investment.name}`"
       />
 
       <div class="investment-details__hero-overlay"></div>
 
-      <div class="investment-details__hero-content container">
+      <div class="container relative z-[2]">
         <RouterLink
-          class="investment-details__back"
+          class="mb-[70px] inline-block text-xs text-white/65 transition-colors hover:text-gold"
           to="/inwestycje"
         >
           ← Wszystkie inwestycje
         </RouterLink>
 
-        <p class="investment-details__location">
+        <p
+          class="mb-4 text-[11px] font-bold tracking-[0.14em] text-gold uppercase"
+        >
           {{ investment.city }} · {{ investment.district }}
         </p>
 
-        <h1>{{ investment.name }}</h1>
+        <h1 class="mb-5 max-w-[850px] text-[clamp(52px,8vw,96px)] text-white">
+          {{ investment.name }}
+        </h1>
 
-        <p class="investment-details__address">
+        <p class="mb-0 text-[17px] text-white/65">
           {{ investment.address }}
         </p>
 
-        <div class="investment-details__stats">
-          <div class="investment-details__stat">
-            <strong>{{ statusCounts.available }}</strong>
-            <span>Dostępne</span>
+        <div
+          class="mt-[60px] flex flex-wrap gap-[18px] max-xs:mt-10 max-xs:grid max-xs:grid-cols-3 max-xs:gap-[7px]"
+        >
+          <div
+            class="flex min-w-[145px] items-center gap-3 border border-white/16 px-[22px] py-[18px] max-xs:min-w-0 max-xs:flex-col max-xs:items-start max-xs:px-2.5 max-xs:py-3.5"
+          >
+            <strong
+              class="font-display text-[34px] leading-none font-normal text-gold max-xs:text-[28px]"
+            >
+              {{ statusCounts.available }}
+            </strong>
+
+            <span
+              class="text-[9px] font-bold tracking-[0.08em] text-white/68 uppercase max-xs:text-[7px]"
+            >
+              Dostępne
+            </span>
           </div>
 
-          <div class="investment-details__stat">
-            <strong>{{ statusCounts.reserved }}</strong>
-            <span>Rezerwacja</span>
+          <div
+            class="flex min-w-[145px] items-center gap-3 border border-white/16 px-[22px] py-[18px] max-xs:min-w-0 max-xs:flex-col max-xs:items-start max-xs:px-2.5 max-xs:py-3.5"
+          >
+            <strong
+              class="font-display text-[34px] leading-none font-normal text-gold max-xs:text-[28px]"
+            >
+              {{ statusCounts.reserved }}
+            </strong>
+
+            <span
+              class="text-[9px] font-bold tracking-[0.08em] text-white/68 uppercase max-xs:text-[7px]"
+            >
+              Rezerwacja
+            </span>
           </div>
 
-          <div class="investment-details__stat">
-            <strong>{{ statusCounts.sold }}</strong>
-            <span>Sprzedane</span>
+          <div
+            class="flex min-w-[145px] items-center gap-3 border border-white/16 px-[22px] py-[18px] max-xs:min-w-0 max-xs:flex-col max-xs:items-start max-xs:px-2.5 max-xs:py-3.5"
+          >
+            <strong
+              class="font-display text-[34px] leading-none font-normal text-gold max-xs:text-[28px]"
+            >
+              {{ statusCounts.sold }}
+            </strong>
+
+            <span
+              class="text-[9px] font-bold tracking-[0.08em] text-white/68 uppercase max-xs:text-[7px]"
+            >
+              Sprzedane
+            </span>
           </div>
         </div>
       </div>
@@ -160,39 +200,54 @@ const clearFloorSelection = () => {
 
     <section
       v-else
-      class="investment-details__not-found container"
+      class="container py-[120px] text-center"
     >
-      <h1>Nie znaleziono inwestycji</h1>
+      <h1 class="mb-8">Nie znaleziono inwestycji</h1>
 
-      <RouterLink to="/inwestycje"> Wróć do inwestycji </RouterLink>
+      <RouterLink
+        class="inline-flex bg-brand px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-brand-light"
+        to="/inwestycje"
+      >
+        Wróć do inwestycji
+      </RouterLink>
     </section>
 
     <section
       v-if="investment"
-      class="investment-details__about"
+      class="bg-panel py-[clamp(70px,9vw,120px)]"
     >
-      <div class="investment-details__about-layout container">
-        <div class="investment-details__about-content">
-          <p class="investment-details__eyebrow">O inwestycji</p>
+      <div
+        class="container grid grid-cols-1 items-start gap-[clamp(50px,8vw,110px)] md:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]"
+      >
+        <div>
+          <p
+            class="mb-4 text-[10px] font-bold tracking-[0.13em] text-gold uppercase"
+          >
+            O inwestycji
+          </p>
 
-          <h2>Przestrzeń zaprojektowana do życia</h2>
+          <h2 class="mb-[26px] text-[clamp(38px,5vw,58px)]">
+            Przestrzeń zaprojektowana do życia
+          </h2>
 
-          <p class="investment-details__description">
+          <p class="mb-0 max-w-[560px] text-base leading-[1.8] text-muted">
             {{ investment.description }}
           </p>
         </div>
 
-        <div class="investment-details__features">
+        <div class="grid grid-cols-1 xs:grid-cols-2">
           <div
             v-for="(feature, index) in investment.features"
             :key="feature"
-            class="investment-details__feature"
+            class="min-h-[125px] border-t border-[rgba(23,63,53,0.14)] p-6 odd:border-r odd:border-[rgba(23,63,53,0.14)] max-xs:min-h-0 max-xs:odd:border-r-0"
           >
-            <span>
+            <span class="mb-5 block font-display text-lg text-gold">
               {{ String(index + 1).padStart(2, '0') }}
             </span>
 
-            <strong>{{ feature }}</strong>
+            <strong class="text-sm font-semibold text-brand">
+              {{ feature }}
+            </strong>
           </div>
         </div>
       </div>
@@ -200,7 +255,7 @@ const clearFloorSelection = () => {
 
     <section
       v-if="buildingPlan"
-      class="investment-details__building"
+      class="bg-[#f3f1eb] py-[clamp(60px,8vw,110px)]"
     >
       <div class="container">
         <BuildingFloorSelector
@@ -215,78 +270,143 @@ const clearFloorSelection = () => {
     <section
       v-if="investment"
       ref="apartmentsSection"
-      class="investment-details__apartments"
+      class="scroll-mt-[88px] py-[clamp(60px,8vw,110px)]"
     >
       <div class="container">
         <FloorPlanSelector
           v-if="selectedFloorPlan"
-          class="investment-details__floor-plan"
+          class="mb-[clamp(50px,7vw,90px)]"
           :floor-plan="selectedFloorPlan"
           :visible-apartments="displayedApartments"
           @reset-filters="resetApartmentFilters"
         />
 
-        <div class="investment-details__apartments-header">
+        <div
+          class="mb-10 flex items-end justify-between gap-[30px] max-sm:flex-col max-sm:items-start"
+        >
           <div>
-            <p>Dostępne lokale</p>
-            <h2>Mieszkania w tej inwestycji</h2>
+            <p
+              class="mb-2.5 text-[10px] font-bold tracking-[0.12em] text-gold uppercase"
+            >
+              Dostępne lokale
+            </p>
+
+            <h2 class="mb-0 text-[clamp(34px,5vw,52px)]">
+              Mieszkania w tej inwestycji
+            </h2>
           </div>
 
-          <div class="investment-details__results-summary">
-            <span v-if="selectedFloorLabel">
+          <div
+            class="flex items-center gap-3 max-sm:flex-wrap max-xs:items-start"
+          >
+            <span
+              v-if="selectedFloorLabel"
+              class="bg-brand px-[11px] py-2 text-[9px] font-bold tracking-[0.07em] text-white uppercase"
+            >
               {{ selectedFloorLabel }}
             </span>
 
             <button
               v-if="selectedFloorLabel"
+              class="border border-[rgba(23,63,53,0.18)] bg-transparent px-[11px] py-2 text-[9px] font-bold tracking-[0.07em] text-brand uppercase transition-colors hover:bg-brand hover:text-white"
               type="button"
               @click="clearFloorSelection"
             >
               Wyczyść wybór
             </button>
 
-            <strong>
+            <strong
+              class="text-[11px] font-bold tracking-[0.08em] text-muted uppercase"
+            >
               {{ displayedApartments.length }}
-              ofert
+              {{ getOffersLabel(displayedApartments.length) }}
             </strong>
           </div>
         </div>
 
-        <div class="investment-details__filters">
+        <div class="mb-8 flex flex-wrap gap-2">
           <button
+            class="flex items-center gap-[9px] border border-[rgba(23,63,53,0.16)] px-[15px] py-[11px] text-[10px] font-bold tracking-[0.05em] uppercase transition-colors"
+            :class="
+              selectedStatus === 'all'
+                ? 'bg-brand text-white'
+                : 'bg-transparent text-brand hover:bg-brand hover:text-white'
+            "
             type="button"
-            :class="{ active: selectedStatus === 'all' }"
             @click="selectedStatus = 'all'"
           >
             Wszystkie
-            <span>{{ investmentApartments.length }}</span>
+
+            <span
+              class="grid h-5 min-w-5 place-items-center rounded-full text-[9px]"
+              :class="selectedStatus === 'all' ? 'bg-white/16' : 'bg-brand/10'"
+            >
+              {{ investmentApartments.length }}
+            </span>
           </button>
 
           <button
+            class="flex items-center gap-[9px] border border-[rgba(23,63,53,0.16)] px-[15px] py-[11px] text-[10px] font-bold tracking-[0.05em] uppercase transition-colors"
+            :class="
+              selectedStatus === 'available'
+                ? 'bg-brand text-white'
+                : 'bg-transparent text-brand hover:bg-brand hover:text-white'
+            "
             type="button"
-            :class="{ active: selectedStatus === 'available' }"
             @click="selectedStatus = 'available'"
           >
             Dostępne
-            <span>{{ statusCounts.available }}</span>
+
+            <span
+              class="grid h-5 min-w-5 place-items-center rounded-full text-[9px]"
+              :class="
+                selectedStatus === 'available' ? 'bg-white/16' : 'bg-brand/10'
+              "
+            >
+              {{ statusCounts.available }}
+            </span>
           </button>
 
           <button
+            class="flex items-center Turnstile gap-[9px] border border-[rgba(23,63,53,0.16)] px-[15px] py-[11px] text-[10px] font-bold tracking-[0.05em] uppercase transition-colors"
+            :class="
+              selectedStatus === 'reserved'
+                ? 'bg-brand text-white'
+                : 'bg-transparent text-brand hover:bg-brand hover:text-white'
+            "
             type="button"
-            :class="{ active: selectedStatus === 'reserved' }"
             @click="selectedStatus = 'reserved'"
           >
             Rezerwacja
-            <span>{{ statusCounts.reserved }}</span>
+
+            <span
+              class="grid h-5 min-w-5 place-items-center rounded-full text-[9px]"
+              :class="
+                selectedStatus === 'reserved' ? 'bg-white/16' : 'bg-brand/10'
+              "
+            >
+              {{ statusCounts.reserved }}
+            </span>
           </button>
 
           <button
+            class="flex items-center gap-[9px] border border-[rgba(23,63,53,0.16)] px-[15px] py-[11px] text-[10px] font-bold tracking-[0.05em] uppercase transition-colors"
+            :class="
+              selectedStatus === 'sold'
+                ? 'bg-brand text-white'
+                : 'bg-transparent text-brand hover:bg-brand hover:text-white'
+            "
             type="button"
-            :class="{ active: selectedStatus === 'sold' }"
             @click="selectedStatus = 'sold'"
           >
             Sprzedane
-            <span>{{ statusCounts.sold }}</span>
+
+            <span
+              class="grid h-5 min-w-5 place-items-center rounded-full text-[9px]"
+              :class="selectedStatus === 'sold' ? 'bg-white/16' : 'bg-brand/10'"
+            >
+              {{ statusCounts.sold }}
+            </span>
           </button>
         </div>
 
@@ -297,7 +417,7 @@ const clearFloorSelection = () => {
 
         <p
           v-else
-          class="investment-details__empty"
+          class="bg-panel px-[25px] py-[50px] text-center text-muted"
         >
           Brak mieszkań z wybranym statusem.
         </p>
@@ -307,28 +427,6 @@ const clearFloorSelection = () => {
 </template>
 
 <style scoped>
-.investment-details {
-  padding-top: 88px;
-}
-
-.investment-details__hero {
-  position: relative;
-  min-height: 620px;
-  overflow: hidden;
-  padding-block: clamp(70px, 10vw, 140px);
-  color: #ffffff;
-  background-color: var(--color-primary);
-}
-
-.investment-details__hero-image {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 55%;
-  height: 100%;
-  object-fit: cover;
-}
-
 .investment-details__hero-overlay {
   position: absolute;
   z-index: 1;
@@ -342,273 +440,7 @@ const clearFloorSelection = () => {
   );
 }
 
-.investment-details__hero-content {
-  position: relative;
-  z-index: 2;
-}
-
-.investment-details__back {
-  display: inline-block;
-  margin-bottom: 70px;
-  color: rgba(255, 255, 255, 0.65);
-  font-size: 12px;
-}
-
-.investment-details__back:hover {
-  color: var(--color-accent);
-}
-
-.investment-details__location {
-  margin-bottom: 16px;
-  color: var(--color-accent);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.investment-details h1 {
-  max-width: 850px;
-  margin-bottom: 20px;
-  color: #ffffff;
-  font-size: clamp(52px, 8vw, 96px);
-}
-
-.investment-details__address {
-  margin-bottom: 0;
-  color: rgba(255, 255, 255, 0.65);
-  font-size: 17px;
-}
-
-.investment-details__not-found {
-  padding-block: 120px;
-}
-
-.investment-details__apartments {
-  padding-block: clamp(60px, 8vw, 110px);
-  scroll-margin-top: 88px;
-}
-
-.investment-details__apartments-header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-bottom: 40px;
-  gap: 30px;
-}
-
-.investment-details__apartments-header p {
-  margin-bottom: 10px;
-  color: var(--color-accent);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.investment-details__apartments-header h2 {
-  margin-bottom: 0;
-  font-size: clamp(34px, 5vw, 52px);
-}
-
-.investment-details__results-summary {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.investment-details__results-summary span {
-  padding: 8px 11px;
-  color: #ffffff;
-  background-color: var(--color-primary);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-}
-
-.investment-details__results-summary strong {
-  color: var(--color-text-muted);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.investment-details__results-summary button {
-  padding: 8px 11px;
-  border: 1px solid rgba(23, 63, 53, 0.18);
-  color: var(--color-primary);
-  background-color: transparent;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-
-.investment-details__results-summary button:hover {
-  color: #ffffff;
-  background-color: var(--color-primary);
-}
-
-.investment-details__stats {
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: 60px;
-  gap: 18px;
-}
-
-.investment-details__stat {
-  display: flex;
-  min-width: 145px;
-  align-items: center;
-  padding: 18px 22px;
-  gap: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-}
-
-.investment-details__stat strong {
-  color: var(--color-accent);
-  font-family: var(--font-heading);
-  font-size: 34px;
-  font-weight: 400;
-  line-height: 1;
-}
-
-.investment-details__stat span {
-  color: rgba(255, 255, 255, 0.68);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.investment-details__filters {
-  display: flex;
-  flex-wrap: wrap;
-  margin-bottom: 32px;
-  gap: 8px;
-}
-
-.investment-details__filters button {
-  display: flex;
-  align-items: center;
-  padding: 11px 15px;
-  gap: 9px;
-  border: 1px solid rgba(23, 63, 53, 0.16);
-  color: var(--color-primary);
-  background-color: transparent;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-
-.investment-details__filters button:hover,
-.investment-details__filters button.active {
-  color: #ffffff;
-  background-color: var(--color-primary);
-}
-
-.investment-details__filters span {
-  display: grid;
-  min-width: 20px;
-  height: 20px;
-  place-items: center;
-  border-radius: 50%;
-  background-color: rgba(23, 63, 53, 0.1);
-  font-size: 9px;
-}
-
-.investment-details__filters button.active span {
-  background-color: rgba(255, 255, 255, 0.16);
-}
-
-.investment-details__empty {
-  padding: 50px 25px;
-  text-align: center;
-  background-color: var(--color-surface);
-}
-
-.investment-details__about {
-  padding-block: clamp(70px, 9vw, 120px);
-  background-color: var(--color-surface);
-}
-
-.investment-details__about-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-  align-items: start;
-  gap: clamp(50px, 8vw, 110px);
-}
-
-.investment-details__eyebrow {
-  margin-bottom: 16px;
-  color: var(--color-accent);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-}
-
-.investment-details__about h2 {
-  margin-bottom: 26px;
-  font-size: clamp(38px, 5vw, 58px);
-}
-
-.investment-details__description {
-  max-width: 560px;
-  margin-bottom: 0;
-  color: var(--color-text-muted);
-  font-size: 16px;
-  line-height: 1.8;
-}
-
-.investment-details__features {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.investment-details__feature {
-  min-height: 125px;
-  padding: 24px;
-  border-top: 1px solid rgba(23, 63, 53, 0.14);
-}
-
-.investment-details__feature:nth-child(odd) {
-  border-right: 1px solid rgba(23, 63, 53, 0.14);
-}
-
-.investment-details__feature span {
-  display: block;
-  margin-bottom: 20px;
-  color: var(--color-accent);
-  font-family: var(--font-heading);
-  font-size: 18px;
-}
-
-.investment-details__feature strong {
-  color: var(--color-primary);
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.investment-details__building {
-  padding-block: clamp(60px, 8vw, 110px);
-  background-color: #f3f1eb;
-}
-
-.investment-details__floor-plan {
-  margin-bottom: clamp(50px, 7vw, 90px);
-}
-
 @media (max-width: 991px) {
-  .investment-details__hero-image {
-    width: 100%;
-  }
-
   .investment-details__hero-overlay {
     background: linear-gradient(
       90deg,
@@ -617,75 +449,11 @@ const clearFloorSelection = () => {
       rgba(23, 63, 53, 0.5) 100%
     );
   }
-
-  .investment-details__about-layout {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 767px) {
-  .investment-details__apartments-header {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .investment-details__hero {
-    min-height: 560px;
-  }
-
   .investment-details__hero-overlay {
     background: rgba(23, 63, 53, 0.78);
-  }
-
-  .investment-details__results-summary {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-}
-
-@media (max-width: 479px) {
-  .investment-details__stats {
-    display: grid;
-    margin-top: 40px;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 7px;
-  }
-
-  .investment-details__stat {
-    min-width: 0;
-    align-items: flex-start;
-    flex-direction: column;
-    padding: 14px 10px;
-  }
-
-  .investment-details__stat strong {
-    font-size: 28px;
-  }
-
-  .investment-details__stat span {
-    font-size: 7px;
-  }
-
-  .investment-details__filters {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .investment-details__filters button {
-    justify-content: space-between;
-  }
-
-  .investment-details__features {
-    grid-template-columns: 1fr;
-  }
-
-  .investment-details__feature:nth-child(odd) {
-    border-right: 0;
-  }
-
-  .investment-details__feature {
-    min-height: auto;
-    padding-inline: 0;
   }
 }
 </style>

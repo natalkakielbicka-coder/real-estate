@@ -29,3 +29,19 @@ export const getApartmentsLabel = (count) => {
 
   return usesMieszkania ? 'mieszkania' : 'mieszkań'
 }
+
+export const getOffersLabel = (count) => {
+  if (count === 1) {
+    return 'oferta'
+  }
+
+  const lastDigit = count % 10
+  const lastTwoDigits = count % 100
+
+  const usesOferty =
+    lastDigit >= 2 &&
+    lastDigit <= 4 &&
+    (lastTwoDigits < 12 || lastTwoDigits > 14)
+
+  return usesOferty ? 'oferty' : 'ofert'
+}
