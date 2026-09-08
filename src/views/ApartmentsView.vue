@@ -686,6 +686,7 @@ const sortedApartments = computed(() => {
             />
             <InvestmentsMap
               v-else
+              :apartments="sortedApartments"
               @show-investment="showInvestmentApartments"
             />
           </template>

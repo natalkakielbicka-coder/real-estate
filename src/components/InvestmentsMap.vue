@@ -1,20 +1,28 @@
 <script setup>
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { investments } from '../data/investments'
-import { apartments } from '../data/apartments'
 import {
   getApartmentsCountByInvestment,
   getInvestmentStatusCounts
 } from '../utils/investmentHelpers'
 import { getApartmentsLabel } from '../utils/apartmentFormatters'
 
+const props = defineProps({
+  apartments: {
+    type: Array,
+    required: true
+  }
+})
+
 const emit = defineEmits(['show-investment'])
 
 const mapContainer = ref(null)
 
 let mapInstance = null
+let markersLayer = null
+
 const initialMapCenter = [52.0, 19.1]
 const initialMapZoom = 6
 
@@ -69,10 +77,18 @@ const createPopupContent = (investment, apartmentsCount, statusCounts) => {
 
 const addInvestmentMarker = (investment) => {
   const apartmentsCount = getApartmentsCountByInvestment(
-    apartments,
+    props.apartments,
     investment.id
   )
-  const statusCounts = getInvestmentStatusCounts(apartments, investment.id)
+
+  if (apartmentsCount === 0) {
+    return
+  }
+
+  const statusCounts = getInvestmentStatusCounts(
+    props.apartments,
+    investment.id
+  )
 
   const markerIcon = createMarkerIcon(apartmentsCount)
 
@@ -85,7 +101,7 @@ const addInvestmentMarker = (investment) => {
   const marker = L.marker(investment.coordinates, {
     icon: markerIcon
   })
-    .addTo(mapInstance)
+    .addTo(markersLayer)
     .bindPopup(popupContent, {
       autoPan: true,
       keepInView: true,
@@ -121,6 +137,15 @@ const addInvestmentMarker = (investment) => {
   })
 }
 
+const renderMarkers = () => {
+  if (!markersLayer) {
+    return
+  }
+
+  markersLayer.clearLayers()
+  investments.forEach(addInvestmentMarker)
+}
+
 onMounted(() => {
   mapInstance = L.map(mapContainer.value).setView(
     initialMapCenter,
@@ -133,7 +158,8 @@ onMounted(() => {
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(mapInstance)
 
-  investments.forEach(addInvestmentMarker)
+  markersLayer = L.layerGroup().addTo(mapInstance)
+  renderMarkers()
 
   //   const investmentCoordinates = investments.map((investment) => {
   //     return investment.coordinates
@@ -145,10 +171,18 @@ onMounted(() => {
   //   })
 })
 
+watch(
+  () => props.apartments,
+  () => {
+    renderMarkers()
+  }
+)
+
 onBeforeUnmount(() => {
   if (mapInstance) {
     mapInstance.remove()
     mapInstance = null
+    markersLayer = null
   }
 })
 </script>
