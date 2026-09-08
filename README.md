@@ -1,5 +1,30 @@
-# Vue 3 + Vite
+# Residence – Real Estate
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Frontendowa aplikacja dla dewelopera nieruchomości zbudowana w Vue 3.
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+## Funkcje
+
+- lista mieszkań z filtrowaniem i sortowaniem,
+- widoki grid, lista i tabela,
+- interaktywny rzut piętra,
+- wybór piętra z wizualizacji budynku,
+- mapa inwestycji,
+- szczegóły mieszkań,
+- galeria zdjęć i lightbox,
+- wyszukiwarka mieszkań na stronie głównej,
+- lista inwestycji i polecanych ofert.
+
+## Technologie
+
+- Vue 3
+- Vue Router
+- Vite
+- Swiper
+- Vue Easy Lightbox
+- Leaflet
+
+## Instalacja
+
+```bash
+npm install
+```

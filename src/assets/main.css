@@ -9,8 +9,8 @@
   --color-text-muted: #68736f;
   --color-border: #dedfd9;
 
-  --font-heading: "DM Serif Display", Georgia, serif;
-  --font-body: "Manrope", Arial, sans-serif;
+  --font-heading: 'DM Serif Display', Georgia, serif;
+  --font-body: 'Manrope', Arial, sans-serif;
 
   --container-width: 1280px;
   --container-padding: clamp(20px, 4vw, 64px);
