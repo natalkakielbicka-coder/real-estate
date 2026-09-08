@@ -4,6 +4,7 @@ import ApartmentsView from '../views/ApartmentsView.vue'
 import ApartmentDetailsView from '../views/ApartmentDetailsView.vue'
 import InvestmentsView from '../views/InvestmentsView.vue'
 import InvestmentDetailsView from '../views/InvestmentDetailsView.vue'
+import NotFoundView from '../views/NotFoundView.vue'
 
 const routes = [
   {
@@ -30,6 +31,14 @@ const routes = [
     path: '/inwestycje/:id',
     name: 'investment-details',
     component: InvestmentDetailsView
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'not-found',
+    component: NotFoundView,
+    meta: {
+      title: 'Nie znaleziono strony'
+    }
   }
 ]
 
@@ -46,6 +55,12 @@ const router = createRouter({
       behavior: 'smooth'
     }
   }
+})
+
+router.afterEach((to) => {
+  const pageTitle = to.meta.title
+
+  document.title = pageTitle ? `${pageTitle} | Real Estate` : 'Real Estate'
 })
 
 export default router
