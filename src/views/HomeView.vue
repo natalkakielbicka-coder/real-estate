@@ -107,33 +107,59 @@ const purchaseSteps = [
 
 <template>
   <main>
-    <section class="hero">
-      <div class="hero__container container">
-        <div class="hero__content">
-          <p class="hero__eyebrow">Nowoczesne inwestycje</p>
+    <section
+      class="flex items-center overflow-hidden pt-[110px] pb-10 xs:pt-[125px] sm:pt-[130px] sm:pb-[50px] md:pt-[138px]"
+    >
+      <div
+        class="container grid grid-cols-1 items-center gap-[60px] md:grid-cols-[minmax(0,1fr)_minmax(380px,0.82fr)] md:gap-[clamp(50px,7vw,110px)]"
+      >
+        <div class="relative z-[2] sm:max-w-[760px] md:max-w-none">
+          <p
+            class="hero__eyebrow mb-[18px] flex items-center gap-3 text-[10px] font-bold tracking-[0.18em] text-gold uppercase xs:mb-6 xs:text-xs"
+          >
+            Nowoczesne inwestycje
+          </p>
 
-          <h1 class="hero__title">
+          <h1
+            class="hero__title mb-7 max-w-[750px] font-copy text-[clamp(39px,11vw,48px)] leading-[1.02] font-semibold tracking-[-0.045em] text-brand xs:mb-[30px] xs:text-[clamp(44px,9vw,62px)] xs:tracking-[-0.055em] sm:text-[clamp(48px,5.2vw,76px)]"
+          >
             Mieszkania stworzone
-            <span>do dobrego życia</span>
+
+            <span
+              class="relative mt-[7px] block w-fit font-display font-normal tracking-[-0.025em] text-gold xs:mt-2.5"
+            >
+              do dobrego życia
+            </span>
           </h1>
 
-          <p class="hero__description">
+          <p
+            class="mb-[34px] max-w-[600px] text-[clamp(16px,1.6vw,19px)] text-muted sm:mb-11"
+          >
             Odkryj starannie wybrane mieszkania w najlepszych lokalizacjach i
             znajdź przestrzeń dopasowaną do Twojego życia.
           </p>
 
           <form
-            class="search"
+            class="relative z-[3] grid w-full grid-cols-1 bg-panel p-2.5 shadow-[0_18px_50px_rgba(23,63,53,0.13)] xs:grid-cols-2 md:w-[min(780px,calc(100vw-40px))] md:grid-cols-[repeat(3,minmax(145px,1fr))_auto]"
             @submit.prevent="searchApartments"
           >
-            <div class="search__field">
-              <label for="location">Lokalizacja</label>
+            <div
+              class="border-b border-line px-[15px] py-[13px] xs:border-r xs:px-5 xs:py-[5px] md:border-b-0"
+            >
+              <label
+                class="mb-1 block text-[10px] font-bold tracking-[0.08em] text-muted uppercase"
+                for="location"
+              >
+                Lokalizacja
+              </label>
 
               <select
                 id="location"
                 v-model="selectedCity"
+                class="w-full border-0 bg-transparent py-[3px] pr-[22px] text-[13px] font-semibold text-[var(--color-text)] outline-0"
               >
                 <option value="">Wszystkie lokalizacje</option>
+
                 <option
                   v-for="city in cities"
                   :key="city"
@@ -144,14 +170,23 @@ const purchaseSteps = [
               </select>
             </div>
 
-            <div class="search__field">
-              <label for="rooms">Liczba pokoi</label>
+            <div
+              class="border-b border-line px-[15px] py-[13px] xs:px-5 xs:py-[5px] md:border-r md:border-b-0"
+            >
+              <label
+                class="mb-1 block text-[10px] font-bold tracking-[0.08em] text-muted uppercase"
+                for="rooms"
+              >
+                Liczba pokoi
+              </label>
 
               <select
                 id="rooms"
                 v-model="selectedRooms"
+                class="w-full border-0 bg-transparent py-[3px] pr-[22px] text-[13px] font-semibold text-[var(--color-text)] outline-0"
               >
                 <option value="">Dowolna</option>
+
                 <option
                   v-for="rooms in roomOptions"
                   :key="rooms"
@@ -166,12 +201,20 @@ const purchaseSteps = [
               </select>
             </div>
 
-            <div class="search__field">
-              <label for="price">Cena do</label>
+            <div
+              class="border-b border-line px-[15px] py-[13px] xs:col-span-2 xs:px-5 xs:py-[5px] md:col-span-1 md:border-r md:border-b-0"
+            >
+              <label
+                class="mb-1 block text-[10px] font-bold tracking-[0.08em] text-muted uppercase"
+                for="price"
+              >
+                Cena do
+              </label>
 
               <select
                 id="price"
                 v-model="selectedMaxPrice"
+                class="w-full border-0 bg-transparent py-[3px] pr-[22px] text-[13px] font-semibold text-[var(--color-text)] outline-0"
               >
                 <option value="">Bez limitu</option>
                 <option :value="500000">500 000 zł</option>
@@ -182,6 +225,7 @@ const purchaseSteps = [
             </div>
 
             <button
+              class="group mt-2 flex min-h-[58px] items-center justify-center gap-[13px] border-0 bg-brand px-[22px] text-[13px] font-bold text-white transition-colors duration-[250ms] enabled:hover:bg-brand-light disabled:cursor-not-allowed disabled:bg-sold disabled:text-white/65 xs:col-span-2 md:col-span-1 md:mt-0 md:min-w-[126px]"
               type="submit"
               :disabled="matchingApartmentsCount === 0"
             >
@@ -189,6 +233,7 @@ const purchaseSteps = [
 
               <span
                 v-if="matchingApartmentsCount > 0"
+                class="text-lg transition-transform duration-[250ms] group-hover:translate-x-1"
                 aria-hidden="true"
               >
                 →
@@ -197,48 +242,90 @@ const purchaseSteps = [
           </form>
         </div>
 
-        <div class="hero__visual">
+        <div
+          class="hero__visual relative z-[1] ml-auto h-[480px] min-h-0 w-[calc(100%-30px)] xs:h-[520px] sm:h-[620px] sm:w-[85%] md:ml-0 md:h-[min(68vh,720px)] md:min-h-[540px] md:w-full"
+        >
           <img
+            class="block h-full w-full rounded-tl-[100px] object-cover xs:rounded-tl-[140px] sm:rounded-tl-[180px]"
             src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=85"
             alt="Nowoczesne wnętrze apartamentu"
           />
 
-          <div class="hero__badge">
-            <strong>{{ apartments.length }}</strong>
-            <span>
+          <div
+            class="absolute top-6 -left-[30px] grid size-[135px] grid-cols-[auto_1fr] items-center gap-x-1.5 rounded-full border-[6px] border-page bg-brand px-[15px] py-5 text-panel sm:top-[38px] sm:-left-[55px] sm:size-[150px] sm:border-8 sm:px-[18px] sm:py-6 md:-left-12"
+          >
+            <strong
+              class="font-display text-[37px] leading-none font-normal sm:text-[42px]"
+            >
+              {{ apartments.length }}
+            </strong>
+
+            <span class="text-[9px] leading-[1.35] font-bold uppercase">
               mieszkań
               <br />
               w ofercie
             </span>
           </div>
 
-          <div class="hero__location">
-            <span class="hero__location-icon">⌖</span>
+          <div
+            class="absolute right-4 bottom-5 flex min-w-[250px] items-center gap-[15px] bg-panel px-[18px] py-4 shadow-[0_14px_40px_rgba(23,63,53,0.14)] xs:min-w-[290px] xs:px-[22px] xs:py-[18px] md:-right-6 md:bottom-7"
+          >
+            <span
+              class="grid size-[42px] shrink-0 place-items-center rounded-full bg-brand text-xl text-white"
+              aria-hidden="true"
+            >
+              ⌖
+            </span>
 
-            <div>
-              <small>Nowa inwestycja</small>
-              <strong>Zielone Tarasy, Kraków</strong>
+            <div class="flex min-w-0 flex-col">
+              <small
+                class="mb-[3px] text-[10px] font-bold tracking-[0.08em] text-muted uppercase"
+              >
+                Nowa inwestycja
+              </small>
+
+              <strong class="text-[13px] leading-[1.35] font-bold text-brand">
+                Zielone Tarasy, Kraków
+              </strong>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="home-investments">
+    <section class="bg-[#f3f1eb] py-[clamp(70px,9vw,120px)]">
       <div class="container">
-        <div class="home-investments__header">
+        <div
+          class="mb-[42px] flex items-end justify-between gap-[30px] max-sm:flex-col max-sm:items-start"
+        >
           <div>
-            <p>Nasze inwestycje</p>
-            <h2>Znajdź miejsce dla siebie</h2>
+            <p
+              class="mb-2.5 text-[10px] font-bold tracking-[0.13em] text-gold uppercase"
+            >
+              Nasze inwestycje
+            </p>
+
+            <h2 class="mb-0 max-w-[650px] text-[clamp(38px,5vw,58px)]">
+              Znajdź miejsce dla siebie
+            </h2>
           </div>
 
-          <RouterLink to="/inwestycje">
+          <RouterLink
+            class="group inline-flex items-center gap-3.5 border-b border-[rgba(23,63,53,0.25)] pb-[7px] text-[11px] font-bold text-brand"
+            to="/inwestycje"
+          >
             Zobacz wszystkie
-            <span aria-hidden="true">→</span>
+
+            <span
+              class="text-lg transition-transform duration-200 group-hover:translate-x-1"
+              aria-hidden="true"
+            >
+              →
+            </span>
           </RouterLink>
         </div>
 
-        <div class="home-investments__grid">
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
           <InvestmentCard
             v-for="investment in investments"
             :key="investment.id"
@@ -251,17 +338,35 @@ const purchaseSteps = [
       </div>
     </section>
 
-    <section class="featured-apartments">
+    <section class="bg-page py-[clamp(70px,9vw,120px)]">
       <div class="container">
-        <div class="featured-apartments__header">
+        <div
+          class="mb-[42px] flex items-end justify-between gap-[30px] max-sm:flex-col max-sm:items-start"
+        >
           <div>
-            <p>Wybrane oferty</p>
-            <h2>Polecane mieszkania</h2>
+            <p
+              class="mb-2.5 text-[10px] font-bold tracking-[0.13em] text-gold uppercase"
+            >
+              Wybrane oferty
+            </p>
+
+            <h2 class="mb-0 text-[clamp(38px,5vw,58px)]">
+              Polecane mieszkania
+            </h2>
           </div>
 
-          <RouterLink to="/mieszkania">
+          <RouterLink
+            class="group inline-flex items-center gap-3.5 border-b border-[rgba(23,63,53,0.25)] pb-[7px] text-[11px] font-bold text-brand"
+            to="/mieszkania"
+          >
             Zobacz wszystkie mieszkania
-            <span aria-hidden="true">→</span>
+
+            <span
+              class="text-lg transition-transform duration-200 group-hover:translate-x-1"
+              aria-hidden="true"
+            >
+              →
+            </span>
           </RouterLink>
         </div>
 
@@ -269,41 +374,74 @@ const purchaseSteps = [
       </div>
     </section>
 
-    <section class="purchase-process">
+    <section class="bg-brand py-[clamp(70px,9vw,120px)] text-white">
       <div class="container">
-        <div class="purchase-process__header">
-          <p>Prosta droga do własnego mieszkania</p>
-          <h2>Jak wygląda proces zakupu?</h2>
+        <div class="mb-[55px] max-w-[700px]">
+          <p
+            class="mb-3 text-[10px] font-bold tracking-[0.13em] text-gold uppercase"
+          >
+            Prosta droga do własnego mieszkania
+          </p>
+
+          <h2 class="mb-0 text-[clamp(38px,5vw,58px)] text-white">
+            Jak wygląda proces zakupu?
+          </h2>
         </div>
 
-        <div class="purchase-process__steps">
+        <div
+          class="grid grid-cols-1 gap-y-[50px] sm:grid-cols-2 md:grid-cols-4 md:gap-y-0"
+        >
           <article
             v-for="step in purchaseSteps"
             :key="step.number"
-            class="purchase-process__step"
+            class="relative border-t border-white/20 px-7 pt-[34px] pb-2.5 sm:odd:border-r sm:odd:border-white/12 md:border-r md:border-white/12 md:last:border-r-0"
           >
-            <span class="purchase-process__number">
+            <span
+              class="absolute top-0 left-7 grid size-[38px] -translate-y-1/2 place-items-center rounded-full bg-gold font-display text-[15px] text-brand"
+            >
               {{ step.number }}
             </span>
 
-            <h3>{{ step.title }}</h3>
+            <h3 class="mt-[18px] mb-3.5 text-lg text-white">
+              {{ step.title }}
+            </h3>
 
-            <p>{{ step.description }}</p>
+            <p class="mb-0 text-[13px] leading-[1.7] text-white/62">
+              {{ step.description }}
+            </p>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="home-cta">
-      <div class="home-cta__content container">
+    <section class="bg-gold py-[clamp(60px,8vw,95px)]">
+      <div
+        class="container flex items-center justify-between gap-10 max-sm:flex-col max-sm:items-start"
+      >
         <div>
-          <p>Znajdź swoje miejsce</p>
-          <h2>Gotowy na wybór mieszkania?</h2>
+          <p
+            class="mb-2.5 text-[10px] font-bold tracking-[0.13em] text-white/72 uppercase"
+          >
+            Znajdź swoje miejsce
+          </p>
+
+          <h2 class="mb-0 max-w-[700px] text-[clamp(36px,5vw,56px)] text-white">
+            Gotowy na wybór mieszkania?
+          </h2>
         </div>
 
-        <RouterLink to="/mieszkania">
+        <RouterLink
+          class="group inline-flex min-h-[58px] shrink-0 items-center gap-[18px] bg-brand px-[26px] text-[11px] font-bold text-white max-sm:w-full max-sm:justify-center"
+          to="/mieszkania"
+        >
           Przeglądaj mieszkania
-          <span aria-hidden="true">→</span>
+
+          <span
+            class="text-[19px] transition-transform duration-200 group-hover:translate-x-[5px]"
+            aria-hidden="true"
+          >
+            →
+          </span>
         </RouterLink>
       </div>
     </section>
@@ -311,90 +449,6 @@ const purchaseSteps = [
 </template>
 
 <style scoped>
-.hero {
-  display: flex;
-  align-items: center;
-  padding-top: 138px;
-  padding-bottom: 50px;
-  overflow: hidden;
-}
-
-.hero__container {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(380px, 0.82fr);
-  align-items: center;
-  gap: clamp(50px, 7vw, 110px);
-}
-
-.hero__content {
-  position: relative;
-  z-index: 2;
-}
-
-.hero__eyebrow {
-  display: flex;
-  align-items: center;
-  margin-bottom: 24px;
-  gap: 12px;
-  color: var(--color-accent);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
-.hero__eyebrow::before {
-  width: 38px;
-  height: 1px;
-  content: '';
-  background-color: var(--color-accent);
-}
-
-.hero__title {
-  max-width: 750px;
-  margin-bottom: 30px;
-  color: var(--color-primary);
-  font-family: var(--font-body);
-  font-size: clamp(48px, 5.2vw, 76px);
-  font-weight: 600;
-  line-height: 1.02;
-  letter-spacing: -0.055em;
-}
-
-.hero__title span {
-  position: relative;
-  display: block;
-  width: fit-content;
-  margin-top: 10px;
-  color: var(--color-accent);
-  font-family: var(--font-heading);
-  font-weight: 400;
-  letter-spacing: -0.025em;
-}
-
-.hero__title span::after {
-  position: absolute;
-  right: 0;
-  bottom: -9px;
-  width: 38%;
-  height: 2px;
-  content: '';
-  background-color: var(--color-accent);
-}
-
-.hero__description {
-  max-width: 600px;
-  margin-bottom: 44px;
-  color: var(--color-text-muted);
-  font-size: clamp(16px, 1.6vw, 19px);
-}
-
-.hero__visual {
-  position: relative;
-  height: min(68vh, 720px);
-  min-height: 540px;
-}
-
 .hero__visual::before {
   position: absolute;
   z-index: -1;
@@ -407,588 +461,21 @@ const purchaseSteps = [
   border-radius: 50% 0 0 50%;
 }
 
-.hero__visual img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 180px 0 0 0;
-}
-
-.hero__badge {
-  position: absolute;
-  top: 38px;
-  left: -48px;
-  display: grid;
-  width: 150px;
-  height: 150px;
-  grid-template-columns: auto 1fr;
-  align-items: center;
-  padding: 24px 18px;
-  column-gap: 6px;
-  color: var(--color-surface);
-  background-color: var(--color-primary);
-  border: 8px solid var(--color-background);
-  border-radius: 50%;
-}
-
-.hero__badge strong {
-  font-family: var(--font-heading);
-  font-size: 42px;
-  font-weight: 400;
-  line-height: 1;
-}
-
-.hero__badge span {
-  font-size: 9px;
-  font-weight: 700;
-  line-height: 1.35;
-  text-transform: uppercase;
-}
-
-.hero__location {
-  position: absolute;
-  right: -24px;
-  bottom: 28px;
-  display: flex;
-  align-items: center;
-  min-width: 290px;
-  padding: 18px 22px;
-  gap: 15px;
-  background-color: var(--color-surface);
-  box-shadow: var(--shadow-small);
-}
-
-.hero__location-icon {
-  display: grid;
-  width: 42px;
-  height: 42px;
-  flex-shrink: 0;
-  place-items: center;
-  color: var(--color-surface);
-  background-color: var(--color-accent);
-  font-size: 23px;
-  border-radius: 50%;
-}
-
-.hero__location div {
-  display: flex;
-  flex-direction: column;
-}
-
-.hero__location small {
-  margin-bottom: 3px;
-  color: var(--color-text-muted);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.hero__location strong {
-  color: var(--color-primary);
-  font-size: 13px;
-}
-
-.search {
-  position: relative;
-  z-index: 3;
-  display: grid;
-  width: min(780px, calc(100vw - 40px));
-  grid-template-columns: repeat(3, minmax(145px, 1fr)) auto;
-  padding: 10px;
-  background-color: var(--color-surface);
-  box-shadow: 0 18px 50px rgba(23, 63, 53, 0.13);
-}
-
-.search__field {
-  padding: 5px 20px;
-  border-right: 1px solid var(--color-border);
-}
-
-.search__field label {
-  display: block;
-  margin-bottom: 4px;
-  color: var(--color-text-muted);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.search__field select {
-  width: 100%;
-  padding: 3px 22px 3px 0;
-  color: var(--color-text);
-  background-color: transparent;
-  border: 0;
-  outline: 0;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.search button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 126px;
-  padding: 0 22px;
-  gap: 13px;
-  color: var(--color-surface);
-  background-color: var(--color-primary);
-  border: 0;
-  font-size: 13px;
-  font-weight: 700;
-  transition: background-color 0.25s ease;
-}
-
-.search button:disabled {
-  color: rgba(255, 255, 255, 0.65);
-  background-color: #929896;
-  cursor: not-allowed;
-}
-
-.search button:hover {
-  background-color: var(--color-primary-light);
-}
-
-.search button span {
-  font-size: 18px;
-  transition: transform 0.25s ease;
-}
-
-.search button:not(:disabled):hover span {
-  transform: translateX(4px);
-}
-
-.home-investments {
-  padding-block: clamp(70px, 9vw, 120px);
-  background-color: #f3f1eb;
-}
-
-.home-investments__header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-bottom: 42px;
-  gap: 30px;
-}
-
-.home-investments__header p {
-  margin-bottom: 10px;
-  color: var(--color-accent);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-}
-
-.home-investments__header h2 {
-  max-width: 650px;
-  margin-bottom: 0;
-  font-size: clamp(38px, 5vw, 58px);
-}
-
-.home-investments__header > a {
-  display: inline-flex;
-  align-items: center;
-  padding-bottom: 7px;
-  gap: 14px;
-  color: var(--color-primary);
-  border-bottom: 1px solid rgba(23, 63, 53, 0.25);
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.home-investments__header > a span {
-  font-size: 18px;
-  transition: transform 0.2s ease;
-}
-
-.home-investments__header > a:hover span {
-  transform: translateX(4px);
-}
-
-.home-investments__grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
-}
-
-.featured-apartments {
-  padding-block: clamp(70px, 9vw, 120px);
-  background-color: var(--color-background);
-}
-
-.featured-apartments__header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-bottom: 42px;
-  gap: 30px;
-}
-
-.featured-apartments__header p {
-  margin-bottom: 10px;
-  color: var(--color-accent);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-}
-
-.featured-apartments__header h2 {
-  margin-bottom: 0;
-  font-size: clamp(38px, 5vw, 58px);
-}
-
-.featured-apartments__header > a {
-  display: inline-flex;
-  align-items: center;
-  padding-bottom: 7px;
-  gap: 14px;
-  color: var(--color-primary);
-  border-bottom: 1px solid rgba(23, 63, 53, 0.25);
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.featured-apartments__header > a span {
-  font-size: 18px;
-  transition: transform 0.2s ease;
-}
-
-.featured-apartments__header > a:hover span {
-  transform: translateX(4px);
-}
-
-.purchase-process {
-  padding-block: clamp(70px, 9vw, 120px);
-  color: #ffffff;
-  background-color: var(--color-primary);
-}
-
-.purchase-process__header {
-  max-width: 700px;
-  margin-bottom: 55px;
-}
-
-.purchase-process__header > p {
-  margin-bottom: 12px;
-  color: var(--color-accent);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-}
-
-.purchase-process__header h2 {
-  margin-bottom: 0;
-  color: #ffffff;
-  font-size: clamp(38px, 5vw, 58px);
-}
-
-.purchase-process__steps {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
-.purchase-process__step {
-  position: relative;
-  padding: 34px 28px 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.purchase-process__step:not(:last-child) {
-  border-right: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.purchase-process__number {
-  position: absolute;
-  top: 0;
-  left: 28px;
-  display: grid;
+.hero__eyebrow::before {
   width: 38px;
-  height: 38px;
-  place-items: center;
-  color: var(--color-primary);
-  background-color: var(--color-accent);
-  border-radius: 50%;
-  font-family: var(--font-heading);
-  font-size: 15px;
-  transform: translateY(-50%);
-}
-
-.purchase-process__step h3 {
-  margin: 18px 0 14px;
-  color: #ffffff;
-  font-size: 18px;
-}
-
-.purchase-process__step p {
-  margin-bottom: 0;
-  color: rgba(255, 255, 255, 0.62);
-  font-size: 13px;
-  line-height: 1.7;
-}
-
-.home-cta {
-  padding-block: clamp(60px, 8vw, 95px);
-  background-color: var(--color-accent);
-}
-
-.home-cta__content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 40px;
-}
-
-.home-cta p {
-  margin-bottom: 10px;
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-}
-
-.home-cta h2 {
-  max-width: 700px;
-  margin-bottom: 0;
-  color: #ffffff;
-  font-size: clamp(36px, 5vw, 56px);
-}
-
-.home-cta a {
-  display: inline-flex;
-  min-height: 58px;
-  align-items: center;
+  height: 1px;
   flex-shrink: 0;
-  padding-inline: 26px;
-  gap: 18px;
-  color: #ffffff;
-  background-color: var(--color-primary);
-  font-size: 11px;
-  font-weight: 700;
+  content: '';
+  background-color: var(--color-accent);
 }
 
-.home-cta a span {
-  font-size: 19px;
-  transition: transform 0.2s ease;
-}
-
-.home-cta a:hover span {
-  transform: translateX(5px);
-}
-
-@media (max-width: 991px) {
-  .hero {
-    padding-top: 130px;
-  }
-
-  .hero__container {
-    grid-template-columns: 1fr;
-    gap: 60px;
-  }
-
-  .hero__content {
-    max-width: 760px;
-  }
-
-  .hero__visual {
-    width: 85%;
-    height: 620px;
-    min-height: 0;
-    margin-left: auto;
-  }
-
-  .hero__badge {
-    left: -55px;
-  }
-
-  .search {
-    width: 100%;
-  }
-
-  .home-investments__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .purchase-process__steps {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 50px 0;
-  }
-
-  .purchase-process__step:nth-child(2) {
-    border-right: 0;
-  }
-}
-
-@media (max-width: 767px) {
-  .hero {
-    padding-top: 125px;
-    padding-bottom: 40px;
-  }
-
-  .hero__title {
-    font-size: clamp(44px, 9vw, 62px);
-  }
-
-  .hero__description {
-    margin-bottom: 34px;
-  }
-
-  .search {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .search__field {
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .search__field:nth-child(2) {
-    border-right: 0;
-  }
-
-  .search__field:nth-child(3) {
-    grid-column: 1 / -1;
-    border-right: 0;
-  }
-
-  .search button {
-    min-height: 58px;
-    grid-column: 1 / -1;
-    margin-top: 8px;
-  }
-
-  .hero__visual {
-    width: calc(100% - 30px);
-    height: 520px;
-  }
-
-  .hero__badge {
-    top: 24px;
-    left: -30px;
-    width: 135px;
-    height: 135px;
-    padding: 20px 15px;
-    border-width: 6px;
-  }
-
-  .hero__badge strong {
-    font-size: 37px;
-  }
-
-  .hero__location {
-    right: 16px;
-    bottom: 20px;
-  }
-
-  .home-investments__header {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .home-investments__grid {
-    grid-template-columns: 1fr;
-  }
-
-  .featured-apartments__header {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .purchase-process__steps {
-    grid-template-columns: 1fr;
-    gap: 50px;
-  }
-
-  .purchase-process__step {
-    border-right: 0;
-  }
-
-  .home-cta__content {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .home-cta a {
-    width: 100%;
-    justify-content: center;
-  }
-}
-
-@media (max-width: 479px) {
-  .hero {
-    padding-top: 110px;
-  }
-
-  .hero__eyebrow {
-    margin-bottom: 18px;
-    font-size: 10px;
-  }
-
-  .hero__title {
-    margin-bottom: 28px;
-    font-size: clamp(39px, 11vw, 48px);
-    letter-spacing: -0.045em;
-  }
-
-  .hero__title span {
-    margin-top: 7px;
-  }
-
-  .hero__description {
-    font-size: 16px;
-  }
-
-  .search {
-    grid-template-columns: 1fr;
-  }
-
-  .search__field,
-  .search__field:nth-child(3) {
-    grid-column: auto;
-    padding: 13px 15px;
-    border-right: 0;
-  }
-
-  .search button {
-    grid-column: auto;
-  }
-
-  .hero__visual {
-    width: calc(100% - 15px);
-    height: 440px;
-  }
-
-  .hero__visual img {
-    border-radius: 90px 0 0 0;
-  }
-
-  .hero__badge {
-    top: 18px;
-    left: -15px;
-    width: 118px;
-    height: 118px;
-    padding: 17px 13px;
-    border-width: 5px;
-  }
-
-  .hero__badge strong {
-    font-size: 32px;
-  }
-
-  .hero__badge span {
-    font-size: 7px;
-  }
-
-  .hero__location {
-    right: 10px;
-    bottom: 14px;
-    left: 10px;
-    min-width: 0;
-    padding: 15px;
-  }
+.hero__title span::after {
+  position: absolute;
+  right: 0;
+  bottom: -9px;
+  width: 38%;
+  height: 2px;
+  content: '';
+  background-color: var(--color-accent);
 }
 </style>
