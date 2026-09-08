@@ -1,10 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import ApartmentsView from '../views/ApartmentsView.vue'
-import ApartmentDetailsView from '../views/ApartmentDetailsView.vue'
-import InvestmentsView from '../views/InvestmentsView.vue'
-import InvestmentDetailsView from '../views/InvestmentDetailsView.vue'
-import NotFoundView from '../views/NotFoundView.vue'
+const ApartmentsView = () => import('../views/ApartmentsView.vue')
+
+const ApartmentDetailsView = () => import('../views/ApartmentDetailsView.vue')
+
+const InvestmentsView = () => import('../views/InvestmentsView.vue')
+
+const InvestmentDetailsView = () => import('../views/InvestmentDetailsView.vue')
+
+const NotFoundView = () => import('../views/NotFoundView.vue')
 
 const routes = [
   {
