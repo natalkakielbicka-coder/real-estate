@@ -206,47 +206,73 @@ const sortedApartments = computed(() => {
 </script>
 
 <template>
-  <main class="apartments-page">
-    <section class="apartments-header">
+  <main class="pt-[88px]">
+    <section class="bg-brand py-[clamp(70px,9vw,130px)] text-white">
       <div class="container">
-        <p class="apartments-header__eyebrow">Oferta mieszkań</p>
+        <p
+          class="mb-5 text-[11px] font-bold tracking-[0.16em] text-gold uppercase"
+        >
+          Oferta mieszkań
+        </p>
 
-        <h1>Znajdź swoje mieszkanie</h1>
+        <h1 class="mb-10 max-w-[780px] text-[clamp(48px,6vw,76px)] text-white">
+          Znajdź swoje mieszkanie
+        </h1>
 
-        <div class="apartments-header__bottom">
-          <p>
+        <div
+          class="flex items-end justify-between gap-10 max-sm:flex-col max-sm:items-start"
+        >
+          <p class="mb-0 max-w-[580px] text-[17px] text-white/68">
             Porównaj dostępne lokale i wybierz przestrzeń dopasowaną do Twoich
             potrzeb.
           </p>
 
-          <div class="apartments-header__count">
-            <strong>{{ apartments.length }}</strong>
-            <span>dostępnych ofert</span>
+          <div class="flex items-center gap-[13px]">
+            <strong
+              class="font-display text-[46px] leading-none font-normal text-gold"
+            >
+              {{ apartments.length }}
+            </strong>
+            <span
+              class="max-w-[75px] text-[10px] leading-[1.4] font-bold tracking-[0.08em] uppercase"
+            >
+              dostępnych ofert
+            </span>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="apartments-results">
-      <div class="apartments-layout container">
-        <aside class="filters-sidebar">
-          <div class="filters-sidebar__header">
-            <p>Filtry mieszkań</p>
-
-            <span> {{ filteredApartments.length }} ofert </span>
+    <section class="py-[clamp(60px,8vw,110px)]">
+      <div
+        class="container grid grid-cols-1 items-start gap-6 xs:gap-8 md:grid-cols-[270px_minmax(0,1fr)]"
+      >
+        <aside
+          class="min-h-[150px] bg-panel px-[18px] py-[22px] shadow-[0_14px_45px_rgba(23,63,53,0.08)] xs:p-7 md:sticky md:top-[118px] md:min-h-[400px]"
+        >
+          <div class="mb-7 flex items-start justify-between gap-[15px]">
+            <p class="mb-0 text-lg font-bold text-brand">Filtry mieszkań</p>
+            <span
+              class="shrink-0 bg-page px-2 py-[5px] text-[9px] font-bold text-brand uppercase"
+            >
+              {{ filteredApartments.length }} ofert
+            </span>
           </div>
 
           <button
-            class="filters-sidebar__reset"
+            class="border-0 border-b border-line bg-transparent py-[3px] text-[10px] font-bold text-muted transition-colors hover:border-brand hover:text-brand"
             type="button"
             @click="resetFilters"
           >
             Wyczyść
           </button>
 
-          <fieldset class="filter-group">
-            <legend>Miasto</legend>
-
+          <fieldset class="mt-[22px] border-0 border-t border-line pt-[22px]">
+            <legend
+              class="pr-[5px] text-[11px] font-bold tracking-[0.08em] text-brand uppercase"
+            >
+              Miasto
+            </legend>
             <label
               v-for="city in cities"
               :key="city"
@@ -257,14 +283,17 @@ const sortedApartments = computed(() => {
                 type="checkbox"
                 :value="city"
               />
-
               <span class="filter-checkbox__mark"></span>
               <span>{{ city }}</span>
             </label>
           </fieldset>
-          <fieldset class="filter-group">
-            <legend>Liczba pokoi</legend>
 
+          <fieldset class="mt-[22px] border-0 border-t border-line pt-[22px]">
+            <legend
+              class="pr-[5px] text-[11px] font-bold tracking-[0.08em] text-brand uppercase"
+            >
+              Liczba pokoi
+            </legend>
             <label
               v-for="room in rooms"
               :key="room"
@@ -275,18 +304,17 @@ const sortedApartments = computed(() => {
                 type="checkbox"
                 :value="room"
               />
-
               <span class="filter-checkbox__mark"></span>
-
-              <span>
-                {{ room }}
-                {{ room === 1 ? 'pokój' : 'pokoje' }}
-              </span>
+              <span>{{ room }} {{ room === 1 ? 'pokój' : 'pokoje' }}</span>
             </label>
           </fieldset>
-          <fieldset class="filter-group">
-            <legend>Status mieszkania</legend>
 
+          <fieldset class="mt-[22px] border-0 border-t border-line pt-[22px]">
+            <legend
+              class="pr-[5px] text-[11px] font-bold tracking-[0.08em] text-brand uppercase"
+            >
+              Status mieszkania
+            </legend>
             <label
               v-for="status in statuses"
               :key="status.value"
@@ -297,26 +325,28 @@ const sortedApartments = computed(() => {
                 type="checkbox"
                 :value="status.value"
               />
-
               <span class="filter-checkbox__mark"></span>
-
               <span
-                class="status-dot"
-                :class="`status-dot--${status.value}`"
+                class="h-[7px] w-[7px] shrink-0 rounded-full"
+                :class="{
+                  'bg-[#3d806d]': status.value === 'available',
+                  'bg-[#c28b3f]': status.value === 'reserved',
+                  'bg-[#929896]': status.value === 'sold'
+                }"
               ></span>
-
-              <span class="filter-checkbox__label">
-                {{ status.label }}
-              </span>
-
-              <small class="filter-checkbox__count">
-                {{ getStatusCount(status.value) }}
-              </small>
+              <span>{{ status.label }}</span>
+              <small class="ml-auto min-w-5 text-right text-[9px] text-muted">{{
+                getStatusCount(status.value)
+              }}</small>
             </label>
           </fieldset>
-          <fieldset class="filter-group">
-            <legend>Przestrzeń dodatkowa</legend>
 
+          <fieldset class="mt-[22px] border-0 border-t border-line pt-[22px]">
+            <legend
+              class="pr-[5px] text-[11px] font-bold tracking-[0.08em] text-brand uppercase"
+            >
+              Przestrzeń dodatkowa
+            </legend>
             <label
               v-for="space in outdoorSpaces"
               :key="space.value"
@@ -327,80 +357,84 @@ const sortedApartments = computed(() => {
                 type="checkbox"
                 :value="space.value"
               />
-
               <span class="filter-checkbox__mark"></span>
-
-              <span class="filter-checkbox__label">
-                {{ space.label }}
-              </span>
+              <span>{{ space.label }}</span>
             </label>
           </fieldset>
-          <fieldset class="filter-group">
-            <legend>Dodatkowe udogodnienia</legend>
 
+          <fieldset class="mt-[22px] border-0 border-t border-line pt-[22px]">
+            <legend
+              class="pr-[5px] text-[11px] font-bold tracking-[0.08em] text-brand uppercase"
+            >
+              Dodatkowe udogodnienia
+            </legend>
             <label class="filter-checkbox">
               <input
                 v-model="onlyWithParking"
                 type="checkbox"
               />
-
               <span class="filter-checkbox__mark"></span>
-
-              <span class="filter-checkbox__label"> Miejsce parkingowe </span>
+              <span>Miejsce parkingowe</span>
             </label>
-
             <label class="filter-checkbox">
               <input
                 v-model="onlyWithStorage"
                 type="checkbox"
               />
-
               <span class="filter-checkbox__mark"></span>
-
-              <span class="filter-checkbox__label"> Komórka lokatorska </span>
+              <span>Komórka lokatorska</span>
             </label>
           </fieldset>
+
           <form
-            class="filter-group"
+            class="mt-[22px] border-0 border-t border-line pt-[22px]"
             @submit.prevent="applyPriceFilter"
           >
-            <h3 class="filter-group__title">Cena mieszkania</h3>
-
-            <div class="price-filter">
+            <h3
+              class="mb-[15px] font-copy text-[11px] font-bold tracking-[0.06em] text-brand uppercase"
+            >
+              Cena mieszkania
+            </h3>
+            <div class="grid grid-cols-2 gap-2.5">
               <label>
-                <span>Cena od</span>
-
-                <div class="price-filter__input">
+                <span class="mb-1.5 block text-[9px] font-semibold text-muted"
+                  >Cena od</span
+                >
+                <div
+                  class="flex h-[42px] items-center rounded-[3px] border border-transparent bg-page px-2.5 focus-within:border-gold"
+                >
                   <input
                     v-model="priceFromInput"
+                    class="w-full min-w-0 border-0 bg-transparent p-0 text-[11px] font-semibold text-brand outline-0"
                     type="number"
                     min="0"
                     step="50000"
                     placeholder="np. 500 000"
                   />
-
-                  <span>zł</span>
+                  <span class="shrink-0 text-[9px] text-muted">zł</span>
                 </div>
               </label>
-
               <label>
-                <span>Cena do</span>
-
-                <div class="price-filter__input">
+                <span class="mb-1.5 block text-[9px] font-semibold text-muted"
+                  >Cena do</span
+                >
+                <div
+                  class="flex h-[42px] items-center rounded-[3px] border border-transparent bg-page px-2.5 focus-within:border-gold"
+                >
                   <input
                     v-model="priceToInput"
+                    class="w-full min-w-0 border-0 bg-transparent p-0 text-[11px] font-semibold text-brand outline-0"
                     type="number"
                     min="0"
                     step="50000"
                     placeholder="np. 900 000"
                   />
-
-                  <span>zł</span>
+                  <span class="shrink-0 text-[9px] text-muted">zł</span>
                 </div>
               </label>
             </div>
             <button
-              class="price-filter__button"
+              class="mt-3 min-h-[42px] w-full rounded-[3px] border-0 bg-brand px-4 text-[11px] font-bold text-white transition-colors hover:bg-brand-light"
               type="submit"
             >
               Zastosuj cenę
@@ -408,86 +442,62 @@ const sortedApartments = computed(() => {
           </form>
         </aside>
 
-        <div class="apartments-content">
-          <div class="apartments-toolbar">
-            <p>
+        <div class="min-w-0">
+          <div
+            class="mb-6 flex flex-col items-stretch gap-3 bg-panel p-4 xs:min-h-[62px] xs:flex-row xs:items-center xs:justify-between xs:gap-6 xs:py-2.5 xs:pr-3 xs:pl-5"
+          >
+            <p class="mb-0 text-xs text-muted">
               Znaleziono
-              <strong>{{ sortedApartments.length }}</strong>
+              <strong class="text-sm text-brand">{{
+                sortedApartments.length
+              }}</strong>
               mieszkań
             </p>
 
             <div
-              class="view-switcher"
+              class="flex gap-1 rounded-[3px] bg-page p-1"
               aria-label="Sposób wyświetlania mieszkań"
             >
               <button
+                v-for="mode in ['grid', 'list', 'table', 'plan', 'map']"
+                :key="mode"
                 type="button"
-                :class="{
-                  'view-switcher__button--active': viewMode === 'grid'
-                }"
-                :aria-pressed="viewMode === 'grid'"
-                @click="viewMode = 'grid'"
+                class="min-h-[34px] rounded-[1px] border-0 px-[13px] text-[10px] font-bold uppercase"
+                :class="
+                  viewMode === mode
+                    ? 'bg-brand text-white'
+                    : 'bg-transparent text-muted hover:bg-white hover:text-brand'
+                "
+                :aria-pressed="viewMode === mode"
+                @click="viewMode = mode"
               >
-                Grid
-              </button>
-
-              <button
-                type="button"
-                :class="{
-                  'view-switcher__button--active': viewMode === 'list'
-                }"
-                :aria-pressed="viewMode === 'list'"
-                @click="viewMode = 'list'"
-              >
-                Lista
-              </button>
-
-              <button
-                type="button"
-                :class="{
-                  'view-switcher__button--active': viewMode === 'table'
-                }"
-                :aria-pressed="viewMode === 'table'"
-                @click="viewMode = 'table'"
-              >
-                Tabela
-              </button>
-
-              <button
-                type="button"
-                :class="{
-                  'view-switcher__button--active': viewMode === 'plan'
-                }"
-                :aria-pressed="viewMode === 'plan'"
-                @click="viewMode = 'plan'"
-              >
-                Rzut
-              </button>
-
-              <button
-                type="button"
-                :class="{ 'view-switcher__button--active': viewMode === 'map' }"
-                :aria-pressed="viewMode === 'map'"
-                @click="viewMode = 'map'"
-              >
-                Mapa
+                {{
+                  {
+                    grid: 'Grid',
+                    list: 'Lista',
+                    table: 'Tabela',
+                    plan: 'Rzut',
+                    map: 'Mapa'
+                  }[mode]
+                }}
               </button>
             </div>
 
-            <label class="apartments-sort">
-              <span>Sortuj</span>
-
-              <select v-model="selectedSort">
+            <label
+              class="flex flex-col items-stretch gap-1.5 xs:flex-row xs:items-center xs:gap-3"
+            >
+              <span class="text-[10px] font-bold text-muted uppercase"
+                >Sortuj</span
+              >
+              <select
+                v-model="selectedSort"
+                class="h-[42px] w-full rounded-[3px] border border-transparent bg-page pr-8 pl-3.5 text-[11px] font-semibold text-brand outline-none focus:border-gold xs:w-auto"
+              >
                 <option value="default">Domyślna kolejność</option>
-
                 <option value="price-asc">Cena: od najniższej</option>
-
                 <option value="price-desc">Cena: od najwyższej</option>
-
                 <option value="area-asc">Metraż: od najmniejszego</option>
-
                 <option value="area-desc">Metraż: od największego</option>
-
                 <option value="price-per-meter-asc">
                   Najniższa cena za m²
                 </option>
@@ -500,24 +510,20 @@ const sortedApartments = computed(() => {
               v-if="viewMode === 'grid'"
               :apartments="sortedApartments"
             />
-
             <ApartmentList
               v-else-if="viewMode === 'list'"
               :apartments="sortedApartments"
             />
-
             <ApartmentTable
               v-else-if="viewMode === 'table'"
               :apartments="sortedApartments"
             />
-
             <FloorPlanSelector
               v-else-if="viewMode === 'plan'"
               :floor-plan="floorPlans[0]"
               :visible-apartments="sortedApartments"
               @reset-filters="resetFilters"
             />
-
             <InvestmentsMap
               v-else
               @show-investment="showInvestmentApartments"
@@ -526,23 +532,30 @@ const sortedApartments = computed(() => {
 
           <div
             v-else
-            class="apartments-empty"
+            class="flex min-h-[480px] flex-col items-center justify-center bg-panel p-[60px] text-center max-xs:min-h-[400px] max-xs:px-5 max-xs:py-10"
           >
-            <span class="apartments-empty__number">0</span>
-
-            <h2>Brak pasujących mieszkań</h2>
-
-            <p>
+            <span
+              class="mb-[25px] grid h-[100px] w-[100px] place-items-center rounded-full bg-page font-display text-[54px] text-gold"
+              >0</span
+            >
+            <h2 class="mb-3 text-[clamp(28px,4vw,40px)]">
+              Brak pasujących mieszkań
+            </h2>
+            <p class="mb-7 max-w-[490px] text-sm text-muted">
               Nie znaleźliśmy lokali spełniających wszystkie wybrane kryteria.
               Spróbuj zmienić filtry.
             </p>
-
             <button
+              class="group inline-flex min-h-12 items-center gap-3.5 rounded-[3px] border-0 bg-brand px-5 text-[11px] font-bold text-white hover:bg-brand-light"
               type="button"
               @click="resetFilters"
             >
               Wyczyść wszystkie filtry
-              <span aria-hidden="true">→</span>
+              <span
+                class="text-[17px] transition-transform duration-200 group-hover:translate-x-1"
+                aria-hidden="true"
+                >→</span
+              >
             </button>
           </div>
         </div>
@@ -552,159 +565,6 @@ const sortedApartments = computed(() => {
 </template>
 
 <style scoped>
-.apartments-page {
-  padding-top: 88px;
-}
-
-.apartments-header {
-  padding-block: clamp(70px, 9vw, 130px);
-  color: #ffffff;
-  background-color: var(--color-primary);
-}
-
-.apartments-header__eyebrow {
-  margin-bottom: 20px;
-  color: var(--color-accent);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-.apartments-header h1 {
-  max-width: 780px;
-  margin-bottom: 40px;
-  color: #ffffff;
-  font-size: clamp(48px, 6vw, 76px);
-}
-
-.apartments-header__bottom {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 40px;
-}
-
-.apartments-header__bottom p {
-  max-width: 580px;
-  margin-bottom: 0;
-  color: rgba(255, 255, 255, 0.68);
-  font-size: 17px;
-}
-
-.apartments-header__count {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-}
-
-.apartments-header__count strong {
-  color: var(--color-accent);
-  font-family: var(--font-heading);
-  font-size: 46px;
-  font-weight: 400;
-  line-height: 1;
-}
-
-.apartments-header__count span {
-  max-width: 75px;
-  font-size: 10px;
-  font-weight: 700;
-  line-height: 1.4;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.apartments-results {
-  padding-block: clamp(60px, 8vw, 110px);
-}
-
-.apartments-layout {
-  display: grid;
-  grid-template-columns: 270px minmax(0, 1fr);
-  align-items: start;
-  gap: 32px;
-}
-
-.filters-sidebar {
-  position: sticky;
-  top: 118px;
-  min-height: 400px;
-  padding: 28px;
-  background-color: var(--color-surface);
-  box-shadow: 0 14px 45px rgba(23, 63, 53, 0.08);
-}
-
-.filters-sidebar p {
-  margin-bottom: 0;
-  color: var(--color-primary);
-  font-size: 18px;
-  font-weight: 700;
-}
-
-.filters-sidebar__header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 28px;
-  gap: 15px;
-}
-
-.filters-sidebar__header p {
-  margin-bottom: 0;
-}
-
-.filters-sidebar__header span {
-  flex-shrink: 0;
-  padding: 5px 8px;
-  color: var(--color-primary);
-  background-color: var(--color-background);
-  font-size: 9px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.filters-sidebar__header > div {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.filters-sidebar__reset {
-  padding: 3px 0;
-  color: var(--color-text-muted);
-  background-color: transparent;
-  border: 0;
-  border-bottom: 1px solid var(--color-border);
-  font-size: 10px;
-  font-weight: 700;
-  transition:
-    color 0.2s ease,
-    border-color 0.2s ease;
-}
-
-.filters-sidebar__reset:hover {
-  color: var(--color-primary);
-  border-color: var(--color-primary);
-}
-
-.filter-group {
-  margin: 22px 0 0;
-  padding: 22px 0 0;
-  border: 0;
-  border-top: 1px solid var(--color-border);
-}
-
-.filter-group legend {
-  padding: 0 5px 0 0;
-  color: var(--color-primary);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
 .filter-checkbox {
   position: relative;
   display: flex;
@@ -752,304 +612,5 @@ const sortedApartments = computed(() => {
   border-right: 2px solid #ffffff;
   border-bottom: 2px solid #ffffff;
   transform: rotate(45deg);
-}
-
-.status-dot {
-  width: 7px;
-  height: 7px;
-  flex-shrink: 0;
-  border-radius: 50%;
-}
-
-.status-dot--available {
-  background-color: #3d806d;
-}
-
-.status-dot--reserved {
-  background-color: #c28b3f;
-}
-
-.status-dot--sold {
-  background-color: #929896;
-}
-
-.filter-checkbox__count {
-  min-width: 20px;
-  margin-left: auto;
-  color: var(--color-text-muted);
-  font-size: 9px;
-  text-align: right;
-}
-
-.filter-group__title {
-  margin-bottom: 15px;
-  color: var(--color-primary);
-  font-size: 11px;
-  font-family: var(--font-body);
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.price-filter {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.price-filter label > span {
-  display: block;
-  margin-bottom: 6px;
-  color: var(--color-text-muted);
-  font-size: 9px;
-  font-weight: 600;
-}
-
-.price-filter__input {
-  display: flex;
-  align-items: center;
-  height: 42px;
-  padding-inline: 10px;
-  background-color: var(--color-background);
-  border: 1px solid transparent;
-  border-radius: var(--radius-small);
-}
-
-.price-filter__input:focus-within {
-  border-color: var(--color-accent);
-}
-
-.price-filter__input input {
-  width: 100%;
-  min-width: 0;
-  padding: 0;
-  color: var(--color-primary);
-  background: transparent;
-  border: 0;
-  outline: 0;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.price-filter__input > span {
-  flex-shrink: 0;
-  color: var(--color-text-muted);
-  font-size: 9px;
-}
-
-.price-filter__button {
-  width: 100%;
-  min-height: 42px;
-  margin-top: 12px;
-  padding-inline: 16px;
-  color: #ffffff;
-  background-color: var(--color-primary);
-  border: 0;
-  border-radius: var(--radius-small);
-  font-size: 11px;
-  font-weight: 700;
-  transition: background-color 0.2s ease;
-}
-
-.price-filter__button:hover {
-  background-color: var(--color-primary-light);
-}
-
-.apartments-empty {
-  display: flex;
-  align-items: center;
-  min-height: 480px;
-  padding: 60px;
-  flex-direction: column;
-  justify-content: center;
-  background-color: var(--color-surface);
-  text-align: center;
-}
-
-.apartments-empty__number {
-  display: grid;
-  width: 100px;
-  height: 100px;
-  margin-bottom: 25px;
-  place-items: center;
-  color: var(--color-accent);
-  background-color: var(--color-background);
-  font-family: var(--font-heading);
-  font-size: 54px;
-  border-radius: 50%;
-}
-
-.apartments-empty h2 {
-  margin-bottom: 12px;
-  font-size: clamp(28px, 4vw, 40px);
-}
-
-.apartments-empty p {
-  max-width: 490px;
-  margin-bottom: 28px;
-  color: var(--color-text-muted);
-  font-size: 14px;
-}
-
-.apartments-empty button {
-  display: inline-flex;
-  align-items: center;
-  min-height: 48px;
-  padding-inline: 20px;
-  gap: 14px;
-  color: #ffffff;
-  background-color: var(--color-primary);
-  border: 0;
-  border-radius: var(--radius-small);
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.apartments-empty button:hover {
-  background-color: var(--color-primary-light);
-}
-
-.apartments-empty button span {
-  font-size: 17px;
-  transition: transform 0.2s ease;
-}
-
-.apartments-empty button:hover span {
-  transform: translateX(4px);
-}
-
-.apartments-content {
-  min-width: 0;
-}
-
-.apartments-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 62px;
-  margin-bottom: 24px;
-  padding: 10px 12px 10px 20px;
-  gap: 24px;
-  background-color: var(--color-surface);
-}
-
-.apartments-toolbar p {
-  margin-bottom: 0;
-  color: var(--color-text-muted);
-  font-size: 12px;
-}
-
-.apartments-toolbar p strong {
-  color: var(--color-primary);
-  font-size: 14px;
-}
-
-.apartments-sort {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.apartments-sort > span {
-  color: var(--color-text-muted);
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.apartments-sort select {
-  height: 42px;
-  padding-inline: 14px 32px;
-  color: var(--color-primary);
-  background-color: var(--color-background);
-  border: 1px solid transparent;
-  border-radius: var(--radius-small);
-  outline: none;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.apartments-sort select:focus {
-  border-color: var(--color-accent);
-}
-
-.view-switcher {
-  display: flex;
-  padding: 4px;
-  gap: 4px;
-  background-color: var(--color-background);
-  border-radius: var(--radius-small);
-}
-
-.view-switcher button {
-  min-height: 34px;
-  padding-inline: 13px;
-  color: var(--color-text-muted);
-  background-color: transparent;
-  border: 0;
-  border-radius: calc(var(--radius-small) - 2px);
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.view-switcher button:hover {
-  color: var(--color-primary);
-  background-color: #fff;
-}
-
-.view-switcher .view-switcher__button--active {
-  color: #ffffff;
-  background-color: var(--color-primary);
-}
-
-@media (max-width: 991px) {
-  .apartments-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .filters-sidebar {
-    position: static;
-    min-height: 150px;
-  }
-}
-
-@media (max-width: 767px) {
-  .apartments-header__bottom {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-}
-
-@media (max-width: 479px) {
-  .apartments-layout {
-    gap: 24px;
-  }
-
-  .filters-sidebar {
-    padding: 22px 18px;
-  }
-
-  .apartments-empty {
-    min-height: 400px;
-    padding: 40px 20px;
-  }
-
-  .apartments-toolbar {
-    align-items: stretch;
-    padding: 16px;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .apartments-sort {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .apartments-sort select {
-    width: 100%;
-  }
 }
 </style>
