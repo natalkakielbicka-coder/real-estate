@@ -8,6 +8,7 @@ import {
   getApartmentsCountByInvestment,
   getInvestmentStatusCounts
 } from '../utils/investmentHelpers'
+import { getApartmentsLabel } from '../utils/apartmentFormatters'
 
 const emit = defineEmits(['show-investment'])
 
@@ -43,7 +44,7 @@ const createPopupContent = (investment, apartmentsCount, statusCounts) => {
         ${investment.address}
       </p>
 
-      <strong>${apartmentsCount} mieszkań</strong>
+      <strong>${apartmentsCount} ${getApartmentsLabel(apartmentsCount)}</strong>
 
       <div class="investment-popup__statuses">
         <span class="investment-popup__status investment-popup__status--available">

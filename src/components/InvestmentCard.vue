@@ -1,5 +1,6 @@
 <script setup>
 import { formatCompletionDate } from '../utils/dateFormatters'
+import { getApartmentsLabel } from '../utils/apartmentFormatters'
 
 defineProps({
   investment: {
@@ -43,9 +44,7 @@ defineProps({
       <div class="investment-card__apartments">
         <strong>{{ apartmentsCount }}</strong>
 
-        <span>
-          {{ apartmentsCount === 1 ? 'mieszkanie' : 'mieszkań' }}
-        </span>
+        <span>{{ getApartmentsLabel(apartmentsCount) }}</span>
       </div>
 
       <div class="investment-card__footer">

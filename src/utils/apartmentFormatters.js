@@ -13,3 +13,19 @@ export const formatPricePerMeter = (price, area) => {
     maximumFractionDigits: 0
   }).format(pricePerMeter)
 }
+
+export const getApartmentsLabel = (count) => {
+  if (count === 1) {
+    return 'mieszkanie'
+  }
+
+  const lastDigit = count % 10
+  const lastTwoDigits = count % 100
+
+  const usesMieszkania =
+    lastDigit >= 2 &&
+    lastDigit <= 4 &&
+    (lastTwoDigits < 12 || lastTwoDigits > 14)
+
+  return usesMieszkania ? 'mieszkania' : 'mieszkań'
+}
