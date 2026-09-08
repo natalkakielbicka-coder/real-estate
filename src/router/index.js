@@ -10,27 +10,42 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    component: HomeView,
+    meta: {
+      title: 'Strona główna'
+    }
   },
   {
     path: '/mieszkania',
     name: 'apartments',
-    component: ApartmentsView
+    component: ApartmentsView,
+    meta: {
+      title: 'Mieszkania'
+    }
   },
   {
     path: '/mieszkania/:slug',
     name: 'apartment-details',
-    component: ApartmentDetailsView
+    component: ApartmentDetailsView,
+    meta: {
+      title: 'Szczegóły mieszkania'
+    }
   },
   {
     path: '/inwestycje',
     name: 'investments',
-    component: InvestmentsView
+    component: InvestmentsView,
+    meta: {
+      title: 'Inwestycje'
+    }
   },
   {
     path: '/inwestycje/:id',
     name: 'investment-details',
-    component: InvestmentDetailsView
+    component: InvestmentDetailsView,
+    meta: {
+      title: 'Szczegóły inwestycji'
+    }
   },
   {
     path: '/:pathMatch(.*)*',
@@ -60,7 +75,7 @@ const router = createRouter({
 router.afterEach((to) => {
   const pageTitle = to.meta.title
 
-  document.title = pageTitle ? `${pageTitle} | Real Estate` : 'Real Estate'
+  document.title = pageTitle ? `${pageTitle} - Real Estate` : 'Real Estate'
 })
 
 export default router
