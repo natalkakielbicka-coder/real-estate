@@ -36,10 +36,10 @@ const matchingApartmentsCount = computed(() => {
       selectedCity.value === '' || apartment.city === selectedCity.value
 
     const matchesRooms =
-      selectedRooms.value === '' ||
-      (selectedRooms.value === 4
-        ? apartment.rooms >= 4
-        : apartment.rooms === selectedRooms.value)
+      selectedRooms.value.length === 0 ||
+      selectedRooms.value.some((rooms) => {
+        return apartment.rooms === rooms
+      })
 
     const matchesMaxPrice =
       selectedMaxPrice.value === '' || apartment.price <= selectedMaxPrice.value
@@ -192,11 +192,7 @@ const purchaseSteps = [
                   :key="rooms"
                   :value="rooms"
                 >
-                  {{
-                    rooms === 1
-                      ? '1 pokój'
-                      : `${rooms}${rooms === 4 ? '+' : ''} pokoje`
-                  }}
+                  {{ rooms === 1 ? '1 pokój' : `${rooms} pokoje` }}
                 </option>
               </select>
             </div>

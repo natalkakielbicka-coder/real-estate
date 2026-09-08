@@ -63,6 +63,100 @@ const minPrice = ref(null)
 
 const maxPrice = ref(route.query.maxPrice ? Number(route.query.maxPrice) : null)
 
+const formatPrice = (price) => {
+  return new Intl.NumberFormat('pl-PL').format(price)
+}
+
+const removeArrayFilter = (selectedFilters, valueToRemove) => {
+  selectedFilters.value = selectedFilters.value.filter(
+    (value) => value !== valueToRemove
+  )
+}
+
+const activeFilters = computed(() => {
+  const filters = []
+
+  selectedCities.value.forEach((city) => {
+    filters.push({
+      id: `city-${city}`,
+      label: city,
+      remove: () => removeArrayFilter(selectedCities, city)
+    })
+  })
+
+  selectedRooms.value.forEach((room) => {
+    filters.push({
+      id: `rooms-${room}`,
+      label: room === 1 ? '1 pokój' : `${room} pokoje`,
+      remove: () => removeArrayFilter(selectedRooms, room)
+    })
+  })
+
+  selectedStatuses.value.forEach((statusValue) => {
+    const status = statuses.find((item) => item.value === statusValue)
+
+    filters.push({
+      id: `status-${statusValue}`,
+      label: status.label,
+      remove: () => removeArrayFilter(selectedStatuses, statusValue)
+    })
+  })
+
+  selectedOutdoorSpaces.value.forEach((spaceValue) => {
+    const space = outdoorSpaces.find((item) => item.value === spaceValue)
+
+    filters.push({
+      id: `outdoor-space-${spaceValue}`,
+      label: space.label,
+      remove: () => removeArrayFilter(selectedOutdoorSpaces, spaceValue)
+    })
+  })
+
+  if (onlyWithParking.value) {
+    filters.push({
+      id: 'parking',
+      label: 'Miejsce parkingowe',
+      remove: () => {
+        onlyWithParking.value = false
+      }
+    })
+  }
+
+  if (onlyWithStorage.value) {
+    filters.push({
+      id: 'storage',
+      label: 'Komórka lokatorska',
+      remove: () => {
+        onlyWithStorage.value = false
+      }
+    })
+  }
+
+  if (minPrice.value !== null) {
+    filters.push({
+      id: 'min-price',
+      label: `od ${formatPrice(minPrice.value)} zł`,
+      remove: () => {
+        minPrice.value = null
+        priceFromInput.value = ''
+      }
+    })
+  }
+
+  if (maxPrice.value !== null) {
+    filters.push({
+      id: 'max-price',
+      label: `do ${formatPrice(maxPrice.value)} zł`,
+      remove: () => {
+        maxPrice.value = null
+        priceToInput.value = ''
+      }
+    })
+  }
+
+  return filters
+})
+
 const applyPriceFilter = () => {
   minPrice.value =
     priceFromInput.value === '' ? null : Number(priceFromInput.value)
@@ -440,6 +534,29 @@ const sortedApartments = computed(() => {
         </aside>
 
         <div class="min-w-0">
+          <div
+            v-if="activeFilters.length > 0"
+            class="mb-4 flex flex-wrap items-center gap-2"
+            aria-label="Aktywne filtry"
+          >
+            <button
+              v-for="filter in activeFilters"
+              :key="filter.id"
+              class="group inline-flex min-h-9 items-center gap-2 rounded-full border border-line bg-panel px-3.5 text-[11px] font-semibold text-brand transition-colors hover:border-brand"
+              type="button"
+              :aria-label="`Usuń filtr: ${filter.label}`"
+              @click="filter.remove"
+            >
+              {{ filter.label }}
+
+              <span
+                class="text-base leading-none text-muted transition-colors group-hover:text-brand"
+                aria-hidden="true"
+              >
+                ×
+              </span>
+            </button>
+          </div>
           <div
             class="mb-6 flex flex-col items-stretch gap-3 bg-panel p-4 xs:min-h-[62px] xs:flex-row xs:items-center xs:justify-between xs:gap-6 xs:py-2.5 xs:pr-3 xs:pl-5"
           >
