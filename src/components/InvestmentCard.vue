@@ -16,188 +16,73 @@ defineProps({
 
 <template>
   <RouterLink
-    class="investment-card"
+    class="investment-card group grid min-h-[360px] grid-rows-[250px_1fr] bg-brand text-white no-underline transition-shadow duration-300 hover:shadow-[0_24px_55px_rgba(23,63,53,0.2)] max-xs:min-h-[320px] max-xs:grid-rows-[210px_1fr]"
     :to="`/inwestycje/${investment.id}`"
   >
-    <div class="investment-card__image">
+    <div class="investment-card__image relative overflow-hidden">
       <img
+        loading="lazy"
+        class="h-full w-full object-cover transition-transform duration-[600ms] group-hover:scale-105"
         :src="investment.image"
         :alt="`Wizualizacja inwestycji ${investment.name}`"
       />
 
-      <span>
+      <div
+        class="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_50%,rgba(23,63,53,0.55)_100%)]"
+        aria-hidden="true"
+      ></div>
+
+      <span
+        class="absolute right-[18px] bottom-[18px] z-[1] bg-gold px-[11px] py-2 text-[9px] font-bold tracking-[0.08em] text-brand uppercase"
+      >
         {{ investment.city }}
       </span>
     </div>
 
-    <div class="investment-card__content">
-      <p class="investment-card__location">
+    <div class="investment-card__content p-[30px] max-xs:px-5 max-xs:py-6">
+      <p
+        class="investment-card__location mb-3 text-[10px] font-bold tracking-[0.12em] text-gold uppercase"
+      >
         {{ investment.city }} · {{ investment.district }}
       </p>
 
-      <h2>{{ investment.name }}</h2>
+      <h2 class="mb-2.5 text-[clamp(28px,3vw,38px)] text-white">
+        {{ investment.name }}
+      </h2>
 
-      <p class="investment-card__address">
+      <p
+        class="investment-card__address mb-7 text-sm text-[rgba(255,255,255,0.65)]"
+      >
         {{ investment.address }}
       </p>
 
-      <div class="investment-card__apartments">
-        <strong>{{ apartmentsCount }}</strong>
+      <div class="investment-card__apartments mb-7 flex items-baseline gap-2">
+        <strong
+          class="font-display text-[38px] leading-none font-normal text-gold"
+        >
+          {{ apartmentsCount }}
+        </strong>
 
-        <span>{{ getApartmentsLabel(apartmentsCount) }}</span>
+        <span
+          class="text-[10px] font-bold tracking-[0.08em] text-[rgba(255,255,255,0.65)] uppercase"
+        >
+          {{ getApartmentsLabel(apartmentsCount) }}
+        </span>
       </div>
 
-      <div class="investment-card__footer">
-        <span> Planowane zakończenie </span>
+      <div
+        class="investment-card__footer flex items-end justify-between gap-5 border-t border-white/15 pt-[18px]"
+      >
+        <span
+          class="max-w-[110px] text-[9px] leading-[1.4] tracking-[0.08em] text-white/55 uppercase"
+        >
+          Planowane zakończenie
+        </span>
 
-        <strong>
+        <strong class="font-display text-[19px] font-normal text-white">
           {{ formatCompletionDate(investment.completionDate) }}
         </strong>
       </div>
     </div>
   </RouterLink>
 </template>
-
-<style scoped>
-.investment-card {
-  display: grid;
-  min-height: 360px;
-  grid-template-rows: 250px 1fr;
-  color: #ffffff;
-  background-color: var(--color-primary);
-  text-decoration: none;
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-}
-
-.investment-card:hover {
-  box-shadow: 0 24px 55px rgba(23, 63, 53, 0.2);
-  transform: translateY(-6px);
-}
-
-.investment-card__content {
-  padding: 30px;
-}
-
-.investment-card__location {
-  margin-bottom: 12px;
-  color: var(--color-accent);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.investment-card h2 {
-  margin-bottom: 10px;
-  color: #ffffff;
-  font-size: clamp(28px, 3vw, 38px);
-}
-
-.investment-card__address {
-  margin-bottom: 28px;
-  color: rgba(255, 255, 255, 0.65);
-  font-size: 14px;
-}
-
-.investment-card__footer {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  padding-top: 18px;
-  gap: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-.investment-card__footer span {
-  max-width: 110px;
-  color: rgba(255, 255, 255, 0.55);
-  font-size: 9px;
-  line-height: 1.4;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.investment-card__footer strong {
-  color: #ffffff;
-  font-family: var(--font-heading);
-  font-size: 19px;
-  font-weight: 400;
-}
-
-.investment-card__apartments {
-  display: flex;
-  align-items: baseline;
-  margin-bottom: 28px;
-  gap: 8px;
-}
-
-.investment-card__apartments strong {
-  color: var(--color-accent);
-  font-family: var(--font-heading);
-  font-size: 38px;
-  font-weight: 400;
-  line-height: 1;
-}
-
-.investment-card__apartments span {
-  color: rgba(255, 255, 255, 0.65);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.investment-card__image {
-  position: relative;
-  overflow: hidden;
-}
-
-.investment-card__image::after {
-  position: absolute;
-  inset: 0;
-  content: '';
-  background: linear-gradient(
-    180deg,
-    transparent 50%,
-    rgba(23, 63, 53, 0.55) 100%
-  );
-}
-
-.investment-card__image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.6s ease;
-}
-
-.investment-card:hover .investment-card__image img {
-  transform: scale(1.05);
-}
-
-.investment-card__image span {
-  position: absolute;
-  z-index: 1;
-  right: 18px;
-  bottom: 18px;
-  padding: 8px 11px;
-  color: var(--color-primary);
-  background-color: var(--color-accent);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-@media (max-width: 479px) {
-  .investment-card {
-    min-height: 320px;
-    grid-template-rows: 210px 1fr;
-  }
-
-  .investment-card__content {
-    padding: 24px 20px;
-  }
-}
-</style>
