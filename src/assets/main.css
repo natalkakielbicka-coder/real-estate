@@ -1,3 +1,23 @@
+@import 'tailwindcss';
+
+@theme {
+  --breakpoint-xs: 30rem;
+  --breakpoint-sm: 48rem;
+  --breakpoint-md: 62rem;
+  --breakpoint-lg: 75rem;
+
+  --color-brand: var(--color-primary);
+  --color-brand-light: var(--color-primary-light);
+  --color-gold: var(--color-accent);
+  --color-page: var(--color-background);
+  --color-panel: var(--color-surface);
+  --color-muted: var(--color-text-muted);
+  --color-line: var(--color-border);
+
+  --font-display: var(--font-heading);
+  --font-copy: var(--font-body);
+}
+
 :root {
   --color-primary: #173f35;
   --color-primary-light: #24594b;

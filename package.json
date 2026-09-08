@@ -11,8 +11,10 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.3.3",
     "leaflet": "^1.9.4",
     "swiper": "^14.2.0",
+    "tailwindcss": "^4.3.3",
     "vue": "^3.5.41",
     "vue-easy-lightbox": "^1.19.0",
     "vue-router": "^5.3.1"

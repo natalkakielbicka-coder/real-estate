@@ -1,84 +1,27 @@
 <template>
-  <main class="not-found">
+  <main
+    class="not-found grid min-h-screen place-items-center pt-40 pb-20 text-center max-sm:pt-[130px] max-xs:min-h-[90vh] max-xs:px-4"
+  >
     <div class="container">
-      <p class="not-found__code">404</p>
+      <p
+        class="not-found__code mb-4 font-display text-[clamp(80px,15vw,170px)] leading-[0.8] text-gold"
+      >
+        404
+      </p>
 
-      <h1>Nie znaleziono strony</h1>
+      <h1 class="mb-5 text-[clamp(38px,6vw,68px)]">Nie znaleziono strony</h1>
 
-      <p>Strona, której szukasz, nie istnieje lub została przeniesiona.</p>
+      <p class="mx-auto mb-[30px] max-w-[520px] text-muted">
+        Strona, której szukasz, nie istnieje lub została przeniesiona.
+      </p>
 
-      <RouterLink to="/">
+      <RouterLink
+        class="inline-flex items-center gap-3 bg-brand px-[22px] py-[15px] text-xs font-bold tracking-[0.06em] text-white! uppercase transition-colors duration-[250ms] hover:bg-gold hover:text-brand! max-xs:w-full max-xs:justify-center"
+        to="/"
+      >
         Wróć na stronę główną
         <span aria-hidden="true">→</span>
       </RouterLink>
     </div>
   </main>
 </template>
-
-<style scoped>
-.not-found {
-  display: grid;
-  min-height: 100vh;
-  padding: 160px 0 80px;
-  place-items: center;
-  text-align: center;
-}
-
-.not-found__code {
-  margin-bottom: 16px;
-  color: var(--color-accent);
-  font-family: var(--font-heading);
-  font-size: clamp(80px, 15vw, 170px);
-  line-height: 0.8;
-}
-
-.not-found h1 {
-  margin-bottom: 20px;
-  font-size: clamp(38px, 6vw, 68px);
-}
-
-.not-found .container > p:not(.not-found__code) {
-  max-width: 520px;
-  margin: 0 auto 30px;
-  color: var(--color-text-muted);
-}
-
-.not-found a {
-  display: inline-flex;
-  align-items: center;
-  padding: 15px 22px;
-  gap: 12px;
-  color: #ffffff;
-  background-color: var(--color-primary);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  transition:
-    color 0.25s ease,
-    background-color 0.25s ease;
-}
-
-.not-found a:hover {
-  color: var(--color-primary);
-  background-color: var(--color-accent);
-}
-
-@media (max-width: 767px) {
-  .not-found {
-    padding-top: 130px;
-  }
-}
-
-@media (max-width: 479px) {
-  .not-found {
-    min-height: 90vh;
-    padding-inline: 4px;
-  }
-
-  .not-found a {
-    width: 100%;
-    justify-content: center;
-  }
-}
-</style>
