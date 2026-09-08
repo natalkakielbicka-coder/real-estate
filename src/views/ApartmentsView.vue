@@ -8,6 +8,7 @@ import FloorPlanSelector from '../components/FloorPlanSelector.vue'
 import InvestmentsMap from '../components/InvestmentsMap.vue'
 import { floorPlans } from '../data/floorPlans'
 import { apartments } from '../data/apartments'
+import { apartmentStatusClasses } from '../constants/apartmentStatuses'
 
 const selectedStatuses = ref([])
 const selectedOutdoorSpaces = ref([])
@@ -328,11 +329,7 @@ const sortedApartments = computed(() => {
               <span class="filter-checkbox__mark"></span>
               <span
                 class="h-[7px] w-[7px] shrink-0 rounded-full"
-                :class="{
-                  'bg-[#3d806d]': status.value === 'available',
-                  'bg-[#c28b3f]': status.value === 'reserved',
-                  'bg-[#929896]': status.value === 'sold'
-                }"
+                :class="apartmentStatusClasses[status.value]"
               ></span>
               <span>{{ status.label }}</span>
               <small class="ml-auto min-w-5 text-right text-[9px] text-muted">{{
@@ -459,27 +456,73 @@ const sortedApartments = computed(() => {
               aria-label="Sposób wyświetlania mieszkań"
             >
               <button
-                v-for="mode in ['grid', 'list', 'table', 'plan', 'map']"
-                :key="mode"
-                type="button"
                 class="min-h-[34px] rounded-[1px] border-0 px-[13px] text-[10px] font-bold uppercase"
                 :class="
-                  viewMode === mode
+                  viewMode === 'grid'
                     ? 'bg-brand text-white'
                     : 'bg-transparent text-muted hover:bg-white hover:text-brand'
                 "
-                :aria-pressed="viewMode === mode"
-                @click="viewMode = mode"
+                type="button"
+                :aria-pressed="viewMode === 'grid'"
+                @click="viewMode = 'grid'"
               >
-                {{
-                  {
-                    grid: 'Grid',
-                    list: 'Lista',
-                    table: 'Tabela',
-                    plan: 'Rzut',
-                    map: 'Mapa'
-                  }[mode]
-                }}
+                Grid
+              </button>
+
+              <button
+                class="min-h-[34px] rounded-[1px] border-0 px-[13px] text-[10px] font-bold uppercase"
+                :class="
+                  viewMode === 'list'
+                    ? 'bg-brand text-white'
+                    : 'bg-transparent text-muted hover:bg-white hover:text-brand'
+                "
+                type="button"
+                :aria-pressed="viewMode === 'list'"
+                @click="viewMode = 'list'"
+              >
+                Lista
+              </button>
+
+              <button
+                class="min-h-[34px] rounded-[1px] border-0 px-[13px] text-[10px] font-bold uppercase"
+                :class="
+                  viewMode === 'table'
+                    ? 'bg-brand text-white'
+                    : 'bg-transparent text-muted hover:bg-white hover:text-brand'
+                "
+                type="button"
+                :aria-pressed="viewMode === 'table'"
+                @click="viewMode = 'table'"
+              >
+                Tabela
+              </button>
+
+              <button
+                class="min-h-[34px] rounded-[1px] border-0 px-[13px] text-[10px] font-bold uppercase"
+                :class="
+                  viewMode === 'plan'
+                    ? 'bg-brand text-white'
+                    : 'bg-transparent text-muted hover:bg-white hover:text-brand'
+                "
+                type="button"
+                :aria-pressed="viewMode === 'plan'"
+                @click="viewMode = 'plan'"
+              >
+                Rzut
+              </button>
+
+              <button
+                class="min-h-[34px] rounded-[1px] border-0 px-[13px] text-[10px] font-bold uppercase"
+                :class="
+                  viewMode === 'map'
+                    ? 'bg-brand text-white'
+                    : 'bg-transparent text-muted hover:bg-white hover:text-brand'
+                "
+                type="button"
+                :aria-pressed="viewMode === 'map'"
+                @click="viewMode = 'map'"
+              >
+                Mapa
               </button>
             </div>
 

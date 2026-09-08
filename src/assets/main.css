@@ -9,6 +9,11 @@
   --color-brand: var(--color-primary);
   --color-brand-light: var(--color-primary-light);
   --color-gold: var(--color-accent);
+
+  --color-available: #3d806d;
+  --color-reserved: #c28b3f;
+  --color-sold: #929896;
+
   --color-page: var(--color-background);
   --color-panel: var(--color-surface);
   --color-muted: var(--color-text-muted);

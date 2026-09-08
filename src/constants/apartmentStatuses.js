@@ -3,3 +3,9 @@ export const apartmentStatusLabels = {
   reserved: 'Rezerwacja',
   sold: 'Sprzedane'
 }
+
+export const apartmentStatusClasses = {
+  available: 'bg-available',
+  reserved: 'bg-reserved',
+  sold: 'bg-sold'
+}

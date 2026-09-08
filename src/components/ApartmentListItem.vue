@@ -1,5 +1,8 @@
 <script setup>
-import { apartmentStatusLabels } from '../constants/apartmentStatuses'
+import {
+  apartmentStatusLabels,
+  apartmentStatusClasses
+} from '../constants/apartmentStatuses'
 import {
   getFloorLabel,
   formatPrice,
@@ -48,11 +51,7 @@ defineProps({
 
         <span
           class="shrink-0 px-2.5 py-[7px] text-[8px] font-bold text-white uppercase"
-          :class="{
-            'bg-[#3d806d]': apartment.status === 'available',
-            'bg-[#c28b3f]': apartment.status === 'reserved',
-            'bg-[#929896]': apartment.status === 'sold'
-          }"
+          :class="apartmentStatusClasses[apartment.status]"
         >
           {{ apartmentStatusLabels[apartment.status] }}
         </span>
