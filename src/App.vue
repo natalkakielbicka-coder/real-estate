@@ -7,14 +7,3 @@ import AppHeader from './components/AppHeader.vue'
 
   <RouterView />
 </template>
-
-<style scoped>
-main {
-  padding-block: 80px;
-}
-
-p {
-  color: var(--color-text-muted);
-  font-size: 18px;
-}
-</style>
