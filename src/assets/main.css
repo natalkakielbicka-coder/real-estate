@@ -103,3 +103,14 @@ a {
   width: min(100% - (2 * var(--container-padding)), var(--container-width));
   margin-inline: auto;
 }
+
+::selection {
+  color: #ffffff;
+  background-color: var(--color-primary);
+}
+
+input::selection,
+select::selection {
+  color: var(--color-primary);
+  background-color: var(--color-accent);
+}
