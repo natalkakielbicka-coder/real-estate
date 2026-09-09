@@ -744,13 +744,22 @@ const getOffersLabel = (count) => {
               >0</span
             >
             <h2 class="mb-3 text-[clamp(28px,4vw,40px)]">
-              Brak pasujących mieszkań
+              {{
+                activeFilters.length > 0
+                  ? 'Brak mieszkań spełniających kryteria'
+                  : 'Obecnie brak dostępnych mieszkań'
+              }}
             </h2>
+
             <p class="mb-7 max-w-[490px] text-sm text-muted">
-              Nie znaleźliśmy lokali spełniających wszystkie wybrane kryteria.
-              Spróbuj zmienić filtry.
+              {{
+                activeFilters.length > 0
+                  ? 'Spróbuj usunąć jeden z filtrów lub wyczyść wszystkie kryteria.'
+                  : 'Wkrótce mogą pojawić się tutaj nowe oferty.'
+              }}
             </p>
             <button
+              v-if="activeFilters.length > 0"
               class="group inline-flex min-h-12 items-center gap-3.5 rounded-[3px] border-0 bg-brand px-5 text-[11px] font-bold text-white hover:bg-brand-light"
               type="button"
               @click="resetFilters"
