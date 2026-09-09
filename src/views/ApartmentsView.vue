@@ -25,6 +25,8 @@ const selectedRooms = ref(route.query.rooms ? [Number(route.query.rooms)] : [])
 
 const availableViewModes = ['grid', 'list', 'table', 'plan', 'map']
 
+const isFiltersOpen = ref(false)
+
 const viewMode = ref(
   availableViewModes.includes(route.query.view) ? route.query.view : 'grid'
 )
@@ -361,8 +363,29 @@ const getOffersLabel = (count) => {
       <div
         class="container grid grid-cols-1 items-start gap-6 xs:gap-8 md:grid-cols-[270px_minmax(0,1fr)]"
       >
+        <button
+          class="flex min-h-12 w-full items-center justify-between gap-4 bg-brand px-5 text-[11px] font-bold text-white md:hidden"
+          type="button"
+          aria-controls="apartments-filters"
+          :aria-expanded="isFiltersOpen"
+          @click="isFiltersOpen = !isFiltersOpen"
+        >
+          <span>
+            {{ isFiltersOpen ? 'Ukryj filtry' : 'Pokaż filtry' }}
+          </span>
+
+          <span
+            v-if="activeFilters.length > 0"
+            class="grid h-6 min-w-6 place-items-center rounded-full bg-white px-1.5 text-[9px] text-brand"
+          >
+            {{ activeFilters.length }}
+          </span>
+        </button>
+
         <aside
-          class="min-h-[150px] bg-panel px-[18px] py-[22px] shadow-[0_14px_45px_rgba(23,63,53,0.08)] xs:p-7 md:sticky md:top-[118px] md:min-h-[400px]"
+          id="apartments-filters"
+          class="min-h-[150px] bg-panel px-[18px] py-[22px] shadow-[0_14px_45px_rgba(23,63,53,0.08)] xs:p-7 md:sticky md:top-[118px] md:block md:min-h-[400px]"
+          :class="isFiltersOpen ? 'block' : 'hidden'"
         >
           <div class="mb-7 flex items-start justify-between gap-[15px]">
             <p class="mb-0 text-lg font-bold text-brand">Filtry mieszkań</p>
