@@ -375,11 +375,12 @@ const getOffersLabel = (count) => {
           </div>
 
           <button
+            v-if="activeFilters.length > 0"
             class="border-0 border-b border-line bg-transparent py-[3px] text-[10px] font-bold text-muted transition-colors hover:border-brand hover:text-brand"
             type="button"
             @click="resetFilters"
           >
-            Wyczyść
+            Wyczyść wszystkie
           </button>
 
           <fieldset class="mt-[22px] border-0 border-t border-line pt-[22px]">
