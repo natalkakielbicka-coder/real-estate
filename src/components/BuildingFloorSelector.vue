@@ -68,31 +68,50 @@ const selectFloor = (floor) => {
 </script>
 
 <template>
-  <div class="building-selector">
-    <div class="building-selector__header">
+  <div
+    class="bg-panel p-[clamp(22px,4vw,42px)] shadow-[0_14px_45px_rgba(23,63,53,0.08)] max-xs:p-[18px]"
+  >
+    <div
+      class="mb-[30px] flex items-end justify-between gap-[30px] max-sm:flex-col max-sm:items-start"
+    >
       <div>
-        <p>Wybierz lokal</p>
-        <h2>{{ plan.name }}</h2>
+        <p
+          class="mb-2 text-[10px] font-bold tracking-[0.12em] text-gold uppercase"
+        >
+          Wybierz lokal
+        </p>
+
+        <h2 class="mb-0 text-[clamp(32px,4vw,48px)]">
+          {{ plan.name }}
+        </h2>
       </div>
 
-      <div class="building-selector__current">
-        <span>Wybrane piętro</span>
-        <strong>{{ selectedFloorLabel }}</strong>
+      <div class="flex flex-col items-end gap-[5px] max-sm:items-start">
+        <span
+          class="text-[8px] font-bold tracking-[0.1em] text-muted uppercase"
+        >
+          Wybrane piętro
+        </span>
+
+        <strong class="font-display text-[22px] font-normal text-brand">
+          {{ selectedFloorLabel }}
+        </strong>
       </div>
     </div>
 
     <div
-      class="building-selector__image"
+      class="relative overflow-hidden bg-[#e8ebe8]"
       @mouseleave="hoveredFloor = null"
       @mousemove="moveTooltip"
     >
       <img
+        class="block h-auto w-full"
         :src="plan.image"
         :alt="`Wizualizacja ${plan.name}`"
       />
 
       <svg
-        class="building-selector__areas"
+        class="absolute inset-0 h-full w-full"
         :viewBox="plan.viewBox"
         preserveAspectRatio="xMidYMid meet"
         aria-label="Wybór piętra budynku"
@@ -100,9 +119,9 @@ const selectFloor = (floor) => {
         <polygon
           v-for="floor in plan.floors"
           :key="floor.floor"
-          class="building-selector__floor"
+          class="cursor-pointer fill-gold fill-opacity-0 stroke-[rgba(255,255,255,0)] stroke-[5] transition-[fill-opacity,stroke] duration-250 hover:fill-opacity-30 hover:stroke-[rgba(255,255,255,0.9)] focus:fill-opacity-30 focus:stroke-[rgba(255,255,255,0.9)] focus:outline-none"
           :class="{
-            'building-selector__floor--selected':
+            'fill-opacity-[0.48] stroke-white':
               selectedFloorNumber === floor.floor
           }"
           :points="floor.points"
@@ -122,171 +141,24 @@ const selectFloor = (floor) => {
 
       <div
         v-if="hoveredFloor"
-        class="building-selector__tooltip"
+        class="pointer-events-none absolute z-2 box-border flex w-[130px] translate-x-4 translate-y-[calc(-100%_-_16px)] flex-col gap-[5px] bg-brand px-4 py-[13px] text-white shadow-[0_12px_30px_rgba(23,63,53,0.22)]"
         :class="{
-          'building-selector__tooltip--left': tooltipOnLeft,
-          'building-selector__tooltip--below': tooltipBelow
+          'translate-x-[calc(-100%_-_16px)]': tooltipOnLeft,
+          'translate-y-4': tooltipBelow
         }"
         :style="{
           left: `${tooltipPosition.x}px`,
           top: `${tooltipPosition.y}px`
         }"
       >
-        <strong>{{ hoveredFloor.label }}</strong>
-        <span>Liczba mieszkań: {{ hoveredFloorApartmentsCount }}</span>
+        <strong class="font-display text-lg font-normal">
+          {{ hoveredFloor.label }}
+        </strong>
+
+        <span class="text-[9px] tracking-[0.04em] text-white/68 uppercase">
+          Liczba mieszkań: {{ hoveredFloorApartmentsCount }}
+        </span>
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.building-selector {
-  padding: clamp(22px, 4vw, 42px);
-  background-color: var(--color-surface);
-  box-shadow: 0 14px 45px rgba(23, 63, 53, 0.08);
-}
-
-.building-selector__header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-bottom: 30px;
-  gap: 30px;
-}
-
-.building-selector__header p {
-  margin-bottom: 8px;
-  color: var(--color-accent);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.building-selector__header h2 {
-  margin-bottom: 0;
-  font-size: clamp(32px, 4vw, 48px);
-}
-
-.building-selector__current {
-  display: flex;
-  align-items: flex-end;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.building-selector__current span {
-  color: var(--color-text-muted);
-  font-size: 8px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.building-selector__current strong {
-  color: var(--color-primary);
-  font-family: var(--font-heading);
-  font-size: 22px;
-  font-weight: 400;
-}
-
-.building-selector__image {
-  position: relative;
-  overflow: hidden;
-  background-color: #e8ebe8;
-}
-
-.building-selector__image img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.building-selector__areas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.building-selector__floor {
-  fill: var(--color-accent);
-  fill-opacity: 0;
-  stroke: rgba(255, 255, 255, 0);
-  stroke-width: 5;
-  cursor: pointer;
-  transition:
-    fill-opacity 0.25s ease,
-    stroke 0.25s ease;
-}
-
-.building-selector__floor:hover,
-.building-selector__floor:focus {
-  fill-opacity: 0.3;
-  stroke: rgba(255, 255, 255, 0.9);
-  outline: none;
-}
-
-.building-selector__floor--selected {
-  fill-opacity: 0.48;
-  stroke: #ffffff;
-}
-
-.building-selector__tooltip {
-  position: absolute;
-  z-index: 2;
-  transform: translate(16px, calc(-100% - 16px));
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  padding: 13px 16px;
-  color: #ffffff;
-  background-color: var(--color-primary);
-  box-shadow: 0 12px 30px rgba(23, 63, 53, 0.22);
-  pointer-events: none;
-  width: 130px;
-  box-sizing: border-box;
-}
-
-.building-selector__tooltip strong {
-  font-family: var(--font-heading);
-  font-size: 18px;
-  font-weight: 400;
-}
-
-.building-selector__tooltip span {
-  color: rgba(255, 255, 255, 0.68);
-  font-size: 9px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.building-selector__tooltip--left {
-  transform: translate(calc(-100% - 16px), calc(-100% - 16px));
-}
-
-.building-selector__tooltip--below {
-  transform: translate(16px, 16px);
-}
-
-.building-selector__tooltip--left.building-selector__tooltip--below {
-  transform: translate(calc(-100% - 16px), 16px);
-}
-
-@media (max-width: 767px) {
-  .building-selector__header {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .building-selector__current {
-    align-items: flex-start;
-  }
-}
-
-@media (max-width: 479px) {
-  .building-selector {
-    padding: 18px;
-  }
-}
-</style>
