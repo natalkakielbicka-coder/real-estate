@@ -609,12 +609,15 @@ const getOffersLabel = (count) => {
             <label
               v-for="city in cities"
               :key="city"
-              class="filter-checkbox"
+              class="filter-checkbox has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-40"
             >
               <input
                 v-model="selectedCities"
                 type="checkbox"
                 :value="city"
+                :disabled="
+                  cityCounts[city] === 0 && !selectedCities.includes(city)
+                "
               />
               <span class="filter-checkbox__mark"></span>
               <span>{{ city }}</span>
@@ -634,12 +637,15 @@ const getOffersLabel = (count) => {
             <label
               v-for="room in rooms"
               :key="room"
-              class="filter-checkbox"
+              class="filter-checkbox has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-40"
             >
               <input
                 v-model="selectedRooms"
                 type="checkbox"
                 :value="room"
+                :disabled="
+                  roomCounts[room] === 0 && !selectedRooms.includes(room)
+                "
               />
               <span class="filter-checkbox__mark"></span>
               <span>{{ room }} {{ room === 1 ? 'pokój' : 'pokoje' }}</span>
@@ -659,12 +665,16 @@ const getOffersLabel = (count) => {
             <label
               v-for="status in statuses"
               :key="status.value"
-              class="filter-checkbox"
+              class="filter-checkbox has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-40"
             >
               <input
                 v-model="selectedStatuses"
                 type="checkbox"
                 :value="status.value"
+                :disabled="
+                  statusCounts[status.value] === 0 &&
+                  !selectedStatuses.includes(status.value)
+                "
               />
               <span class="filter-checkbox__mark"></span>
               <span
@@ -687,12 +697,16 @@ const getOffersLabel = (count) => {
             <label
               v-for="space in outdoorSpaces"
               :key="space.value"
-              class="filter-checkbox"
+              class="filter-checkbox has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-40"
             >
               <input
                 v-model="selectedOutdoorSpaces"
                 type="checkbox"
                 :value="space.value"
+                :disabled="
+                  outdoorSpaceCounts[space.value] === 0 &&
+                  !selectedOutdoorSpaces.includes(space.value)
+                "
               />
               <span class="filter-checkbox__mark"></span>
               <span>{{ space.label }}</span>
@@ -708,10 +722,13 @@ const getOffersLabel = (count) => {
             >
               Dodatkowe udogodnienia
             </legend>
-            <label class="filter-checkbox">
+            <label
+              class="filter-checkbox has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-40"
+            >
               <input
                 v-model="onlyWithParking"
                 type="checkbox"
+                :disabled="amenityCounts.parking === 0 && !onlyWithParking"
               />
               <span class="filter-checkbox__mark"></span>
               <span>Miejsce parkingowe</span>
@@ -720,10 +737,13 @@ const getOffersLabel = (count) => {
                 {{ amenityCounts.parking }}
               </small>
             </label>
-            <label class="filter-checkbox">
+            <label
+              class="filter-checkbox has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-40"
+            >
               <input
                 v-model="onlyWithStorage"
                 type="checkbox"
+                :disabled="amenityCounts.storage === 0 && !onlyWithStorage"
               />
               <span class="filter-checkbox__mark"></span>
               <span>Komórka lokatorska</span>
