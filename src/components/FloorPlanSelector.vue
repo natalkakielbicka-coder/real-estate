@@ -102,48 +102,78 @@ const hideTooltip = () => {
 </script>
 
 <template>
-  <div class="floor-selector">
-    <div class="floor-selector__header">
+  <div
+    class="bg-panel p-[clamp(22px,4vw,42px)] shadow-[0_14px_45px_rgba(23,63,53,0.08)] max-xs:p-[18px]"
+  >
+    <div
+      class="mb-[30px] flex items-end justify-between gap-[30px] max-sm:flex-col max-sm:items-start"
+    >
       <div>
-        <p>Wybierz mieszkanie</p>
-        <h2>{{ floorPlan.name }}</h2>
+        <p
+          class="mb-[7px] text-[10px] font-bold tracking-[0.12em] text-gold uppercase"
+        >
+          Wybierz mieszkanie
+        </p>
+
+        <h2 class="mb-0 text-[clamp(30px,4vw,46px)]">
+          {{ floorPlan.name }}
+        </h2>
       </div>
 
-      <div class="floor-selector__legend">
-        <span class="floor-selector__legend-item">
-          <i class="floor-selector__dot floor-selector__dot--available"></i>
+      <div class="flex flex-wrap gap-x-5 gap-y-3 max-xs:flex-col max-xs:gap-2">
+        <span
+          class="flex items-center gap-[7px] text-[10px] font-semibold text-muted"
+        >
+          <i class="h-[9px] w-[9px] shrink-0 rounded-full bg-available"></i>
 
           Dostępne
 
-          <strong>{{ planStatusCounts.available }}</strong>
+          <strong
+            class="grid h-5 min-w-5 place-items-center rounded-[10px] bg-page px-[5px] text-[9px] text-brand"
+          >
+            {{ planStatusCounts.available }}
+          </strong>
         </span>
 
-        <span class="floor-selector__legend-item">
-          <i class="floor-selector__dot floor-selector__dot--reserved"></i>
+        <span
+          class="flex items-center gap-[7px] text-[10px] font-semibold text-muted"
+        >
+          <i class="h-[9px] w-[9px] shrink-0 rounded-full bg-reserved"></i>
 
           Rezerwacja
 
-          <strong>{{ planStatusCounts.reserved }}</strong>
+          <strong
+            class="grid h-5 min-w-5 place-items-center rounded-[10px] bg-page px-[5px] text-[9px] text-brand"
+          >
+            {{ planStatusCounts.reserved }}
+          </strong>
         </span>
 
-        <span class="floor-selector__legend-item">
-          <i class="floor-selector__dot floor-selector__dot--sold"></i>
+        <span
+          class="flex items-center gap-[7px] text-[10px] font-semibold text-muted"
+        >
+          <i class="h-[9px] w-[9px] shrink-0 rounded-full bg-sold"></i>
 
           Sprzedane
 
-          <strong>{{ planStatusCounts.sold }}</strong>
+          <strong
+            class="grid h-5 min-w-5 place-items-center rounded-[10px] bg-page px-[5px] text-[9px] text-brand"
+          >
+            {{ planStatusCounts.sold }}
+          </strong>
         </span>
       </div>
     </div>
 
-    <div class="floor-selector__plan">
+    <div class="relative overflow-hidden bg-[#f5f3ee] max-sm:overflow-x-auto">
       <img
+        class="block h-auto w-full max-sm:min-w-[720px]"
         :src="floorPlan.image"
         :alt="`Rzut ${floorPlan.name}`"
       />
 
       <svg
-        class="floor-selector__areas"
+        class="absolute inset-0 h-full w-full max-sm:min-w-[720px]"
         :viewBox="floorPlan.viewBox"
         preserveAspectRatio="xMidYMid meet"
         aria-label="Interaktywny rzut mieszkań"
@@ -151,11 +181,19 @@ const hideTooltip = () => {
         <polygon
           v-for="area in mappedAreas"
           :key="area.apartmentId"
-          class="floor-selector__area"
+          class="cursor-pointer stroke-[rgba(255,255,255,0.95)] [stroke-width:5] transition-[fill-opacity,stroke-width] duration-250 hover:[fill-opacity:0.58] hover:[stroke-width:8] focus:[fill-opacity:0.58] focus:[stroke-width:8] focus:outline-none"
           :class="[
-            `floor-selector__area--${area.apartment.status}`,
             {
-              'floor-selector__area--filtered-out': !area.matchesFilters
+              'fill-available [fill-opacity:0.2]':
+                area.apartment.status === 'available',
+
+              'fill-reserved [fill-opacity:0.25]':
+                area.apartment.status === 'reserved',
+
+              'fill-sold [fill-opacity:0.32]': area.apartment.status === 'sold',
+
+              'pointer-events-none cursor-not-allowed fill-white [fill-opacity:0.72] stroke-[rgba(146,152,150,0.35)]':
+                !area.matchesFilters
             }
           ]"
           :points="area.points"
@@ -178,20 +216,37 @@ const hideTooltip = () => {
 
       <div
         v-if="visiblePlanApartmentsCount === 0"
-        class="floor-selector__empty"
+        class="absolute inset-0 z-3 flex flex-col items-center justify-center bg-[rgba(245,243,238,0.9)] p-[30px] text-center backdrop-blur-[3px]"
       >
-        <span>0</span>
+        <span
+          class="mb-[18px] grid h-[70px] w-[70px] place-items-center rounded-full bg-white font-display text-[38px] text-gold"
+        >
+          0
+        </span>
 
-        <strong>Brak mieszkań na tym rzucie</strong>
+        <strong
+          class="mb-[7px] font-display text-[clamp(22px,3vw,32px)] font-normal text-brand"
+        >
+          Brak mieszkań na tym rzucie
+        </strong>
 
-        <p>Zmień lub wyczyść wybrane filtry.</p>
+        <p class="mb-0 text-[11px] text-muted">
+          Zmień lub wyczyść wybrane filtry.
+        </p>
 
         <button
+          class="group mt-5 inline-flex min-h-11 items-center gap-3 border-0 bg-brand px-[17px] text-[10px] font-bold text-white transition-colors hover:bg-brand-light"
           type="button"
           @click="emit('reset-filters')"
         >
           Wyczyść filtry
-          <span aria-hidden="true">→</span>
+
+          <span
+            class="text-[17px] transition-transform duration-200 group-hover:translate-x-1"
+            aria-hidden="true"
+          >
+            →
+          </span>
         </button>
       </div>
     </div>
@@ -199,352 +254,54 @@ const hideTooltip = () => {
     <Teleport to="body">
       <div
         v-if="activeApartment"
-        class="floor-selector__tooltip"
-        :class="{
-          'floor-selector__tooltip--below': tooltipBelowCursor
-        }"
+        class="pointer-events-none fixed z-[1000] w-[245px] -translate-x-1/2 bg-brand p-[18px] text-white shadow-[0_15px_40px_rgba(23,63,53,0.25)] after:absolute after:left-1/2 after:h-[14px] after:w-[14px] after:-translate-x-1/2 after:rotate-45 after:bg-brand after:content-['']"
+        :class="
+          tooltipBelowCursor
+            ? 'translate-y-[18px] after:-top-[7px]'
+            : 'translate-y-[calc(-100%_-_16px)] after:-bottom-[7px]'
+        "
         :style="{
           left: `${tooltipPosition.x}px`,
           top: `${tooltipPosition.y}px`
         }"
       >
-        <div class="floor-selector__tooltip-heading">
-          <strong>Mieszkanie {{ activeApartment.number }}</strong>
+        <div class="mb-[14px] flex items-start justify-between gap-3">
+          <strong class="font-display text-xl font-normal">
+            Mieszkanie {{ activeApartment.number }}
+          </strong>
 
-          <span :class="`status--${activeApartment.status}`">
+          <span
+            class="px-[7px] py-[5px] text-[7px] font-bold uppercase"
+            :class="{
+              'bg-available': activeApartment.status === 'available',
+
+              'bg-reserved': activeApartment.status === 'reserved',
+
+              'bg-sold': activeApartment.status === 'sold'
+            }"
+          >
             {{ apartmentStatusLabels[activeApartment.status] }}
           </span>
         </div>
 
-        <div class="floor-selector__tooltip-parameters">
-          <span>{{ activeApartment.rooms }} pokoje</span>
-          <span>{{ activeApartment.area }} m²</span>
+        <div class="mb-[14px] flex gap-3 border-y border-white/18 py-[11px]">
+          <span class="text-[9px]"> {{ activeApartment.rooms }} pokoje </span>
 
-          <span>{{ getFloorLabel(activeApartment.floor) }} </span>
+          <span class="text-[9px]"> {{ activeApartment.area }} m² </span>
+
+          <span class="text-[9px]">
+            {{ getFloorLabel(activeApartment.floor) }}
+          </span>
         </div>
 
-        <p>{{ formatPrice(activeApartment.price) }} zł</p>
+        <p class="mb-[5px] font-display text-[22px] text-white">
+          {{ formatPrice(activeApartment.price) }} zł
+        </p>
 
-        <small>Kliknij, aby zobaczyć mieszkanie</small>
+        <small class="text-[8px] text-white/60">
+          Kliknij, aby zobaczyć mieszkanie
+        </small>
       </div>
     </Teleport>
   </div>
 </template>
-
-<style scoped>
-.floor-selector {
-  padding: clamp(22px, 4vw, 42px);
-  background-color: var(--color-surface);
-  box-shadow: 0 14px 45px rgba(23, 63, 53, 0.08);
-}
-
-.floor-selector__header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-bottom: 30px;
-  gap: 30px;
-}
-
-.floor-selector__header p {
-  margin-bottom: 7px;
-  color: var(--color-accent);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.floor-selector__header h2 {
-  margin-bottom: 0;
-  font-size: clamp(30px, 4vw, 46px);
-}
-
-.floor-selector__legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px 20px;
-}
-
-.floor-selector__legend-item {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  color: var(--color-text-muted);
-  font-size: 10px;
-  font-weight: 600;
-}
-
-.floor-selector__legend-item strong {
-  display: grid;
-  min-width: 20px;
-  height: 20px;
-  padding-inline: 5px;
-  place-items: center;
-  color: var(--color-primary);
-  background-color: var(--color-background);
-  font-size: 9px;
-  border-radius: 10px;
-}
-
-.floor-selector__dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-}
-
-.floor-selector__dot--available {
-  background-color: #3d806d;
-}
-
-.floor-selector__dot--reserved {
-  background-color: #c28b3f;
-}
-
-.floor-selector__dot--sold {
-  background-color: #929896;
-}
-
-.floor-selector__plan {
-  position: relative;
-  overflow: hidden;
-  background-color: #f5f3ee;
-}
-
-.floor-selector__plan img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.floor-selector__areas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.floor-selector__area {
-  stroke: rgba(255, 255, 255, 0.95);
-  stroke-width: 5;
-  cursor: pointer;
-  transition:
-    fill-opacity 0.25s ease,
-    stroke-width 0.25s ease;
-}
-
-.floor-selector__area--available {
-  fill: #3d806d;
-  fill-opacity: 0.2;
-}
-
-.floor-selector__area--reserved {
-  fill: #c28b3f;
-  fill-opacity: 0.25;
-}
-
-.floor-selector__area--sold {
-  fill: #929896;
-  fill-opacity: 0.32;
-}
-
-.floor-selector__area:hover,
-.floor-selector__area:focus {
-  fill-opacity: 0.58;
-  stroke-width: 8;
-  outline: none;
-}
-
-.floor-selector__area--filtered-out {
-  fill: #ffffff;
-  fill-opacity: 0.72;
-  stroke: rgba(146, 152, 150, 0.35);
-  cursor: not-allowed;
-  pointer-events: none;
-}
-
-.floor-selector__tooltip {
-  position: fixed;
-  z-index: 1000;
-  width: 245px;
-  padding: 18px;
-  color: #ffffff;
-  background-color: var(--color-primary);
-  box-shadow: 0 15px 40px rgba(23, 63, 53, 0.25);
-  pointer-events: none;
-  transform: translate(-50%, calc(-100% - 16px));
-}
-
-.floor-selector__tooltip::after {
-  position: absolute;
-  bottom: -7px;
-  left: 50%;
-  width: 14px;
-  height: 14px;
-  content: '';
-  background-color: var(--color-primary);
-  transform: translateX(-50%) rotate(45deg);
-}
-
-.floor-selector__tooltip--below {
-  transform: translate(-50%, 18px);
-}
-
-.floor-selector__tooltip--below::after {
-  top: -7px;
-  bottom: auto;
-}
-
-.floor-selector__tooltip-heading {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 14px;
-  gap: 12px;
-}
-
-.floor-selector__tooltip-heading strong {
-  font-family: var(--font-heading);
-  font-size: 20px;
-  font-weight: 400;
-}
-
-.floor-selector__tooltip-heading span {
-  padding: 5px 7px;
-  font-size: 7px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.floor-selector__tooltip-heading .status--available {
-  background-color: #3d806d;
-}
-
-.floor-selector__tooltip-heading .status--reserved {
-  background-color: #c28b3f;
-}
-
-.floor-selector__tooltip-heading .status--sold {
-  background-color: #929896;
-}
-
-.floor-selector__tooltip-parameters {
-  display: flex;
-  margin-bottom: 14px;
-  padding-block: 11px;
-  gap: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.18);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
-}
-
-.floor-selector__tooltip-parameters span {
-  font-size: 9px;
-}
-
-.floor-selector__tooltip p {
-  margin-bottom: 5px;
-  color: #ffffff;
-  font-family: var(--font-heading);
-  font-size: 22px;
-}
-
-.floor-selector__tooltip small {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 8px;
-}
-
-.floor-selector__empty {
-  position: absolute;
-  z-index: 3;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  padding: 30px;
-  flex-direction: column;
-  justify-content: center;
-  background-color: rgba(245, 243, 238, 0.9);
-  text-align: center;
-  backdrop-filter: blur(3px);
-}
-
-.floor-selector__empty > span {
-  display: grid;
-  width: 70px;
-  height: 70px;
-  margin-bottom: 18px;
-  place-items: center;
-  color: var(--color-accent);
-  background-color: #ffffff;
-  font-family: var(--font-heading);
-  font-size: 38px;
-  border-radius: 50%;
-}
-
-.floor-selector__empty strong {
-  margin-bottom: 7px;
-  color: var(--color-primary);
-  font-family: var(--font-heading);
-  font-size: clamp(22px, 3vw, 32px);
-  font-weight: 400;
-}
-
-.floor-selector__empty p {
-  margin-bottom: 0;
-  color: var(--color-text-muted);
-  font-size: 11px;
-}
-
-.floor-selector__empty button {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  margin-top: 20px;
-  padding-inline: 17px;
-  gap: 12px;
-  color: #ffffff;
-  background-color: var(--color-primary);
-  border: 0;
-  font-size: 10px;
-  font-weight: 700;
-}
-
-.floor-selector__empty button:hover {
-  background-color: var(--color-primary-light);
-}
-
-.floor-selector__empty button span {
-  font-size: 17px;
-  transition: transform 0.2s ease;
-}
-
-.floor-selector__empty button:hover span {
-  transform: translateX(4px);
-}
-
-@media (max-width: 767px) {
-  .floor-selector__header {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .floor-selector__plan {
-    overflow-x: auto;
-  }
-
-  .floor-selector__plan img,
-  .floor-selector__areas {
-    min-width: 720px;
-  }
-}
-
-@media (max-width: 479px) {
-  .floor-selector {
-    padding: 18px;
-  }
-
-  .floor-selector__legend {
-    flex-direction: column;
-    gap: 8px;
-  }
-}
-</style>
