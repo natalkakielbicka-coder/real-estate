@@ -327,57 +327,141 @@ const statuses = [
   }
 ]
 
-const getStatusCount = (status) => {
-  return apartments.filter((apartment) => {
-    return apartment.status === status
-  }).length
+const apartmentMatchesFilters = (apartment, ignoredFilter = null) => {
+  const matchesCity =
+    ignoredFilter === 'city' ||
+    selectedCities.value.length === 0 ||
+    selectedCities.value.includes(apartment.city)
+
+  const matchesRooms =
+    ignoredFilter === 'rooms' ||
+    selectedRooms.value.length === 0 ||
+    selectedRooms.value.includes(apartment.rooms)
+
+  const matchesStatus =
+    ignoredFilter === 'status' ||
+    selectedStatuses.value.length === 0 ||
+    selectedStatuses.value.includes(apartment.status)
+
+  const matchesMinPrice =
+    ignoredFilter === 'price' ||
+    minPrice.value === null ||
+    apartment.price >= minPrice.value
+
+  const matchesMaxPrice =
+    ignoredFilter === 'price' ||
+    maxPrice.value === null ||
+    apartment.price <= maxPrice.value
+
+  const matchesOutdoorSpace =
+    ignoredFilter === 'outdoorSpace' ||
+    selectedOutdoorSpaces.value.length === 0 ||
+    selectedOutdoorSpaces.value.includes(apartment.outdoorSpace.type)
+
+  const matchesParking =
+    ignoredFilter === 'parking' ||
+    !onlyWithParking.value ||
+    apartment.parkingSpace
+
+  const matchesStorage =
+    ignoredFilter === 'storage' ||
+    !onlyWithStorage.value ||
+    apartment.storageRoom
+
+  return (
+    matchesCity &&
+    matchesRooms &&
+    matchesStatus &&
+    matchesMinPrice &&
+    matchesMaxPrice &&
+    matchesOutdoorSpace &&
+    matchesParking &&
+    matchesStorage
+  )
 }
 
 const filteredApartments = computed(() => {
   return apartments.filter((apartment) => {
-    const matchesCity =
-      selectedCities.value.length === 0 ||
-      selectedCities.value.includes(apartment.city)
-
-    const matchesRooms =
-      selectedRooms.value.length === 0 ||
-      selectedRooms.value.some((rooms) => {
-        if (rooms === 4) {
-          return apartment.rooms >= 4
-        }
-
-        return apartment.rooms === rooms
-      })
-
-    const matchesStatus =
-      selectedStatuses.value.length === 0 ||
-      selectedStatuses.value.includes(apartment.status)
-
-    const matchesMinPrice =
-      minPrice.value === null || apartment.price >= minPrice.value
-
-    const matchesMaxPrice =
-      maxPrice.value === null || apartment.price <= maxPrice.value
-
-    const matchesOutdoorSpace =
-      selectedOutdoorSpaces.value.length === 0 ||
-      selectedOutdoorSpaces.value.includes(apartment.outdoorSpace.type)
-
-    const matchesParking = !onlyWithParking.value || apartment.parkingSpace
-
-    const matchesStorage = !onlyWithStorage.value || apartment.storageRoom
-
-    return (
-      matchesCity &&
-      matchesRooms &&
-      matchesStatus &&
-      matchesMinPrice &&
-      matchesMaxPrice &&
-      matchesOutdoorSpace &&
-      matchesParking &&
-      matchesStorage
-    )
+    return apartmentMatchesFilters(apartment)
   })
+})
+
+const roomCounts = computed(() => {
+  return Object.fromEntries(
+    rooms.map((room) => {
+      const count = apartments.filter((apartment) => {
+        return (
+          apartmentMatchesFilters(apartment, 'rooms') &&
+          apartment.rooms === room
+        )
+      }).length
+
+      return [room, count]
+    })
+  )
+})
+
+const cityCounts = computed(() => {
+  return Object.fromEntries(
+    cities.map((city) => {
+      const count = apartments.filter((apartment) => {
+        return (
+          apartmentMatchesFilters(apartment, 'city') && apartment.city === city
+        )
+      }).length
+
+      return [city, count]
+    })
+  )
+})
+
+const statusCounts = computed(() => {
+  return Object.fromEntries(
+    statuses.map((status) => {
+      const count = apartments.filter((apartment) => {
+        return (
+          apartmentMatchesFilters(apartment, 'status') &&
+          apartment.status === status.value
+        )
+      }).length
+
+      return [status.value, count]
+    })
+  )
+})
+
+const outdoorSpaceCounts = computed(() => {
+  return Object.fromEntries(
+    outdoorSpaces.map((space) => {
+      const count = apartments.filter((apartment) => {
+        return (
+          apartmentMatchesFilters(apartment, 'outdoorSpace') &&
+          apartment.outdoorSpace.type === space.value
+        )
+      }).length
+
+      return [space.value, count]
+    })
+  )
+})
+
+const amenityCounts = computed(() => {
+  const parking = apartments.filter((apartment) => {
+    return (
+      apartmentMatchesFilters(apartment, 'parking') && apartment.parkingSpace
+    )
+  }).length
+
+  const storage = apartments.filter((apartment) => {
+    return (
+      apartmentMatchesFilters(apartment, 'storage') && apartment.storageRoom
+    )
+  }).length
+
+  return {
+    parking,
+    storage
+  }
 })
 
 const sortedApartments = computed(() => {
@@ -534,6 +618,10 @@ const getOffersLabel = (count) => {
               />
               <span class="filter-checkbox__mark"></span>
               <span>{{ city }}</span>
+
+              <small class="ml-auto min-w-5 text-right text-[9px] text-muted">
+                {{ cityCounts[city] }}
+              </small>
             </label>
           </fieldset>
 
@@ -555,6 +643,10 @@ const getOffersLabel = (count) => {
               />
               <span class="filter-checkbox__mark"></span>
               <span>{{ room }} {{ room === 1 ? 'pokój' : 'pokoje' }}</span>
+
+              <small class="ml-auto min-w-5 text-right text-[9px] text-muted">
+                {{ roomCounts[room] }}
+              </small>
             </label>
           </fieldset>
 
@@ -580,9 +672,9 @@ const getOffersLabel = (count) => {
                 :class="apartmentStatusClasses[status.value]"
               ></span>
               <span>{{ status.label }}</span>
-              <small class="ml-auto min-w-5 text-right text-[9px] text-muted">{{
-                getStatusCount(status.value)
-              }}</small>
+              <small class="ml-auto min-w-5 text-right text-[9px] text-muted">
+                {{ statusCounts[status.value] }}
+              </small>
             </label>
           </fieldset>
 
@@ -604,6 +696,9 @@ const getOffersLabel = (count) => {
               />
               <span class="filter-checkbox__mark"></span>
               <span>{{ space.label }}</span>
+              <small class="ml-auto min-w-5 text-right text-[9px] text-muted">
+                {{ outdoorSpaceCounts[space.value] }}
+              </small>
             </label>
           </fieldset>
 
@@ -620,6 +715,10 @@ const getOffersLabel = (count) => {
               />
               <span class="filter-checkbox__mark"></span>
               <span>Miejsce parkingowe</span>
+
+              <small class="ml-auto min-w-5 text-right text-[9px] text-muted">
+                {{ amenityCounts.parking }}
+              </small>
             </label>
             <label class="filter-checkbox">
               <input
@@ -628,6 +727,10 @@ const getOffersLabel = (count) => {
               />
               <span class="filter-checkbox__mark"></span>
               <span>Komórka lokatorska</span>
+
+              <small class="ml-auto min-w-5 text-right text-[9px] text-muted">
+                {{ amenityCounts.storage }}
+              </small>
             </label>
           </fieldset>
 
