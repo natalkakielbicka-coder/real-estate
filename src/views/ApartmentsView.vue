@@ -19,9 +19,74 @@ const selectedSort = ref('default')
 const route = useRoute()
 const router = useRouter()
 
-const selectedCities = ref(route.query.city ? [route.query.city] : [])
+const getQueryValues = (value) => {
+  if (!value) {
+    return []
+  }
 
-const selectedRooms = ref(route.query.rooms ? [Number(route.query.rooms)] : [])
+  const queryValue = Array.isArray(value) ? value[0] : value
+
+  return queryValue.split(',')
+}
+
+const getQueryNumber = (value) => {
+  if (value === undefined || value === '') {
+    return null
+  }
+
+  const queryValue = Array.isArray(value) ? value[0] : value
+  const numberValue = Number(queryValue)
+
+  return Number.isFinite(numberValue) && numberValue >= 0 ? numberValue : null
+}
+
+const availableSortValues = [
+  'default',
+  'price-asc',
+  'price-desc',
+  'area-asc',
+  'area-desc',
+  'price-per-meter-asc'
+]
+
+const sortQueryValue = Array.isArray(route.query.sort)
+  ? route.query.sort[0]
+  : route.query.sort
+
+if (availableSortValues.includes(sortQueryValue)) {
+  selectedSort.value = sortQueryValue
+}
+
+const selectedCities = ref(getQueryValues(route.query.city))
+
+const selectedRooms = ref(
+  getQueryValues(route.query.rooms).map(Number).filter(Number.isFinite)
+)
+
+selectedStatuses.value = getQueryValues(route.query.status)
+
+selectedOutdoorSpaces.value = getQueryValues(route.query.outdoor)
+
+onlyWithParking.value = route.query.parking === '1'
+
+onlyWithStorage.value = route.query.storage === '1'
+
+const availableStatusValues = ['available', 'reserved', 'sold']
+
+const availableOutdoorSpaceValues = ['balcony', 'terrace', 'garden', 'loggia']
+
+selectedStatuses.value = getQueryValues(route.query.status).filter((status) => {
+  return availableStatusValues.includes(status)
+})
+
+selectedOutdoorSpaces.value = getQueryValues(route.query.outdoorSpace).filter(
+  (outdoorSpace) => {
+    return availableOutdoorSpaceValues.includes(outdoorSpace)
+  }
+)
+
+onlyWithParking.value = route.query.parking === '1'
+onlyWithStorage.value = route.query.storage === '1'
 
 const availableViewModes = ['grid', 'list', 'table', 'plan', 'map']
 
@@ -59,11 +124,14 @@ const outdoorSpaces = [
   }
 ]
 
-const priceFromInput = ref('')
-const priceToInput = ref(route.query.maxPrice ?? '')
-const minPrice = ref(null)
+const minPriceFromQuery = getQueryNumber(route.query.minPrice)
+const maxPriceFromQuery = getQueryNumber(route.query.maxPrice)
 
-const maxPrice = ref(route.query.maxPrice ? Number(route.query.maxPrice) : null)
+const priceFromInput = ref(minPriceFromQuery ?? '')
+const priceToInput = ref(maxPriceFromQuery ?? '')
+
+const minPrice = ref(minPriceFromQuery)
+const maxPrice = ref(maxPriceFromQuery)
 
 const formatPrice = (price) => {
   return new Intl.NumberFormat('pl-PL').format(price)
@@ -157,6 +225,48 @@ const activeFilters = computed(() => {
   }
 
   return filters
+})
+
+const filtersQuery = computed(() => {
+  return {
+    city:
+      selectedCities.value.length > 0
+        ? selectedCities.value.join(',')
+        : undefined,
+
+    rooms:
+      selectedRooms.value.length > 0
+        ? selectedRooms.value.join(',')
+        : undefined,
+
+    status:
+      selectedStatuses.value.length > 0
+        ? selectedStatuses.value.join(',')
+        : undefined,
+
+    outdoorSpace:
+      selectedOutdoorSpaces.value.length > 0
+        ? selectedOutdoorSpaces.value.join(',')
+        : undefined,
+
+    parking: onlyWithParking.value ? '1' : undefined,
+
+    storage: onlyWithStorage.value ? '1' : undefined,
+
+    minPrice: minPrice.value ?? undefined,
+
+    maxPrice: maxPrice.value ?? undefined,
+
+    sort: selectedSort.value !== 'default' ? selectedSort.value : undefined,
+
+    view: viewMode.value !== 'grid' ? viewMode.value : undefined
+  }
+})
+
+watch(filtersQuery, (newQuery) => {
+  router.replace({
+    query: newQuery
+  })
 })
 
 const applyPriceFilter = () => {
