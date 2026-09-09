@@ -60,9 +60,9 @@ const closeLightbox = () => {
 </script>
 
 <template>
-  <div class="gallery">
+  <div class="min-w-0">
     <Swiper
-      class="gallery__main"
+      class="gallery-main h-[560px] bg-panel max-sm:h-[450px] max-xs:h-[340px]"
       :modules="modules"
       :navigation="true"
       :keyboard="{
@@ -78,24 +78,33 @@ const closeLightbox = () => {
         :key="image.src"
       >
         <div
-          class="gallery__slide"
+          class="relative h-full w-full"
           :class="{
-            'gallery__slide--floor-plan': image.type === 'floor-plan'
+            'p-[35px] max-xs:p-[15px]': image.type === 'floor-plan'
           }"
         >
           <img
+            class="h-full w-full cursor-zoom-in"
+            :class="
+              image.type === 'floor-plan' ? 'object-contain' : 'object-cover'
+            "
             :src="image.src"
             :alt="image.alt"
             @click="openLightbox(index)"
           />
 
-          <span v-if="image.type === 'floor-plan'"> Rzut mieszkania </span>
+          <span
+            v-if="image.type === 'floor-plan'"
+            class="absolute right-[18px] bottom-[18px] bg-brand px-3 py-2 text-[9px] font-bold tracking-[0.08em] text-white uppercase"
+          >
+            Rzut mieszkania
+          </span>
         </div>
       </SwiperSlide>
     </Swiper>
 
     <Swiper
-      class="gallery__thumbs"
+      class="mt-3 [&_.swiper-slide]:cursor-pointer [&_.swiper-slide]:opacity-55 [&_.swiper-slide]:transition-opacity [&_.swiper-slide]:duration-200 [&_.swiper-slide-thumb-active]:opacity-100 [&_.swiper-slide-thumb-active_button]:border-gold"
       :modules="modules"
       :slides-per-view="4"
       :space-between="12"
@@ -107,15 +116,18 @@ const closeLightbox = () => {
         :key="image.src"
       >
         <button
-          class="gallery__thumbnail"
+          class="relative h-[95px] w-full cursor-pointer overflow-hidden border-2 border-transparent bg-panel p-0 max-sm:h-[78px] max-xs:h-[60px]"
           type="button"
         >
           <img
+            class="h-full w-full object-cover"
             :src="image.src"
             :alt="image.alt"
           />
 
-          <span>
+          <span
+            class="absolute right-1.5 bottom-1.5 grid h-[23px] min-w-[23px] place-items-center bg-[rgba(23,63,53,0.9)] px-[5px] text-[8px] font-bold text-white uppercase"
+          >
             {{ image.type === 'floor-plan' ? 'Rzut' : index }}
           </span>
         </button>
@@ -133,162 +145,48 @@ const closeLightbox = () => {
 </template>
 
 <style scoped>
-.gallery {
-  min-width: 0;
-}
-
-.gallery__main {
-  height: 560px;
-  background-color: var(--color-surface);
+.gallery-main {
   --swiper-navigation-color: var(--color-primary);
-  --swiper-navigation-size: 18px;
+  --swiper-navigation-size: 13px;
 }
 
-.gallery__main img {
-  cursor: zoom-in;
-}
-
-.gallery__slide {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.gallery__slide img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.gallery__slide--floor-plan {
-  padding: 35px;
-}
-
-.gallery__slide--floor-plan img {
-  object-fit: contain;
-}
-
-.gallery__slide > span {
-  position: absolute;
-  right: 18px;
-  bottom: 18px;
-  padding: 8px 12px;
-  color: #ffffff;
-  background-color: var(--color-primary);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.gallery__thumbs {
-  margin-top: 12px;
-}
-
-.gallery__thumbnail {
-  position: relative;
-  width: 100%;
-  height: 95px;
-  padding: 0;
-  overflow: hidden;
-  background-color: var(--color-surface);
-  border: 2px solid transparent;
-  cursor: pointer;
-}
-
-.gallery__thumbnail img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.gallery__thumbnail span {
-  position: absolute;
-  right: 6px;
-  bottom: 6px;
-  display: grid;
-  min-width: 23px;
-  height: 23px;
-  padding-inline: 5px;
-  place-items: center;
-  color: #ffffff;
-  background-color: rgba(23, 63, 53, 0.9);
-  font-size: 8px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.gallery__thumbs :deep(.swiper-slide) {
-  opacity: 0.55;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-}
-
-.gallery__thumbs :deep(.swiper-slide-thumb-active) {
-  opacity: 1;
-}
-
-.gallery__thumbs :deep(.swiper-slide-thumb-active) .gallery__thumbnail {
-  border-color: var(--color-accent);
-}
-
-.gallery__main :deep(.swiper-button-prev),
-.gallery__main :deep(.swiper-button-next) {
+.gallery-main :deep(.swiper-button-prev),
+.gallery-main :deep(.swiper-button-next) {
   width: 34px;
   height: 34px;
   margin-top: 0;
   color: var(--color-primary);
   background-color: rgba(255, 255, 255, 0.92);
   border-radius: 50%;
-  transform: translateY(-50%);
   box-shadow: 0 5px 16px rgba(23, 63, 53, 0.12);
-  --swiper-navigation-size: 13px;
+  transform: translateY(-50%);
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
 }
 
-.gallery__main :deep(.swiper-button-prev):hover,
-.gallery__main :deep(.swiper-button-next):hover {
+.gallery-main :deep(.swiper-button-prev:hover),
+.gallery-main :deep(.swiper-button-next:hover) {
   color: #ffffff;
   background-color: var(--color-primary);
 }
 
-.gallery__main :deep(.swiper-button-prev svg),
-.gallery__main :deep(.swiper-button-next svg) {
+.gallery-main :deep(.swiper-button-prev svg),
+.gallery-main :deep(.swiper-button-next svg) {
   width: 13px;
   height: 13px;
 }
 
-@media (max-width: 767px) {
-  .gallery__main {
-    height: 450px;
-  }
-
-  .gallery__thumbnail {
-    height: 78px;
-  }
-}
-
 @media (max-width: 479px) {
-  .gallery__main {
-    height: 340px;
-  }
-
-  .gallery__slide--floor-plan {
-    padding: 15px;
-  }
-
-  .gallery__thumbnail {
-    height: 60px;
-  }
-
-  .gallery__main :deep(.swiper-button-prev),
-  .gallery__main :deep(.swiper-button-next) {
+  .gallery-main :deep(.swiper-button-prev),
+  .gallery-main :deep(.swiper-button-next) {
     width: 30px;
     height: 30px;
     --swiper-navigation-size: 11px;
   }
 
-  .gallery__main :deep(.swiper-button-prev svg),
-  .gallery__main :deep(.swiper-button-next svg) {
+  .gallery-main :deep(.swiper-button-prev svg),
+  .gallery-main :deep(.swiper-button-next svg) {
     width: 11px;
     height: 11px;
   }
