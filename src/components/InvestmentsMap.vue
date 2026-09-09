@@ -198,28 +198,17 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="investments-map">
+  <div
+    class="overflow-hidden bg-panel p-3 shadow-[0_14px_45px_rgba(23,63,53,0.08)]"
+  >
     <div
       ref="mapContainer"
-      class="investments-map__container"
+      class="h-[650px] w-full bg-page max-sm:h-[520px] max-xs:h-[430px]"
     ></div>
   </div>
 </template>
 
 <style scoped>
-.investments-map {
-  overflow: hidden;
-  padding: 12px;
-  background-color: var(--color-surface);
-  box-shadow: 0 14px 45px rgba(23, 63, 53, 0.08);
-}
-
-.investments-map__container {
-  width: 100%;
-  height: 650px;
-  background-color: var(--color-background);
-}
-
 :deep(.investment-marker-wrapper) {
   background: transparent;
   border: 0;
