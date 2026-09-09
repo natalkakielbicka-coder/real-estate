@@ -298,6 +298,25 @@ const sortedApartments = computed(() => {
 
   return apartmentsToSort
 })
+
+const getOffersLabel = (count) => {
+  if (count === 1) {
+    return 'oferta'
+  }
+
+  const lastDigit = count % 10
+  const lastTwoDigits = count % 100
+
+  if (
+    lastDigit >= 2 &&
+    lastDigit <= 4 &&
+    (lastTwoDigits < 12 || lastTwoDigits > 14)
+  ) {
+    return 'oferty'
+  }
+
+  return 'ofert'
+}
 </script>
 
 <template>
@@ -350,7 +369,8 @@ const sortedApartments = computed(() => {
             <span
               class="shrink-0 bg-page px-2 py-[5px] text-[9px] font-bold text-brand uppercase"
             >
-              {{ filteredApartments.length }} ofert
+              {{ filteredApartments.length }}
+              {{ getOffersLabel(filteredApartments.length) }}
             </span>
           </div>
 
