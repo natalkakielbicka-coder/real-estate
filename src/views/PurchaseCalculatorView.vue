@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { apartments } from '../data/apartments'
 
 const formatPrice = (price) => {
@@ -14,6 +14,12 @@ const availableApartments = apartments.filter((apartment) => {
 
 const firstAvailableApartment = availableApartments[0]
 const selectedApartmentId = ref(firstAvailableApartment.id)
+
+const selectedApartment = computed(() => {
+  return availableApartments.find((apartment) => {
+    return apartment.id === selectedApartmentId.value
+  })
+})
 </script>
 
 <template>
@@ -73,6 +79,64 @@ const selectedApartmentId = ref(firstAvailableApartment.id)
                 {{ formatPrice(apartment.price) }} zł
               </option>
             </select>
+
+            <div
+              v-if="selectedApartment"
+              class="mt-8 border border-line bg-page p-6"
+            >
+              <p
+                class="mb-2 text-xs font-bold tracking-[0.14em] text-gold uppercase"
+              >
+                Wybrane mieszkanie
+              </p>
+
+              <h3 class="mb-2">
+                {{ selectedApartment.investment }}
+              </h3>
+
+              <p class="mb-4 text-muted">
+                Lokal {{ selectedApartment.number }}
+              </p>
+
+              <p class="mb-0">
+                Cena mieszkania:
+                <strong class="text-brand">
+                  {{ formatPrice(selectedApartment.price) }} zł
+                </strong>
+              </p>
+
+              <dl
+                class="mt-6 grid grid-cols-2 gap-5 border-t border-line pt-5 sm:grid-cols-3"
+              >
+                <div>
+                  <dt class="mb-1 text-xs text-muted">Powierzchnia</dt>
+
+                  <dd class="m-0 font-bold text-brand">
+                    {{ selectedApartment.area }} m²
+                  </dd>
+                </div>
+
+                <div>
+                  <dt class="mb-1 text-xs text-muted">Liczba pokoi</dt>
+
+                  <dd class="m-0 font-bold text-brand">
+                    {{ selectedApartment.rooms }}
+                  </dd>
+                </div>
+
+                <div>
+                  <dt class="mb-1 text-xs text-muted">Piętro</dt>
+
+                  <dd class="m-0 font-bold text-brand">
+                    {{
+                      selectedApartment.floor === 0
+                        ? 'Parter'
+                        : `${selectedApartment.floor}. piętro`
+                    }}
+                  </dd>
+                </div>
+              </dl>
+            </div>
           </div>
         </div>
 
