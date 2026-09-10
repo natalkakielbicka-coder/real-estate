@@ -169,6 +169,22 @@ const resetCalculator = () => {
   includeStorageRoom.value = false
   storageRoomPrice.value = 15000
 }
+
+const saveCalculation = () => {
+  const calculation = {
+    selectedInvestment: selectedInvestment.value,
+    selectedApartmentId: selectedApartmentId.value,
+    ownContribution: ownContribution.value,
+    finishingCostPerMeter: finishingCostPerMeter.value,
+    notaryFee: notaryFee.value,
+    includeParkingSpace: includeParkingSpace.value,
+    parkingSpacePrice: parkingSpacePrice.value,
+    includeStorageRoom: includeStorageRoom.value,
+    storageRoomPrice: storageRoomPrice.value
+  }
+
+  localStorage.setItem('purchase-calculation', JSON.stringify(calculation))
+}
 </script>
 
 <template>
@@ -792,6 +808,28 @@ const resetCalculator = () => {
               {{ formatPrice(neededLoan) }} zł
             </strong>
           </div>
+          <button
+            class="group mt-5 flex min-h-[54px] w-full items-center justify-center gap-3 rounded-[6px] bg-gold px-5 text-sm font-semibold text-panel shadow-[0_8px_24px_rgba(199,157,98,0.2)] transition-[background-color,transform,box-shadow] hover:bg-[#b98e52] hover:shadow-[0_12px_28px_rgba(199,157,98,0.28)]"
+            type="button"
+            @click="saveCalculation"
+          >
+            <svg
+              class="size-[18px]"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M5 3h12l2 2v16H5z" />
+              <path d="M8 3v6h8V3" />
+              <path d="M8 21v-7h8v7" />
+            </svg>
+
+            Zapisz kalkulację
+          </button>
 
           <button
             class="group mt-4 flex min-h-[54px] w-full items-center justify-center gap-3 rounded-[6px] border border-line bg-panel px-5 text-sm font-semibold text-[var(--color-text)] transition-[border-color,color,background-color] hover:border-brand hover:bg-page hover:text-brand"
