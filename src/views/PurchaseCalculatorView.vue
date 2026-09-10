@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { apartments } from '../data/apartments'
+import SelectedApartmentCard from '../components/SelectedApartmentCard.vue'
 
 const formatPrice = (price) => {
   const formattedPrice = new Intl.NumberFormat('pl-PL').format(price)
@@ -224,6 +225,12 @@ const hasLowContribution = computed(() => {
                 </div>
               </div>
             </div>
+
+            <SelectedApartmentCard
+              v-if="selectedApartment"
+              class="mt-6"
+              :apartment="selectedApartment"
+            />
           </div>
 
           <div class="mt-10 border-t border-line pt-10">
