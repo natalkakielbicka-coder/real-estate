@@ -10,6 +10,9 @@ import BuildingFloorSelector from '../components/BuildingFloorSelector.vue'
 import FloorPlanSelector from '../components/FloorPlanSelector.vue'
 import { getInvestmentStatusCounts } from '../utils/investmentHelpers'
 import { getOffersLabel } from '../utils/apartmentFormatters'
+import { useToast } from '../composables/useToast'
+
+const { showToast } = useToast()
 
 const route = useRoute()
 
@@ -45,7 +48,7 @@ const displayedApartments = computed(() => {
   return investmentApartments.value.filter((apartment) => {
     const matchesFloor =
       selectedFloorNumber.value === null ||
-      apartment.floor === selectedFloorNumber.value
+      Number(apartment.floor) === Number(selectedFloorNumber.value)
 
     const matchesStatus =
       selectedStatus.value === 'all' ||
@@ -105,6 +108,8 @@ const selectedFloorLabel = computed(() => {
 const clearFloorSelection = () => {
   selectedFloorNumber.value = null
   selectedStatus.value = 'all'
+
+  showToast('Filtry zostały wyczyszczone', 'success')
 }
 </script>
 

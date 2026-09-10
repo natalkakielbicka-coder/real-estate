@@ -301,7 +301,7 @@ const resetFilters = () => {
     }
   })
 
-  showToast('Filtry zostały wyczyszczone', 'error')
+  showToast('Filtry zostały wyczyszczone', 'success')
 }
 
 const showInvestmentApartments = (city) => {

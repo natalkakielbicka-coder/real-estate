@@ -65,6 +65,14 @@ const selectFloor = (floor) => {
 
   emit('select-floor', isAlreadySelected ? null : floor)
 }
+
+const getFloorLabel = (floorNumber) => {
+  if (floorNumber === 0) {
+    return 'parter'
+  }
+
+  return `${floorNumber}. piętro`
+}
 </script>
 
 <template>
@@ -119,22 +127,20 @@ const selectFloor = (floor) => {
         <polygon
           v-for="floor in plan.floors"
           :key="floor.floor"
-          class="cursor-pointer fill-gold fill-opacity-0 stroke-[rgba(255,255,255,0)] stroke-[5] transition-[fill-opacity,stroke] duration-250 hover:fill-opacity-30 hover:stroke-[rgba(255,255,255,0.9)] focus:fill-opacity-30 focus:stroke-[rgba(255,255,255,0.9)] focus:outline-none"
+          class="building-floor cursor-pointer"
           :class="{
-            'fill-opacity-[0.48] stroke-white':
-              selectedFloorNumber === floor.floor
+            'building-floor--selected': selectedFloorNumber === floor.floor
           }"
           :points="floor.points"
           tabindex="0"
           role="button"
-          :aria-label="`Wybierz ${floor.label}`"
-          :aria-pressed="selectedFloorNumber === floor.floor"
+          :aria-label="`Wybierz ${getFloorLabel(floor.floor)}`"
           @mouseenter="hoveredFloor = floor"
           @mouseleave="hoveredFloor = null"
           @focus="hoveredFloor = floor"
           @blur="hoveredFloor = null"
           @click="selectFloor(floor)"
-          @keydown.enter="selectFloor(floor)"
+          @keydown.enter.prevent="selectFloor(floor)"
           @keydown.space.prevent="selectFloor(floor)"
         />
       </svg>
@@ -162,3 +168,26 @@ const selectFloor = (floor) => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.building-floor {
+  fill: rgba(199, 157, 98, 0);
+  stroke: rgba(255, 255, 255, 0);
+  stroke-width: 5;
+  transition:
+    fill 250ms ease,
+    stroke 250ms ease;
+}
+
+.building-floor:hover,
+.building-floor:focus {
+  fill: rgba(199, 157, 98, 0.3);
+  stroke: rgba(255, 255, 255, 0.9);
+  outline: none;
+}
+
+.building-floor.building-floor--selected {
+  fill: rgba(199, 157, 98, 0.48);
+  stroke: #fff;
+}
+</style>
