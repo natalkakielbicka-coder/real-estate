@@ -678,27 +678,27 @@ const hasLowContribution = computed(() => {
         </div>
 
         <aside
-          class="bg-brand p-[clamp(24px,4vw,48px)] text-panel lg:sticky lg:top-[112px]"
+          class="rounded-[14px] border border-line bg-panel p-[clamp(24px,3vw,32px)] shadow-[0_10px_35px_rgba(23,63,53,0.08)] lg:sticky lg:top-[112px]"
         >
+          <!-- Wynik -->
           <p
-            class="mb-3 text-xs font-bold tracking-[0.16em] text-gold uppercase"
+            class="mb-4 text-[10px] font-bold tracking-[0.24em] text-muted uppercase"
           >
-            Podsumowanie
+            Twój wynik
           </p>
 
-          <h2 class="text-[clamp(30px,4vw,46px)] text-panel">Twój budżet</h2>
+          <strong
+            class="block font-display text-[clamp(42px,5vw,62px)] font-normal leading-none text-brand"
+          >
+            {{ formatPrice(totalPurchaseCost) }} zł
+          </strong>
 
+          <p class="mt-3 mb-0 text-sm text-[var(--color-text)]">
+            Całkowity koszt zakupu
+          </p>
+
+          <!-- Wykres i legenda -->
           <div class="mt-8">
-            <p class="mb-2 text-sm text-white/65">Całkowity koszt zakupu</p>
-
-            <strong
-              class="block font-display text-[clamp(38px,4vw,52px)] font-normal text-panel"
-            >
-              {{ formatPrice(totalPurchaseCost) }} zł
-            </strong>
-          </div>
-
-          <div class="mt-8 rounded-[10px] bg-panel p-5">
             <PurchaseCostChart
               v-if="selectedApartment"
               :apartment-price="selectedApartment.price"
@@ -708,9 +708,70 @@ const hasLowContribution = computed(() => {
             />
           </div>
 
-          <p class="mt-5 mb-0 text-white/70">
-            Wyniki pojawią się po uzupełnieniu kalkulatora.
-          </p>
+          <!-- Szczegółowe koszty -->
+          <div class="mt-8 border-t border-line pt-5">
+            <dl class="divide-y divide-line">
+              <div class="flex justify-between gap-5 py-3 text-sm">
+                <dt class="text-[var(--color-text)]">Cena mieszkania</dt>
+
+                <dd
+                  class="m-0 text-right font-semibold text-[var(--color-text)]"
+                >
+                  {{ formatPrice(selectedApartment?.price || 0) }} zł
+                </dd>
+              </div>
+
+              <div class="flex justify-between gap-5 py-3 text-sm">
+                <dt class="text-[var(--color-text)]">Wykończenie</dt>
+
+                <dd
+                  class="m-0 text-right font-semibold text-[var(--color-text)]"
+                >
+                  {{ formatPrice(totalFinishingCost) }} zł
+                </dd>
+              </div>
+
+              <div class="flex justify-between gap-5 py-3 text-sm">
+                <dt class="flex items-center gap-2 text-[var(--color-text)]">
+                  PCC
+
+                  <span
+                    class="grid size-4 place-items-center rounded-full border border-muted text-[9px] text-muted"
+                    title="Podatek od czynności cywilnoprawnych"
+                  >
+                    i
+                  </span>
+                </dt>
+
+                <dd
+                  class="m-0 text-right font-semibold text-[var(--color-text)]"
+                >
+                  0 zł
+                </dd>
+              </div>
+
+              <div class="flex justify-between gap-5 py-3 text-sm">
+                <dt class="text-[var(--color-text)]">Pozostałe koszty</dt>
+
+                <dd
+                  class="m-0 text-right font-semibold text-[var(--color-text)]"
+                >
+                  {{ formatPrice(totalAdditionalCosts) }} zł
+                </dd>
+              </div>
+            </dl>
+          </div>
+
+          <!-- Kredyt -->
+          <div
+            class="mt-5 flex items-center justify-between gap-4 rounded-[6px] bg-brand px-5 py-4 text-panel shadow-[0_8px_24px_rgba(23,63,53,0.18)]"
+          >
+            <span class="text-sm font-semibold"> Potrzebny kredyt </span>
+
+            <strong class="font-display text-2xl font-normal">
+              {{ formatPrice(neededLoan) }} zł
+            </strong>
+          </div>
         </aside>
       </div>
     </section>
