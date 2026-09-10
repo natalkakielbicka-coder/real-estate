@@ -14,11 +14,33 @@ const availableApartments = apartments.filter((apartment) => {
 
 const firstAvailableApartment = availableApartments[0]
 const selectedApartmentId = ref(firstAvailableApartment.id)
+const ownContribution = ref(100000)
 
 const selectedApartment = computed(() => {
   return availableApartments.find((apartment) => {
     return apartment.id === selectedApartmentId.value
   })
+})
+
+const neededLoan = computed(() => {
+  const apartmentPrice = selectedApartment.value.price
+  const contribution = ownContribution.value || 0
+  const loanAmount = apartmentPrice - contribution
+
+  return Math.max(loanAmount, 0)
+})
+
+const contributionPercent = computed(() => {
+  const apartmentPrice = selectedApartment.value.price
+  const contribution = ownContribution.value || 0
+
+  const percent = (contribution / apartmentPrice) * 100
+
+  return Math.min(Math.round(percent), 100)
+})
+
+const hasLowContribution = computed(() => {
+  return contributionPercent.value < 20
 })
 </script>
 
@@ -54,31 +76,39 @@ const selectedApartment = computed(() => {
 
           <h2 class="text-[clamp(30px,4vw,46px)]">Wybierz mieszkanie</h2>
 
-          <p class="mb-8 text-muted">
-            Wybierz lokal z aktualnie dostępnych mieszkań.
-          </p>
-
-          <p>
-            Liczba dostępnych mieszkań:
-            <strong>{{ availableApartments.length }}</strong>
-          </p>
-
           <div>
-            <label for="apartment"> Wybierz mieszkanie </label>
-
-            <select
-              id="apartment"
-              v-model="selectedApartmentId"
-            >
-              <option
-                v-for="apartment in availableApartments"
-                :key="apartment.id"
-                :value="apartment.id"
+            <div>
+              <label
+                for="apartment"
+                class="mb-5 mt-2 block text-sm text-muted"
               >
-                {{ apartment.investment }} — lokal {{ apartment.number }} —
-                {{ formatPrice(apartment.price) }} zł
-              </option>
-            </select>
+                Wybierz lokal z aktualnie dostępnych mieszkań
+              </label>
+
+              <div class="relative">
+                <select
+                  id="apartment"
+                  v-model="selectedApartmentId"
+                  class="min-h-[62px] w-full appearance-none border border-line bg-panel py-3 pr-14 pl-5 text-sm font-semibold text-[var(--color-text)] transition-colors outline-none hover:border-gold focus:border-gold"
+                >
+                  <option
+                    v-for="apartment in availableApartments"
+                    :key="apartment.id"
+                    :value="apartment.id"
+                  >
+                    {{ apartment.investment }} — lokal {{ apartment.number }} —
+                    {{ formatPrice(apartment.price) }} zł
+                  </option>
+                </select>
+
+                <span
+                  class="pointer-events-none absolute top-1/2 right-5 -translate-y-1/2 text-xl text-gold"
+                  aria-hidden="true"
+                >
+                  ↓
+                </span>
+              </div>
+            </div>
 
             <div
               v-if="selectedApartment"
@@ -136,6 +166,75 @@ const selectedApartment = computed(() => {
                   </dd>
                 </div>
               </dl>
+            </div>
+          </div>
+
+          <div class="mt-10 border-t border-line pt-10">
+            <p
+              class="mb-3 text-xs font-bold tracking-[0.16em] text-gold uppercase"
+            >
+              Krok 02
+            </p>
+
+            <h2 class="text-[clamp(30px,4vw,46px)]">Finansowanie</h2>
+
+            <div class="mt-7">
+              <label
+                for="own-contribution"
+                class="mb-3 block text-sm font-bold text-brand"
+              >
+                Wkład własny
+              </label>
+
+              <div class="relative">
+                <input
+                  id="own-contribution"
+                  v-model.number="ownContribution"
+                  class="min-h-[62px] w-full border border-line bg-panel py-3 pr-16 pl-5 font-semibold text-[var(--color-text)] transition-colors outline-none hover:border-gold focus:border-gold"
+                  type="number"
+                  min="0"
+                  step="1000"
+                />
+
+                <span
+                  class="pointer-events-none absolute top-1/2 right-5 -translate-y-1/2 text-sm font-bold text-muted"
+                >
+                  zł
+                </span>
+              </div>
+            </div>
+
+            <div class="mt-4 flex items-center justify-between gap-4 text-sm">
+              <p class="mb-0 text-muted">
+                Wpisana kwota:
+                <strong class="text-brand">
+                  {{ formatPrice(ownContribution || 0) }} zł
+                </strong>
+              </p>
+
+              <p class="mb-0 font-bold text-gold">{{ contributionPercent }}%</p>
+            </div>
+
+            <div class="mt-3 h-2 overflow-hidden bg-line">
+              <div
+                class="h-full bg-gold transition-[width] duration-300"
+                :style="{ width: `${contributionPercent}%` }"
+              ></div>
+            </div>
+
+            <p
+              v-if="hasLowContribution"
+              class="mt-4 mb-0 border-l-2 border-gold bg-[rgba(199,157,98,0.1)] px-4 py-3 text-sm text-muted"
+            >
+              Wkład własny wynosi mniej niż 20% ceny mieszkania.
+            </p>
+
+            <div class="mt-6 bg-page p-5">
+              <p class="mb-1 text-sm text-muted">Potrzebny kredyt</p>
+
+              <strong class="font-display text-3xl font-normal text-brand">
+                {{ formatPrice(neededLoan) }} zł
+              </strong>
             </div>
           </div>
         </div>
