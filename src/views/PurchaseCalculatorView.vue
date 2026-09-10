@@ -197,12 +197,18 @@ const hasLowContribution = computed(() => {
                     </option>
                   </select>
 
-                  <span
-                    class="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-lg text-brand"
+                  <svg
+                    class="pointer-events-none absolute top-1/2 right-4 size-4 -translate-y-1/2 text-brand"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
                     aria-hidden="true"
                   >
-                    ⌄
-                  </span>
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
                 </div>
               </div>
 
@@ -231,12 +237,18 @@ const hasLowContribution = computed(() => {
                     </option>
                   </select>
 
-                  <span
-                    class="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-lg text-brand"
+                  <svg
+                    class="pointer-events-none absolute top-1/2 right-4 size-4 -translate-y-1/2 text-brand"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
                     aria-hidden="true"
                   >
-                    ⌄
-                  </span>
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
                 </div>
               </div>
             </div>
@@ -249,19 +261,33 @@ const hasLowContribution = computed(() => {
             />
           </section>
 
-          <div class="mt-10 border-t border-line pt-10">
-            <p
-              class="mb-3 text-xs font-bold tracking-[0.16em] text-gold uppercase"
-            >
-              Krok 02
-            </p>
+          <section
+            class="mt-4 rounded-[14px] border border-line bg-panel p-[clamp(22px,3vw,32px)] shadow-[0_10px_35px_rgba(23,63,53,0.06)]"
+          >
+            <!-- Nagłówek -->
+            <div class="flex items-start gap-4">
+              <span
+                class="grid size-11 shrink-0 place-items-center rounded-full bg-page font-display text-xl text-brand"
+                aria-hidden="true"
+              >
+                2
+              </span>
 
-            <h2 class="text-[clamp(30px,4vw,46px)]">Finansowanie</h2>
+              <div>
+                <h2 class="mb-1 text-[clamp(25px,3vw,32px)]">Finansowanie</h2>
 
-            <div class="mt-7">
+                <p class="mb-0 text-sm text-muted">
+                  Określ wysokość wkładu własnego, aby zobaczyć szacowaną kwotę
+                  kredytu.
+                </p>
+              </div>
+            </div>
+
+            <!-- Pole wkładu własnego -->
+            <div class="mt-8">
               <label
                 for="own-contribution"
-                class="mb-3 block text-sm font-bold text-brand"
+                class="mb-2 block text-sm font-semibold text-[var(--color-text)]"
               >
                 Wkład własny
               </label>
@@ -270,20 +296,21 @@ const hasLowContribution = computed(() => {
                 <input
                   id="own-contribution"
                   v-model.number="ownContribution"
-                  class="min-h-[62px] w-full border border-line bg-panel py-3 pr-16 pl-5 font-semibold text-[var(--color-text)] transition-colors outline-none hover:border-gold focus:border-gold"
+                  class="min-h-[54px] w-full rounded-[6px] border border-line bg-panel py-3 pr-16 pl-4 font-semibold text-[var(--color-text)] transition-colors outline-none hover:border-gold focus:border-brand"
                   type="number"
                   min="0"
                   step="1000"
                 />
 
                 <span
-                  class="pointer-events-none absolute top-1/2 right-5 -translate-y-1/2 text-sm font-bold text-muted"
+                  class="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-sm font-semibold text-muted"
                 >
                   zł
                 </span>
               </div>
             </div>
 
+            <!-- Kwota i procent -->
             <div class="mt-4 flex items-center justify-between gap-4 text-sm">
               <p class="mb-0 text-muted">
                 Wpisana kwota:
@@ -292,31 +319,56 @@ const hasLowContribution = computed(() => {
                 </strong>
               </p>
 
-              <p class="mb-0 font-bold text-gold">{{ contributionPercent }}%</p>
+              <div
+                class="grid min-h-11 min-w-[78px] place-items-center rounded-[6px] border border-line bg-page px-4 font-display text-xl text-brand"
+              >
+                {{ contributionPercent }}%
+              </div>
             </div>
 
-            <div class="mt-3 h-2 overflow-hidden bg-line">
+            <!-- Pasek procentowy -->
+            <div class="mt-4 h-2 overflow-hidden rounded-full bg-line">
               <div
-                class="h-full bg-gold transition-[width] duration-300"
+                class="h-full rounded-full bg-brand transition-[width] duration-300"
                 :style="{ width: `${contributionPercent}%` }"
               ></div>
             </div>
 
+            <!-- Ostrzeżenie -->
             <p
               v-if="hasLowContribution"
-              class="mt-4 mb-0 border-l-2 border-gold bg-[rgba(199,157,98,0.1)] px-4 py-3 text-sm text-muted"
+              class="mt-5 mb-0 border-l-2 border-gold bg-[rgba(199,157,98,0.1)] px-4 py-3 text-sm text-muted"
             >
               Wkład własny wynosi mniej niż 20% ceny mieszkania.
             </p>
 
-            <div class="mt-6 bg-page p-5">
-              <p class="mb-1 text-sm text-muted">Potrzebny kredyt</p>
+            <!-- Podsumowanie finansowania -->
+            <div class="mt-7 grid gap-4 sm:grid-cols-2">
+              <div class="rounded-[6px] bg-page p-5">
+                <strong
+                  class="block font-display text-2xl font-normal text-brand"
+                >
+                  {{ formatPrice(ownContribution || 0) }} zł
+                </strong>
 
-              <strong class="font-display text-3xl font-normal text-brand">
-                {{ formatPrice(neededLoan) }} zł
-              </strong>
+                <span class="mt-1 block text-xs text-muted">
+                  wkładu własnego
+                </span>
+              </div>
+
+              <div class="rounded-[6px] bg-page p-5">
+                <strong
+                  class="block font-display text-2xl font-normal text-brand"
+                >
+                  {{ formatPrice(neededLoan) }} zł
+                </strong>
+
+                <span class="mt-1 block text-xs text-muted">
+                  potrzebnego kredytu
+                </span>
+              </div>
             </div>
-          </div>
+          </section>
 
           <div class="mt-10 border-t border-line pt-10">
             <p
