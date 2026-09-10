@@ -16,6 +16,35 @@ const firstAvailableApartment = availableApartments[0]
 const selectedApartmentId = ref(firstAvailableApartment.id)
 const ownContribution = ref(100000)
 const finishingCostPerMeter = ref(2500)
+const notaryFee = ref(4000)
+
+const includeParkingSpace = ref(false)
+const parkingSpacePrice = ref(35000)
+
+const includeStorageRoom = ref(false)
+const storageRoomPrice = ref(15000)
+
+const parkingCost = computed(() => {
+  if (includeParkingSpace.value) {
+    return parkingSpacePrice.value || 0
+  }
+
+  return 0
+})
+
+const storageRoomCost = computed(() => {
+  if (includeStorageRoom.value) {
+    return storageRoomPrice.value || 0
+  }
+
+  return 0
+})
+
+const totalAdditionalCosts = computed(() => {
+  const notaryCost = notaryFee.value || 0
+
+  return notaryCost + parkingCost.value + storageRoomCost.value
+})
 
 const finishingStandards = [
   {
@@ -345,6 +374,168 @@ const hasLowContribution = computed(() => {
                 {{ formatPrice(finishingCostPerMeter || 0) }} zł/m²
               </p>
             </div>
+          </div>
+
+          <div class="mt-10 border-t border-line pt-10">
+            <p
+              class="mb-3 text-xs font-bold tracking-[0.16em] text-gold uppercase"
+            >
+              Krok 04
+            </p>
+
+            <h2 class="text-[clamp(30px,4vw,46px)]">Koszty dodatkowe</h2>
+
+            <p class="mb-7 max-w-[620px] text-muted">
+              Dodaj opłaty związane z zakupem mieszkania.
+            </p>
+
+            <div>
+              <label
+                for="notary-fee"
+                class="mb-3 block text-sm font-bold text-brand"
+              >
+                Notariusz i dokumenty
+              </label>
+
+              <div class="relative">
+                <input
+                  id="notary-fee"
+                  v-model.number="notaryFee"
+                  class="min-h-[62px] w-full border border-line bg-panel py-3 pr-16 pl-5 font-semibold text-[var(--color-text)] transition-colors outline-none hover:border-gold focus:border-gold"
+                  type="number"
+                  min="0"
+                  step="100"
+                />
+
+                <span
+                  class="pointer-events-none absolute top-1/2 right-5 -translate-y-1/2 text-sm font-bold text-muted"
+                >
+                  zł
+                </span>
+              </div>
+            </div>
+
+            <p class="mt-4 mb-0 text-sm text-muted">
+              Koszt notarialny:
+              <strong class="text-brand">
+                {{ formatPrice(notaryFee || 0) }} zł
+              </strong>
+            </p>
+
+            <div class="mt-7 border-t border-line pt-7">
+              <label
+                class="flex cursor-pointer items-center gap-3"
+                for="include-parking"
+              >
+                <input
+                  id="include-parking"
+                  v-model="includeParkingSpace"
+                  class="peer sr-only"
+                  type="checkbox"
+                />
+
+                <span
+                  class="grid size-5 shrink-0 place-items-center border border-line bg-panel text-xs text-transparent transition-colors peer-checked:border-brand peer-checked:bg-brand peer-checked:text-panel"
+                  aria-hidden="true"
+                >
+                  ✓
+                </span>
+
+                <span class="text-sm font-bold text-brand">
+                  Dodaj miejsce parkingowe
+                </span>
+              </label>
+
+              <div
+                v-if="includeParkingSpace"
+                class="mt-5"
+              >
+                <label
+                  for="parking-price"
+                  class="mb-3 block text-sm font-bold text-brand"
+                >
+                  Cena miejsca parkingowego
+                </label>
+
+                <div class="relative">
+                  <input
+                    id="parking-price"
+                    v-model.number="parkingSpacePrice"
+                    class="min-h-[62px] w-full border border-line bg-panel py-3 pr-16 pl-5 font-semibold text-[var(--color-text)] transition-colors outline-none hover:border-gold focus:border-gold"
+                    type="number"
+                    min="0"
+                    step="1000"
+                  />
+
+                  <span
+                    class="pointer-events-none absolute top-1/2 right-5 -translate-y-1/2 text-sm font-bold text-muted"
+                  >
+                    zł
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-7 border-t border-line pt-7">
+            <label
+              class="flex cursor-pointer items-center gap-3"
+              for="include-storage-room"
+            >
+              <input
+                id="include-storage-room"
+                v-model="includeStorageRoom"
+                class="peer sr-only"
+                type="checkbox"
+              />
+
+              <span
+                class="grid size-5 shrink-0 place-items-center border border-line bg-panel text-xs text-transparent transition-colors peer-checked:border-brand peer-checked:bg-brand peer-checked:text-panel"
+                aria-hidden="true"
+              >
+                ✓
+              </span>
+
+              <span class="text-sm font-bold text-brand">
+                Dodaj komórkę lokatorską
+              </span>
+            </label>
+
+            <div
+              v-if="includeStorageRoom"
+              class="mt-5"
+            >
+              <label
+                for="storage-room-price"
+                class="mb-3 block text-sm font-bold text-brand"
+              >
+                Cena komórki lokatorskiej
+              </label>
+
+              <div class="relative">
+                <input
+                  id="storage-room-price"
+                  v-model.number="storageRoomPrice"
+                  class="min-h-[62px] w-full border border-line bg-panel py-3 pr-16 pl-5 font-semibold text-[var(--color-text)] transition-colors outline-none hover:border-gold focus:border-gold"
+                  type="number"
+                  min="0"
+                  step="1000"
+                />
+
+                <span
+                  class="pointer-events-none absolute top-1/2 right-5 -translate-y-1/2 text-sm font-bold text-muted"
+                >
+                  zł
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="mt-8 bg-page p-5">
+            <p class="mb-1 text-sm text-muted">Łączne koszty dodatkowe</p>
+
+            <strong class="font-display text-3xl font-normal text-brand">
+              {{ formatPrice(totalAdditionalCosts) }} zł
+            </strong>
           </div>
         </div>
 
