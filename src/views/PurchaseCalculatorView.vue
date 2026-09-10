@@ -89,12 +89,20 @@ const selectFinishingStandard = (price) => {
 }
 
 const selectedApartment = computed(() => {
-  return apartmentsFromSelectedInvestment.value.find((apartment) => {
-    return apartment.id === selectedApartmentId.value
-  })
+  const foundApartment = apartmentsFromSelectedInvestment.value.find(
+    (apartment) => {
+      return apartment.id === selectedApartmentId.value
+    }
+  )
+
+  return foundApartment || apartmentsFromSelectedInvestment.value[0] || null
 })
 
 const neededLoan = computed(() => {
+  if (!selectedApartment.value) {
+    return 0
+  }
+
   const apartmentPrice = selectedApartment.value.price
   const contribution = ownContribution.value || 0
   const loanAmount = apartmentPrice - contribution
@@ -103,6 +111,10 @@ const neededLoan = computed(() => {
 })
 
 const totalFinishingCost = computed(() => {
+  if (!selectedApartment.value) {
+    return 0
+  }
+
   const apartmentArea = selectedApartment.value.area
   const costPerMeter = finishingCostPerMeter.value || 0
 
@@ -110,9 +122,12 @@ const totalFinishingCost = computed(() => {
 })
 
 const contributionPercent = computed(() => {
+  if (!selectedApartment.value) {
+    return 0
+  }
+
   const apartmentPrice = selectedApartment.value.price
   const contribution = ownContribution.value || 0
-
   const percent = (contribution / apartmentPrice) * 100
 
   return Math.min(Math.round(percent), 100)
@@ -370,249 +385,123 @@ const hasLowContribution = computed(() => {
             </div>
           </section>
 
-          <div class="mt-10 border-t border-line pt-10">
-            <p
-              class="mb-3 text-xs font-bold tracking-[0.16em] text-gold uppercase"
-            >
-              Krok 03
-            </p>
+          <section
+            class="mt-4 rounded-[14px] border border-line bg-panel p-[clamp(22px,3vw,32px)] shadow-[0_10px_35px_rgba(23,63,53,0.06)]"
+          >
+            <!-- Nagłówek -->
+            <div class="flex items-start gap-4">
+              <span
+                class="grid size-11 shrink-0 place-items-center rounded-full bg-page font-display text-xl text-brand"
+                aria-hidden="true"
+              >
+                3
+              </span>
 
-            <h2 class="text-[clamp(30px,4vw,46px)]">Wykończenie</h2>
+              <div>
+                <h2 class="mb-1 text-[clamp(25px,3vw,32px)]">Wykończenie</h2>
 
-            <p class="mb-7 max-w-[620px] text-muted">
-              Określ przewidywany koszt wykończenia jednego metra kwadratowego.
-            </p>
+                <p class="mb-0 text-sm text-muted">
+                  Wybierz standard wykończenia lub wpisz własną stawkę za m².
+                </p>
+              </div>
+            </div>
 
-            <div>
-              <div class="mb-7 grid gap-3 sm:grid-cols-3">
-                <button
-                  v-for="standard in finishingStandards"
-                  :key="standard.name"
-                  class="border px-4 py-4 text-left transition-colors"
-                  :class="
-                    finishingCostPerMeter === standard.price
-                      ? 'border-gold bg-[rgba(199,157,98,0.1)]'
-                      : 'border-line bg-panel hover:border-gold'
-                  "
-                  type="button"
-                  @click="selectFinishingStandard(standard.price)"
-                >
+            <!-- Standardy -->
+            <div class="mt-8 grid gap-4 sm:grid-cols-3">
+              <button
+                v-for="standard in finishingStandards"
+                :key="standard.name"
+                class="group relative overflow-hidden rounded-[8px] border p-5 text-left transition-[border-color,background-color,transform,box-shadow] duration-200 hover:-translate-y-0.5"
+                :class="
+                  finishingCostPerMeter === standard.price
+                    ? 'border-brand bg-[rgba(23,63,53,0.05)] shadow-[0_8px_24px_rgba(23,63,53,0.08)]'
+                    : 'border-line bg-panel hover:border-gold'
+                "
+                type="button"
+                @click="selectFinishingStandard(standard.price)"
+              >
+                <!-- Górna linia aktywnego kafelka -->
+                <span
+                  v-if="finishingCostPerMeter === standard.price"
+                  class="absolute top-0 right-0 left-0 h-[3px] bg-brand"
+                  aria-hidden="true"
+                ></span>
+
+                <div class="flex items-start justify-between gap-3">
                   <span class="block text-sm font-bold text-brand">
                     {{ standard.name }}
                   </span>
 
-                  <span class="mt-1 block text-xs text-muted">
-                    {{ formatPrice(standard.price) }} zł/m²
+                  <span
+                    v-if="finishingCostPerMeter === standard.price"
+                    class="rounded-full bg-brand px-2.5 py-1 text-[9px] font-bold tracking-[0.08em] text-panel uppercase"
+                  >
+                    Wybrany
                   </span>
-                </button>
-              </div>
-              <label
-                for="finishing-cost"
-                class="mb-3 block text-sm font-bold text-brand"
-              >
-                Koszt wykończenia za m²
-              </label>
+                </div>
 
-              <div class="relative">
-                <input
-                  id="finishing-cost"
-                  v-model.number="finishingCostPerMeter"
-                  class="min-h-[62px] w-full border border-line bg-panel py-3 pr-24 pl-5 font-semibold text-[var(--color-text)] transition-colors outline-none hover:border-gold focus:border-gold"
-                  type="number"
-                  min="0"
-                  step="100"
-                />
-
-                <span
-                  class="pointer-events-none absolute top-1/2 right-5 -translate-y-1/2 text-sm font-bold text-muted"
+                <strong
+                  class="mt-4 block font-display text-[clamp(21px,2vw,26px)] font-normal text-brand"
                 >
-                  zł/m²
+                  {{ formatPrice(standard.price) }}
+                  <span class="font-copy text-xs font-semibold text-muted">
+                    zł/m²
+                  </span>
+                </strong>
+
+                <span class="mt-2 block text-xs text-muted">
+                  Szacowany standard wykończenia
                 </span>
-              </div>
+              </button>
             </div>
 
-            <p class="mt-4 mb-0 text-sm text-muted">
-              Wybrana stawka:
-              <strong class="text-brand">
-                {{ formatPrice(finishingCostPerMeter || 0) }} zł/m²
-              </strong>
-            </p>
-
-            <div class="mt-6 bg-page p-5">
-              <p class="mb-1 text-sm text-muted">Szacowany koszt wykończenia</p>
-
-              <strong class="font-display text-3xl font-normal text-brand">
-                {{ formatPrice(totalFinishingCost) }} zł
-              </strong>
-
-              <p class="mt-2 mb-0 text-xs text-muted">
-                {{ selectedApartment.area }} m² ×
-                {{ formatPrice(finishingCostPerMeter || 0) }} zł/m²
-              </p>
-            </div>
-          </div>
-
-          <div class="mt-10 border-t border-line pt-10">
-            <p
-              class="mb-3 text-xs font-bold tracking-[0.16em] text-gold uppercase"
-            >
-              Krok 04
-            </p>
-
-            <h2 class="text-[clamp(30px,4vw,46px)]">Koszty dodatkowe</h2>
-
-            <p class="mb-7 max-w-[620px] text-muted">
-              Dodaj opłaty związane z zakupem mieszkania.
-            </p>
-
-            <div>
-              <label
-                for="notary-fee"
-                class="mb-3 block text-sm font-bold text-brand"
-              >
-                Notariusz i dokumenty
-              </label>
-
-              <div class="relative">
-                <input
-                  id="notary-fee"
-                  v-model.number="notaryFee"
-                  class="min-h-[62px] w-full border border-line bg-panel py-3 pr-16 pl-5 font-semibold text-[var(--color-text)] transition-colors outline-none hover:border-gold focus:border-gold"
-                  type="number"
-                  min="0"
-                  step="100"
-                />
-
-                <span
-                  class="pointer-events-none absolute top-1/2 right-5 -translate-y-1/2 text-sm font-bold text-muted"
-                >
-                  zł
-                </span>
-              </div>
-            </div>
-
-            <p class="mt-4 mb-0 text-sm text-muted">
-              Koszt notarialny:
-              <strong class="text-brand">
-                {{ formatPrice(notaryFee || 0) }} zł
-              </strong>
-            </p>
-
-            <div class="mt-7 border-t border-line pt-7">
-              <label
-                class="flex cursor-pointer items-center gap-3"
-                for="include-parking"
-              >
-                <input
-                  id="include-parking"
-                  v-model="includeParkingSpace"
-                  class="peer sr-only"
-                  type="checkbox"
-                />
-
-                <span
-                  class="grid size-5 shrink-0 place-items-center border border-line bg-panel text-xs text-transparent transition-colors peer-checked:border-brand peer-checked:bg-brand peer-checked:text-panel"
-                  aria-hidden="true"
-                >
-                  ✓
-                </span>
-
-                <span class="text-sm font-bold text-brand">
-                  Dodaj miejsce parkingowe
-                </span>
-              </label>
-
-              <div
-                v-if="includeParkingSpace"
-                class="mt-5"
-              >
+            <!-- Własna stawka i wynik -->
+            <div class="mt-7 grid items-end gap-4 sm:grid-cols-2">
+              <div>
                 <label
-                  for="parking-price"
-                  class="mb-3 block text-sm font-bold text-brand"
+                  for="finishing-cost"
+                  class="mb-2 block text-sm font-semibold text-[var(--color-text)]"
                 >
-                  Cena miejsca parkingowego
+                  Koszt za m²
                 </label>
 
                 <div class="relative">
                   <input
-                    id="parking-price"
-                    v-model.number="parkingSpacePrice"
-                    class="min-h-[62px] w-full border border-line bg-panel py-3 pr-16 pl-5 font-semibold text-[var(--color-text)] transition-colors outline-none hover:border-gold focus:border-gold"
+                    id="finishing-cost"
+                    v-model.number="finishingCostPerMeter"
+                    class="min-h-[54px] w-full rounded-[6px] border border-line bg-panel py-3 pr-20 pl-4 font-semibold text-[var(--color-text)] transition-colors outline-none hover:border-gold focus:border-brand"
                     type="number"
                     min="0"
-                    step="1000"
+                    step="100"
                   />
 
                   <span
-                    class="pointer-events-none absolute top-1/2 right-5 -translate-y-1/2 text-sm font-bold text-muted"
+                    class="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-sm font-semibold text-muted"
                   >
-                    zł
+                    zł/m²
                   </span>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <div class="mt-7 border-t border-line pt-7">
-            <label
-              class="flex cursor-pointer items-center gap-3"
-              for="include-storage-room"
-            >
-              <input
-                id="include-storage-room"
-                v-model="includeStorageRoom"
-                class="peer sr-only"
-                type="checkbox"
-              />
-
-              <span
-                class="grid size-5 shrink-0 place-items-center border border-line bg-panel text-xs text-transparent transition-colors peer-checked:border-brand peer-checked:bg-brand peer-checked:text-panel"
-                aria-hidden="true"
-              >
-                ✓
-              </span>
-
-              <span class="text-sm font-bold text-brand">
-                Dodaj komórkę lokatorską
-              </span>
-            </label>
-
-            <div
-              v-if="includeStorageRoom"
-              class="mt-5"
-            >
-              <label
-                for="storage-room-price"
-                class="mb-3 block text-sm font-bold text-brand"
-              >
-                Cena komórki lokatorskiej
-              </label>
-
-              <div class="relative">
-                <input
-                  id="storage-room-price"
-                  v-model.number="storageRoomPrice"
-                  class="min-h-[62px] w-full border border-line bg-panel py-3 pr-16 pl-5 font-semibold text-[var(--color-text)] transition-colors outline-none hover:border-gold focus:border-gold"
-                  type="number"
-                  min="0"
-                  step="1000"
-                />
-
-                <span
-                  class="pointer-events-none absolute top-1/2 right-5 -translate-y-1/2 text-sm font-bold text-muted"
-                >
-                  zł
+              <div class="min-h-[78px] rounded-[6px] bg-page px-5 py-4">
+                <span class="block text-xs text-muted">
+                  Szacowany koszt wykończenia
                 </span>
+
+                <strong
+                  class="mt-1 block font-display text-2xl font-normal text-brand"
+                >
+                  {{ formatPrice(totalFinishingCost) }} zł
+                </strong>
               </div>
             </div>
-          </div>
-          <div class="mt-8 bg-page p-5">
-            <p class="mb-1 text-sm text-muted">Łączne koszty dodatkowe</p>
 
-            <strong class="font-display text-3xl font-normal text-brand">
-              {{ formatPrice(totalAdditionalCosts) }} zł
-            </strong>
-          </div>
+            <!-- Sposób obliczenia -->
+            <p class="mt-4 mb-0 text-xs text-muted">
+              {{ selectedApartment.area }} m² ×
+              {{ formatPrice(finishingCostPerMeter || 0) }} zł/m²
+            </p>
+          </section>
         </div>
 
         <aside
