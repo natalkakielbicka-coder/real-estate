@@ -8,6 +8,9 @@ const InvestmentsView = () => import('../views/InvestmentsView.vue')
 
 const InvestmentDetailsView = () => import('../views/InvestmentDetailsView.vue')
 
+const PurchaseCalculatorView = () =>
+  import('../views/PurchaseCalculatorView.vue')
+
 const NotFoundView = () => import('../views/NotFoundView.vue')
 
 const routes = [
@@ -49,6 +52,14 @@ const routes = [
     component: InvestmentDetailsView,
     meta: {
       title: 'Szczegóły inwestycji'
+    }
+  },
+  {
+    path: '/kalkulator-kosztow-zakupu',
+    name: 'purchase-calculator',
+    component: PurchaseCalculatorView,
+    meta: {
+      title: 'Kalkulator kosztów zakupu'
     }
   },
   {
