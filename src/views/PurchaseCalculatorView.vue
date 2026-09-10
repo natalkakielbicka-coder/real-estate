@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { apartments } from '../data/apartments'
 import CalculatorApartmentStep from '../components/CalculatorApartmentStep.vue'
 import PurchaseCostChart from '../components/PurchaseCostChart.vue'
@@ -202,6 +202,58 @@ const saveCalculation = () => {
 
   showToast('Kalkulacja została zapisana')
 }
+
+const loadSavedCalculation = () => {
+  const savedCalculation = localStorage.getItem('purchase-calculation')
+
+  if (!savedCalculation) {
+    return
+  }
+
+  try {
+    const calculation = JSON.parse(savedCalculation)
+
+    const investmentExists = availableInvestments.includes(
+      calculation.selectedInvestment
+    )
+
+    if (investmentExists) {
+      selectedInvestment.value = calculation.selectedInvestment
+    }
+
+    const apartmentExists = apartmentsFromSelectedInvestment.value.find(
+      (apartment) => {
+        return apartment.id === calculation.selectedApartmentId
+      }
+    )
+
+    selectedApartmentId.value =
+      apartmentExists?.id ??
+      apartmentsFromSelectedInvestment.value[0]?.id ??
+      null
+
+    ownContribution.value = calculation.ownContribution ?? 100000
+    finishingCostPerMeter.value = calculation.finishingCostPerMeter ?? 2500
+
+    notaryFee.value = calculation.notaryFee ?? 4000
+
+    includeParkingSpace.value = calculation.includeParkingSpace ?? false
+
+    parkingSpacePrice.value = calculation.parkingSpacePrice ?? 35000
+
+    includeStorageRoom.value = calculation.includeStorageRoom ?? false
+
+    storageRoomPrice.value = calculation.storageRoomPrice ?? 15000
+  } catch {
+    localStorage.removeItem('purchase-calculation')
+
+    showToast('Nie udało się wczytać zapisanej kalkulacji', 'error')
+  }
+}
+
+onMounted(() => {
+  loadSavedCalculation()
+})
 </script>
 
 <template>
