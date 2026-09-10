@@ -12,7 +12,29 @@ const availableApartments = apartments.filter((apartment) => {
   return apartment.status === 'available'
 })
 
+const availableInvestments = [
+  ...new Set(
+    availableApartments.map((apartment) => {
+      return apartment.investment
+    })
+  )
+]
+
 const firstAvailableApartment = availableApartments[0]
+const selectedInvestment = ref(availableInvestments[0])
+
+const apartmentsFromSelectedInvestment = computed(() => {
+  return availableApartments.filter((apartment) => {
+    return apartment.investment === selectedInvestment.value
+  })
+})
+
+const handleInvestmentChange = () => {
+  const firstApartment = apartmentsFromSelectedInvestment.value[0]
+
+  selectedApartmentId.value = firstApartment.id
+}
+
 const selectedApartmentId = ref(firstAvailableApartment.id)
 const ownContribution = ref(100000)
 const finishingCostPerMeter = ref(2500)
@@ -66,7 +88,7 @@ const selectFinishingStandard = (price) => {
 }
 
 const selectedApartment = computed(() => {
-  return availableApartments.find((apartment) => {
+  return apartmentsFromSelectedInvestment.value.find((apartment) => {
     return apartment.id === selectedApartmentId.value
   })
 })
@@ -133,95 +155,74 @@ const hasLowContribution = computed(() => {
           <h2 class="text-[clamp(30px,4vw,46px)]">Wybierz mieszkanie</h2>
 
           <div>
-            <div>
-              <label
-                for="apartment"
-                class="mb-5 mt-2 block text-sm text-muted"
-              >
-                Wybierz lokal z aktualnie dostępnych mieszkań
-              </label>
-
-              <div class="relative">
-                <select
-                  id="apartment"
-                  v-model="selectedApartmentId"
-                  class="min-h-[62px] w-full appearance-none border border-line bg-panel py-3 pr-14 pl-5 text-sm font-semibold text-[var(--color-text)] transition-colors outline-none hover:border-gold focus:border-gold"
+            <div class="grid gap-5 sm:grid-cols-2">
+              <!-- Wybór inwestycji -->
+              <div>
+                <label
+                  for="investment"
+                  class="mb-3 block text-sm font-bold text-brand"
                 >
-                  <option
-                    v-for="apartment in availableApartments"
-                    :key="apartment.id"
-                    :value="apartment.id"
+                  Inwestycja
+                </label>
+
+                <div class="relative">
+                  <select
+                    id="investment"
+                    v-model="selectedInvestment"
+                    @change="handleInvestmentChange"
+                    class="min-h-[62px] w-full appearance-none border border-line bg-panel py-3 pr-14 pl-5 text-sm font-semibold text-[var(--color-text)] transition-colors outline-none hover:border-gold focus:border-gold"
                   >
-                    {{ apartment.investment }} — lokal {{ apartment.number }} —
-                    {{ formatPrice(apartment.price) }} zł
-                  </option>
-                </select>
+                    <option
+                      v-for="investment in availableInvestments"
+                      :key="investment"
+                      :value="investment"
+                    >
+                      {{ investment }}
+                    </option>
+                  </select>
 
-                <span
-                  class="pointer-events-none absolute top-1/2 right-5 -translate-y-1/2 text-xl text-gold"
-                  aria-hidden="true"
-                >
-                  ↓
-                </span>
+                  <span
+                    class="pointer-events-none absolute top-1/2 right-5 -translate-y-1/2 text-xl text-gold"
+                    aria-hidden="true"
+                  >
+                    ↓
+                  </span>
+                </div>
               </div>
-            </div>
 
-            <div
-              v-if="selectedApartment"
-              class="mt-8 border border-line bg-page p-6"
-            >
-              <p
-                class="mb-2 text-xs font-bold tracking-[0.14em] text-gold uppercase"
-              >
-                Wybrane mieszkanie
-              </p>
+              <!-- Wybór mieszkania -->
+              <div>
+                <label
+                  for="apartment"
+                  class="mb-3 block text-sm font-bold text-brand"
+                >
+                  Mieszkanie
+                </label>
 
-              <h3 class="mb-2">
-                {{ selectedApartment.investment }}
-              </h3>
+                <div class="relative">
+                  <select
+                    id="apartment"
+                    v-model="selectedApartmentId"
+                    class="min-h-[62px] w-full appearance-none border border-line bg-panel py-3 pr-14 pl-5 text-sm font-semibold text-[var(--color-text)] transition-colors outline-none hover:border-gold focus:border-gold"
+                  >
+                    <option
+                      v-for="apartment in apartmentsFromSelectedInvestment"
+                      :key="apartment.id"
+                      :value="apartment.id"
+                    >
+                      Lokal {{ apartment.number }} -
+                      {{ apartment.rooms }} pokoje - {{ apartment.area }} m²
+                    </option>
+                  </select>
 
-              <p class="mb-4 text-muted">
-                Lokal {{ selectedApartment.number }}
-              </p>
-
-              <p class="mb-0">
-                Cena mieszkania:
-                <strong class="text-brand">
-                  {{ formatPrice(selectedApartment.price) }} zł
-                </strong>
-              </p>
-
-              <dl
-                class="mt-6 grid grid-cols-2 gap-5 border-t border-line pt-5 sm:grid-cols-3"
-              >
-                <div>
-                  <dt class="mb-1 text-xs text-muted">Powierzchnia</dt>
-
-                  <dd class="m-0 font-bold text-brand">
-                    {{ selectedApartment.area }} m²
-                  </dd>
+                  <span
+                    class="pointer-events-none absolute top-1/2 right-5 -translate-y-1/2 text-xl text-gold"
+                    aria-hidden="true"
+                  >
+                    ↓
+                  </span>
                 </div>
-
-                <div>
-                  <dt class="mb-1 text-xs text-muted">Liczba pokoi</dt>
-
-                  <dd class="m-0 font-bold text-brand">
-                    {{ selectedApartment.rooms }}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt class="mb-1 text-xs text-muted">Piętro</dt>
-
-                  <dd class="m-0 font-bold text-brand">
-                    {{
-                      selectedApartment.floor === 0
-                        ? 'Parter'
-                        : `${selectedApartment.floor}. piętro`
-                    }}
-                  </dd>
-                </div>
-              </dl>
+              </div>
             </div>
           </div>
 
