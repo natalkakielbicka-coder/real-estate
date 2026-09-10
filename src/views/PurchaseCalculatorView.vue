@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { apartments } from '../data/apartments'
 import SelectedApartmentCard from '../components/SelectedApartmentCard.vue'
+import PurchaseCostChart from '../components/PurchaseCostChart.vue'
 
 const formatPrice = (price) => {
   const formattedPrice = new Intl.NumberFormat('pl-PL').format(price)
@@ -675,7 +676,16 @@ const hasLowContribution = computed(() => {
 
           <h2 class="text-[clamp(30px,4vw,46px)] text-panel">Twój budżet</h2>
 
-          <p class="mb-0 text-white/70">
+          <div class="mt-8 rounded-[10px] bg-panel p-5">
+            <PurchaseCostChart
+              v-if="selectedApartment"
+              :apartment-price="selectedApartment.price"
+              :finishing-cost="totalFinishingCost"
+              :additional-costs="totalAdditionalCosts"
+            />
+          </div>
+
+          <p class="mt-5 mb-0 text-white/70">
             Wyniki pojawią się po uzupełnieniu kalkulatora.
           </p>
         </aside>
