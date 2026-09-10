@@ -9,6 +9,9 @@ import InvestmentsMap from '../components/InvestmentsMap.vue'
 import { floorPlans } from '../data/floorPlans'
 import { apartments } from '../data/apartments'
 import { apartmentStatusClasses } from '../constants/apartmentStatuses'
+import { useToast } from '../composables/useToast'
+
+const { showToast } = useToast()
 
 const selectedStatuses = ref([])
 const selectedOutdoorSpaces = ref([])
@@ -297,6 +300,8 @@ const resetFilters = () => {
       view: route.query.view
     }
   })
+
+  showToast('Filtry zostały wyczyszczone', 'error')
 }
 
 const showInvestmentApartments = (city) => {

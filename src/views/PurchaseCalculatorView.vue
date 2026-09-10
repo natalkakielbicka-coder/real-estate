@@ -3,6 +3,9 @@ import { ref, computed } from 'vue'
 import { apartments } from '../data/apartments'
 import SelectedApartmentCard from '../components/SelectedApartmentCard.vue'
 import PurchaseCostChart from '../components/PurchaseCostChart.vue'
+import { useToast } from '../composables/useToast'
+
+const { showToast } = useToast()
 
 const formatPrice = (price) => {
   const formattedPrice = new Intl.NumberFormat('pl-PL').format(price)
@@ -168,6 +171,8 @@ const resetCalculator = () => {
 
   includeStorageRoom.value = false
   storageRoomPrice.value = 15000
+
+  showToast('Kalkulator został zresetowany', 'info')
 }
 
 const saveCalculation = () => {
@@ -184,6 +189,8 @@ const saveCalculation = () => {
   }
 
   localStorage.setItem('purchase-calculation', JSON.stringify(calculation))
+
+  showToast('Kalkulacja została zapisana')
 }
 </script>
 
