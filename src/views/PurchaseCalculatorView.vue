@@ -149,6 +149,26 @@ const contributionPercent = computed(() => {
 const hasLowContribution = computed(() => {
   return contributionPercent.value < 20
 })
+
+const resetCalculator = () => {
+  selectedInvestment.value = availableInvestments[0]
+
+  const firstApartment = availableApartments.find((apartment) => {
+    return apartment.investment === selectedInvestment.value
+  })
+
+  selectedApartmentId.value = firstApartment?.id ?? null
+
+  ownContribution.value = 100000
+  finishingCostPerMeter.value = 2500
+  notaryFee.value = 4000
+
+  includeParkingSpace.value = false
+  parkingSpacePrice.value = 35000
+
+  includeStorageRoom.value = false
+  storageRoomPrice.value = 15000
+}
 </script>
 
 <template>
@@ -772,6 +792,28 @@ const hasLowContribution = computed(() => {
               {{ formatPrice(neededLoan) }} zł
             </strong>
           </div>
+
+          <button
+            class="group mt-4 flex min-h-[54px] w-full items-center justify-center gap-3 rounded-[6px] border border-line bg-panel px-5 text-sm font-semibold text-[var(--color-text)] transition-[border-color,color,background-color] hover:border-brand hover:bg-page hover:text-brand"
+            type="button"
+            @click="resetCalculator"
+          >
+            <svg
+              class="size-[18px] transition-transform duration-300 group-hover:-rotate-90"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M3 12a9 9 0 1 0 3-6.7" />
+              <path d="M3 4v6h6" />
+            </svg>
+
+            Resetuj
+          </button>
         </aside>
       </div>
     </section>
