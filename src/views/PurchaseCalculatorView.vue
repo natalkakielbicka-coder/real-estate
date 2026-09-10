@@ -122,6 +122,18 @@ const totalFinishingCost = computed(() => {
   return apartmentArea * costPerMeter
 })
 
+const totalPurchaseCost = computed(() => {
+  if (!selectedApartment.value) {
+    return 0
+  }
+
+  return (
+    selectedApartment.value.price +
+    totalFinishingCost.value +
+    totalAdditionalCosts.value
+  )
+})
+
 const contributionPercent = computed(() => {
   if (!selectedApartment.value) {
     return 0
@@ -676,12 +688,23 @@ const hasLowContribution = computed(() => {
 
           <h2 class="text-[clamp(30px,4vw,46px)] text-panel">Twój budżet</h2>
 
+          <div class="mt-8">
+            <p class="mb-2 text-sm text-white/65">Całkowity koszt zakupu</p>
+
+            <strong
+              class="block font-display text-[clamp(38px,4vw,52px)] font-normal text-panel"
+            >
+              {{ formatPrice(totalPurchaseCost) }} zł
+            </strong>
+          </div>
+
           <div class="mt-8 rounded-[10px] bg-panel p-5">
             <PurchaseCostChart
               v-if="selectedApartment"
               :apartment-price="selectedApartment.price"
               :finishing-cost="totalFinishingCost"
               :additional-costs="totalAdditionalCosts"
+              :total-cost="totalPurchaseCost"
             />
           </div>
 
