@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { apartments } from '../data/apartments'
-import SelectedApartmentCard from '../components/SelectedApartmentCard.vue'
+import CalculatorApartmentStep from '../components/CalculatorApartmentStep.vue'
 import PurchaseCostChart from '../components/PurchaseCostChart.vue'
 import { useToast } from '../composables/useToast'
 
@@ -34,10 +34,20 @@ const apartmentsFromSelectedInvestment = computed(() => {
   })
 })
 
-const handleInvestmentChange = () => {
+const handleInvestmentChange = (investmentName) => {
+  selectedInvestment.value = investmentName
+
   const firstApartment = apartmentsFromSelectedInvestment.value[0]
 
-  selectedApartmentId.value = firstApartment.id
+  selectedApartmentId.value = firstApartment?.id ?? null
+}
+
+const handleApartmentChange = (apartmentId) => {
+  const apartment = apartmentsFromSelectedInvestment.value.find((item) => {
+    return String(item.id) === String(apartmentId)
+  })
+
+  selectedApartmentId.value = apartment?.id ?? null
 }
 
 const selectedApartmentId = ref(firstAvailableApartment.id)
@@ -218,119 +228,15 @@ const saveCalculation = () => {
         class="container grid items-start gap-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(360px,0.75fr)]"
       >
         <div>
-          <section
-            class="rounded-[14px] border border-line bg-panel p-[clamp(22px,3vw,32px)] shadow-[0_10px_35px_rgba(23,63,53,0.06)]"
-          >
-            <!-- Nagłówek kroku -->
-            <div class="flex items-start gap-4">
-              <span
-                class="grid size-11 shrink-0 place-items-center rounded-full bg-page font-display text-xl text-brand"
-                aria-hidden="true"
-              >
-                1
-              </span>
-
-              <div>
-                <h2 class="mb-1 text-[clamp(25px,3vw,32px)]">
-                  Wybierz mieszkanie
-                </h2>
-
-                <p class="mb-0 text-sm text-muted">
-                  Wybierz inwestycję, a następnie jedno z dostępnych mieszkań.
-                </p>
-              </div>
-            </div>
-
-            <!-- Selecty -->
-            <div class="mt-7 grid gap-5 sm:grid-cols-2">
-              <!-- Inwestycja -->
-              <div>
-                <label
-                  for="investment"
-                  class="mb-2 block text-sm font-semibold text-[var(--color-text)]"
-                >
-                  Inwestycja
-                </label>
-
-                <div class="relative">
-                  <select
-                    id="investment"
-                    v-model="selectedInvestment"
-                    class="min-h-[54px] w-full appearance-none rounded-[6px] border border-line bg-panel py-3 pr-12 pl-4 text-sm font-semibold text-[var(--color-text)] transition-colors outline-none hover:border-gold focus:border-brand"
-                    @change="handleInvestmentChange"
-                  >
-                    <option
-                      v-for="investment in availableInvestments"
-                      :key="investment"
-                      :value="investment"
-                    >
-                      {{ investment }}
-                    </option>
-                  </select>
-
-                  <svg
-                    class="pointer-events-none absolute top-1/2 right-4 size-4 -translate-y-1/2 text-brand"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="m6 9 6 6 6-6" />
-                  </svg>
-                </div>
-              </div>
-
-              <!-- Mieszkanie -->
-              <div>
-                <label
-                  for="apartment"
-                  class="mb-2 block text-sm font-semibold text-[var(--color-text)]"
-                >
-                  Mieszkanie
-                </label>
-
-                <div class="relative">
-                  <select
-                    id="apartment"
-                    v-model="selectedApartmentId"
-                    class="min-h-[54px] w-full appearance-none rounded-[6px] border border-line bg-panel py-3 pr-12 pl-4 text-sm font-semibold text-[var(--color-text)] transition-colors outline-none hover:border-gold focus:border-brand"
-                  >
-                    <option
-                      v-for="apartment in apartmentsFromSelectedInvestment"
-                      :key="apartment.id"
-                      :value="apartment.id"
-                    >
-                      {{ apartment.number }} · {{ apartment.rooms }} pokoje ·
-                      {{ apartment.area }} m²
-                    </option>
-                  </select>
-
-                  <svg
-                    class="pointer-events-none absolute top-1/2 right-4 size-4 -translate-y-1/2 text-brand"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="m6 9 6 6 6-6" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            <!-- Wybrane mieszkanie -->
-            <SelectedApartmentCard
-              v-if="selectedApartment"
-              class="mt-5"
-              :apartment="selectedApartment"
-            />
-          </section>
+          <CalculatorApartmentStep
+            :investments="availableInvestments"
+            :apartments="apartmentsFromSelectedInvestment"
+            :selected-investment="selectedInvestment"
+            :selected-apartment-id="selectedApartmentId"
+            :selected-apartment="selectedApartment"
+            @select-investment="handleInvestmentChange"
+            @select-apartment="handleApartmentChange"
+          />
 
           <section
             class="mt-4 rounded-[14px] border border-line bg-panel p-[clamp(22px,3vw,32px)] shadow-[0_10px_35px_rgba(23,63,53,0.06)]"
