@@ -1,3 +1,21 @@
+<script setup>
+import { ref } from 'vue'
+import { apartments } from '../data/apartments'
+
+const formatPrice = (price) => {
+  const formattedPrice = new Intl.NumberFormat('pl-PL').format(price)
+
+  return formattedPrice
+}
+
+const availableApartments = apartments.filter((apartment) => {
+  return apartment.status === 'available'
+})
+
+const firstAvailableApartment = availableApartments[0]
+const selectedApartmentId = ref(firstAvailableApartment.id)
+</script>
+
 <template>
   <main class="min-h-screen bg-page pt-[74px] sm:pt-[88px]">
     <section class="bg-brand py-[clamp(48px,7vw,88px)]">
@@ -30,9 +48,32 @@
 
           <h2 class="text-[clamp(30px,4vw,46px)]">Wybierz mieszkanie</h2>
 
-          <p class="mb-0 text-muted">
-            W następnym kroku dodamy tutaj wybór mieszkania z naszej oferty.
+          <p class="mb-8 text-muted">
+            Wybierz lokal z aktualnie dostępnych mieszkań.
           </p>
+
+          <p>
+            Liczba dostępnych mieszkań:
+            <strong>{{ availableApartments.length }}</strong>
+          </p>
+
+          <div>
+            <label for="apartment"> Wybierz mieszkanie </label>
+
+            <select
+              id="apartment"
+              v-model="selectedApartmentId"
+            >
+              <option
+                v-for="apartment in availableApartments"
+                :key="apartment.id"
+                :value="apartment.id"
+              >
+                {{ apartment.investment }} — lokal {{ apartment.number }} —
+                {{ formatPrice(apartment.price) }} zł
+              </option>
+            </select>
+          </div>
         </div>
 
         <aside
