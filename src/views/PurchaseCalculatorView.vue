@@ -146,22 +146,37 @@ const hasLowContribution = computed(() => {
       <div
         class="container grid items-start gap-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(360px,0.75fr)]"
       >
-        <div class="bg-panel p-[clamp(24px,4vw,48px)]">
-          <p
-            class="mb-3 text-xs font-bold tracking-[0.16em] text-gold uppercase"
+        <div>
+          <section
+            class="rounded-[14px] border border-line bg-panel p-[clamp(22px,3vw,32px)] shadow-[0_10px_35px_rgba(23,63,53,0.06)]"
           >
-            Krok 01
-          </p>
+            <!-- Nagłówek kroku -->
+            <div class="flex items-start gap-4">
+              <span
+                class="grid size-11 shrink-0 place-items-center rounded-full bg-page font-display text-xl text-brand"
+                aria-hidden="true"
+              >
+                1
+              </span>
 
-          <h2 class="text-[clamp(30px,4vw,46px)]">Wybierz mieszkanie</h2>
+              <div>
+                <h2 class="mb-1 text-[clamp(25px,3vw,32px)]">
+                  Wybierz mieszkanie
+                </h2>
 
-          <div>
-            <div class="grid gap-5 sm:grid-cols-2">
-              <!-- Wybór inwestycji -->
+                <p class="mb-0 text-sm text-muted">
+                  Wybierz inwestycję, a następnie jedno z dostępnych mieszkań.
+                </p>
+              </div>
+            </div>
+
+            <!-- Selecty -->
+            <div class="mt-7 grid gap-5 sm:grid-cols-2">
+              <!-- Inwestycja -->
               <div>
                 <label
                   for="investment"
-                  class="mb-3 block text-sm font-bold text-brand"
+                  class="mb-2 block text-sm font-semibold text-[var(--color-text)]"
                 >
                   Inwestycja
                 </label>
@@ -170,8 +185,8 @@ const hasLowContribution = computed(() => {
                   <select
                     id="investment"
                     v-model="selectedInvestment"
+                    class="min-h-[54px] w-full appearance-none rounded-[6px] border border-line bg-panel py-3 pr-12 pl-4 text-sm font-semibold text-[var(--color-text)] transition-colors outline-none hover:border-gold focus:border-brand"
                     @change="handleInvestmentChange"
-                    class="min-h-[62px] w-full appearance-none border border-line bg-panel py-3 pr-14 pl-5 text-sm font-semibold text-[var(--color-text)] transition-colors outline-none hover:border-gold focus:border-gold"
                   >
                     <option
                       v-for="investment in availableInvestments"
@@ -183,19 +198,19 @@ const hasLowContribution = computed(() => {
                   </select>
 
                   <span
-                    class="pointer-events-none absolute top-1/2 right-5 -translate-y-1/2 text-xl text-gold"
+                    class="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-lg text-brand"
                     aria-hidden="true"
                   >
-                    ↓
+                    ⌄
                   </span>
                 </div>
               </div>
 
-              <!-- Wybór mieszkania -->
+              <!-- Mieszkanie -->
               <div>
                 <label
                   for="apartment"
-                  class="mb-3 block text-sm font-bold text-brand"
+                  class="mb-2 block text-sm font-semibold text-[var(--color-text)]"
                 >
                   Mieszkanie
                 </label>
@@ -204,34 +219,35 @@ const hasLowContribution = computed(() => {
                   <select
                     id="apartment"
                     v-model="selectedApartmentId"
-                    class="min-h-[62px] w-full appearance-none border border-line bg-panel py-3 pr-14 pl-5 text-sm font-semibold text-[var(--color-text)] transition-colors outline-none hover:border-gold focus:border-gold"
+                    class="min-h-[54px] w-full appearance-none rounded-[6px] border border-line bg-panel py-3 pr-12 pl-4 text-sm font-semibold text-[var(--color-text)] transition-colors outline-none hover:border-gold focus:border-brand"
                   >
                     <option
                       v-for="apartment in apartmentsFromSelectedInvestment"
                       :key="apartment.id"
                       :value="apartment.id"
                     >
-                      Lokal {{ apartment.number }} -
-                      {{ apartment.rooms }} pokoje - {{ apartment.area }} m²
+                      {{ apartment.number }} · {{ apartment.rooms }} pokoje ·
+                      {{ apartment.area }} m²
                     </option>
                   </select>
 
                   <span
-                    class="pointer-events-none absolute top-1/2 right-5 -translate-y-1/2 text-xl text-gold"
+                    class="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-lg text-brand"
                     aria-hidden="true"
                   >
-                    ↓
+                    ⌄
                   </span>
                 </div>
               </div>
             </div>
 
+            <!-- Wybrane mieszkanie -->
             <SelectedApartmentCard
               v-if="selectedApartment"
-              class="mt-6"
+              class="mt-5"
               :apartment="selectedApartment"
             />
-          </div>
+          </section>
 
           <div class="mt-10 border-t border-line pt-10">
             <p
