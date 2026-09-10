@@ -502,6 +502,166 @@ const hasLowContribution = computed(() => {
               {{ formatPrice(finishingCostPerMeter || 0) }} zł/m²
             </p>
           </section>
+
+          <section
+            class="mt-4 rounded-[14px] border border-line bg-panel p-[clamp(22px,3vw,32px)] shadow-[0_10px_35px_rgba(23,63,53,0.06)]"
+          >
+            <!-- Nagłówek -->
+            <div class="flex items-start gap-4">
+              <span
+                class="grid size-11 shrink-0 place-items-center rounded-full bg-page font-display text-xl text-brand"
+                aria-hidden="true"
+              >
+                4
+              </span>
+
+              <div>
+                <h2 class="mb-1 text-[clamp(25px,3vw,32px)]">
+                  Koszty dodatkowe
+                </h2>
+
+                <p class="mb-0 text-sm text-muted">
+                  Uwzględnij dodatkowe opłaty związane z zakupem mieszkania.
+                </p>
+              </div>
+            </div>
+
+            <div class="mt-8 divide-y divide-line">
+              <!-- Parking -->
+              <div
+                class="grid items-center gap-4 py-4 sm:grid-cols-[minmax(0,1fr)_230px]"
+              >
+                <label
+                  class="flex cursor-pointer items-center gap-3"
+                  for="include-parking"
+                >
+                  <input
+                    id="include-parking"
+                    v-model="includeParkingSpace"
+                    class="peer sr-only"
+                    type="checkbox"
+                  />
+
+                  <span
+                    class="grid size-5 shrink-0 place-items-center rounded-[4px] border border-line bg-panel text-xs text-transparent transition-colors peer-checked:border-brand peer-checked:bg-brand peer-checked:text-panel"
+                    aria-hidden="true"
+                  >
+                    ✓
+                  </span>
+
+                  <span class="text-sm font-semibold text-[var(--color-text)]">
+                    Miejsce parkingowe
+                  </span>
+                </label>
+
+                <div class="relative">
+                  <input
+                    id="parking-price"
+                    v-model.number="parkingSpacePrice"
+                    class="min-h-[48px] w-full rounded-[6px] border border-line bg-panel py-2 pr-12 pl-4 text-sm font-semibold text-[var(--color-text)] transition-colors outline-none hover:border-gold focus:border-brand disabled:cursor-not-allowed disabled:bg-page disabled:text-muted"
+                    type="number"
+                    min="0"
+                    step="1000"
+                    :disabled="!includeParkingSpace"
+                  />
+
+                  <span
+                    class="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-xs font-semibold text-muted"
+                  >
+                    zł
+                  </span>
+                </div>
+              </div>
+
+              <!-- Komórka lokatorska -->
+              <div
+                class="grid items-center gap-4 py-4 sm:grid-cols-[minmax(0,1fr)_230px]"
+              >
+                <label
+                  class="flex cursor-pointer items-center gap-3"
+                  for="include-storage-room"
+                >
+                  <input
+                    id="include-storage-room"
+                    v-model="includeStorageRoom"
+                    class="peer sr-only"
+                    type="checkbox"
+                  />
+
+                  <span
+                    class="grid size-5 shrink-0 place-items-center rounded-[4px] border border-line bg-panel text-xs text-transparent transition-colors peer-checked:border-brand peer-checked:bg-brand peer-checked:text-panel"
+                    aria-hidden="true"
+                  >
+                    ✓
+                  </span>
+
+                  <span class="text-sm font-semibold text-[var(--color-text)]">
+                    Komórka lokatorska
+                  </span>
+                </label>
+
+                <div class="relative">
+                  <input
+                    id="storage-room-price"
+                    v-model.number="storageRoomPrice"
+                    class="min-h-[48px] w-full rounded-[6px] border border-line bg-panel py-2 pr-12 pl-4 text-sm font-semibold text-[var(--color-text)] transition-colors outline-none hover:border-gold focus:border-brand disabled:cursor-not-allowed disabled:bg-page disabled:text-muted"
+                    type="number"
+                    min="0"
+                    step="1000"
+                    :disabled="!includeStorageRoom"
+                  />
+
+                  <span
+                    class="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-xs font-semibold text-muted"
+                  >
+                    zł
+                  </span>
+                </div>
+              </div>
+
+              <!-- Notariusz -->
+              <div
+                class="grid items-center gap-4 py-4 sm:grid-cols-[minmax(0,1fr)_230px]"
+              >
+                <label
+                  for="notary-fee"
+                  class="text-sm font-semibold text-[var(--color-text)]"
+                >
+                  Notariusz i dokumenty
+                </label>
+
+                <div class="relative">
+                  <input
+                    id="notary-fee"
+                    v-model.number="notaryFee"
+                    class="min-h-[48px] w-full rounded-[6px] border border-line bg-panel py-2 pr-12 pl-4 text-sm font-semibold text-[var(--color-text)] transition-colors outline-none hover:border-gold focus:border-brand"
+                    type="number"
+                    min="0"
+                    step="100"
+                  />
+
+                  <span
+                    class="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-xs font-semibold text-muted"
+                  >
+                    zł
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Suma -->
+            <div
+              class="mt-5 flex flex-col justify-between gap-3 rounded-[6px] bg-page p-5 sm:flex-row sm:items-center"
+            >
+              <span class="text-sm font-semibold text-muted">
+                Łączne koszty dodatkowe
+              </span>
+
+              <strong class="font-display text-2xl font-normal text-brand">
+                {{ formatPrice(totalAdditionalCosts) }} zł
+              </strong>
+            </div>
+          </section>
         </div>
 
         <aside
