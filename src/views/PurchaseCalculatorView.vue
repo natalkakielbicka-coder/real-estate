@@ -15,6 +15,26 @@ const availableApartments = apartments.filter((apartment) => {
 const firstAvailableApartment = availableApartments[0]
 const selectedApartmentId = ref(firstAvailableApartment.id)
 const ownContribution = ref(100000)
+const finishingCostPerMeter = ref(2500)
+
+const finishingStandards = [
+  {
+    name: 'Podstawowy',
+    price: 1800
+  },
+  {
+    name: 'Komfort',
+    price: 2500
+  },
+  {
+    name: 'Premium',
+    price: 3500
+  }
+]
+
+const selectFinishingStandard = (price) => {
+  finishingCostPerMeter.value = price
+}
 
 const selectedApartment = computed(() => {
   return availableApartments.find((apartment) => {
@@ -28,6 +48,13 @@ const neededLoan = computed(() => {
   const loanAmount = apartmentPrice - contribution
 
   return Math.max(loanAmount, 0)
+})
+
+const totalFinishingCost = computed(() => {
+  const apartmentArea = selectedApartment.value.area
+  const costPerMeter = finishingCostPerMeter.value || 0
+
+  return apartmentArea * costPerMeter
 })
 
 const contributionPercent = computed(() => {
@@ -235,6 +262,88 @@ const hasLowContribution = computed(() => {
               <strong class="font-display text-3xl font-normal text-brand">
                 {{ formatPrice(neededLoan) }} zł
               </strong>
+            </div>
+          </div>
+
+          <div class="mt-10 border-t border-line pt-10">
+            <p
+              class="mb-3 text-xs font-bold tracking-[0.16em] text-gold uppercase"
+            >
+              Krok 03
+            </p>
+
+            <h2 class="text-[clamp(30px,4vw,46px)]">Wykończenie</h2>
+
+            <p class="mb-7 max-w-[620px] text-muted">
+              Określ przewidywany koszt wykończenia jednego metra kwadratowego.
+            </p>
+
+            <div>
+              <div class="mb-7 grid gap-3 sm:grid-cols-3">
+                <button
+                  v-for="standard in finishingStandards"
+                  :key="standard.name"
+                  class="border px-4 py-4 text-left transition-colors"
+                  :class="
+                    finishingCostPerMeter === standard.price
+                      ? 'border-gold bg-[rgba(199,157,98,0.1)]'
+                      : 'border-line bg-panel hover:border-gold'
+                  "
+                  type="button"
+                  @click="selectFinishingStandard(standard.price)"
+                >
+                  <span class="block text-sm font-bold text-brand">
+                    {{ standard.name }}
+                  </span>
+
+                  <span class="mt-1 block text-xs text-muted">
+                    {{ formatPrice(standard.price) }} zł/m²
+                  </span>
+                </button>
+              </div>
+              <label
+                for="finishing-cost"
+                class="mb-3 block text-sm font-bold text-brand"
+              >
+                Koszt wykończenia za m²
+              </label>
+
+              <div class="relative">
+                <input
+                  id="finishing-cost"
+                  v-model.number="finishingCostPerMeter"
+                  class="min-h-[62px] w-full border border-line bg-panel py-3 pr-24 pl-5 font-semibold text-[var(--color-text)] transition-colors outline-none hover:border-gold focus:border-gold"
+                  type="number"
+                  min="0"
+                  step="100"
+                />
+
+                <span
+                  class="pointer-events-none absolute top-1/2 right-5 -translate-y-1/2 text-sm font-bold text-muted"
+                >
+                  zł/m²
+                </span>
+              </div>
+            </div>
+
+            <p class="mt-4 mb-0 text-sm text-muted">
+              Wybrana stawka:
+              <strong class="text-brand">
+                {{ formatPrice(finishingCostPerMeter || 0) }} zł/m²
+              </strong>
+            </p>
+
+            <div class="mt-6 bg-page p-5">
+              <p class="mb-1 text-sm text-muted">Szacowany koszt wykończenia</p>
+
+              <strong class="font-display text-3xl font-normal text-brand">
+                {{ formatPrice(totalFinishingCost) }} zł
+              </strong>
+
+              <p class="mt-2 mb-0 text-xs text-muted">
+                {{ selectedApartment.area }} m² ×
+                {{ formatPrice(finishingCostPerMeter || 0) }} zł/m²
+              </p>
             </div>
           </div>
         </div>
