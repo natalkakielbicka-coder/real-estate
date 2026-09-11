@@ -91,6 +91,8 @@ const viewMode = ref(
   availableViewModes.includes(route.query.view) ? route.query.view : 'grid'
 )
 
+const selectedFloorPlan = ref(floorPlans[0])
+
 watch(viewMode, (newViewMode) => {
   router.replace({
     query: {
@@ -971,12 +973,40 @@ const getOffersLabel = (count) => {
               v-else-if="viewMode === 'table'"
               :apartments="sortedApartments"
             />
-            <FloorPlanSelector
-              v-else-if="viewMode === 'plan'"
-              :floor-plan="floorPlans[0]"
-              :visible-apartments="sortedApartments"
-              @reset-filters="resetFilters"
-            />
+            <div v-else-if="viewMode === 'plan'">
+              <div
+                class="mb-4 flex flex-wrap items-center gap-2 bg-panel p-3 shadow-[0_8px_24px_rgba(23,63,53,0.06)]"
+                aria-label="Wybierz piętro"
+              >
+                <span
+                  class="mr-2 text-[10px] font-bold tracking-[0.08em] text-muted uppercase"
+                >
+                  Piętro
+                </span>
+
+                <button
+                  v-for="floorPlan in floorPlans"
+                  :key="floorPlan.id"
+                  class="min-h-[38px] rounded-[3px] border px-3.5 text-[10px] font-bold transition-colors"
+                  :class="
+                    selectedFloorPlan.id === floorPlan.id
+                      ? 'border-brand bg-brand text-white'
+                      : 'border-line bg-page text-brand hover:border-gold hover:text-gold'
+                  "
+                  type="button"
+                  :aria-pressed="selectedFloorPlan.id === floorPlan.id"
+                  @click="selectedFloorPlan = floorPlan"
+                >
+                  {{ floorPlan.floor === 0 ? 'Parter' : `${floorPlan.floor}.` }}
+                </button>
+              </div>
+
+              <FloorPlanSelector
+                :floor-plan="selectedFloorPlan"
+                :visible-apartments="sortedApartments"
+                @reset-filters="resetFilters"
+              />
+            </div>
             <InvestmentsMap
               v-else
               :apartments="sortedApartments"
