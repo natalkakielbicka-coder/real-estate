@@ -92,7 +92,13 @@ const viewMode = ref(
   availableViewModes.includes(route.query.view) ? route.query.view : 'grid'
 )
 
-const selectedFloorNumber = ref(floorPlans[0].floor)
+const floorFromQuery = getQueryNumber(route.query.floor)
+
+const selectedFloorNumber = ref(
+  floorPlans.some((floorPlan) => floorPlan.floor === floorFromQuery)
+    ? floorFromQuery
+    : floorPlans[0].floor
+)
 
 const selectedFloorPlan = computed(() => {
   return floorPlans.find((floorPlan) => {
@@ -103,15 +109,6 @@ const selectedFloorPlan = computed(() => {
 const selectFloorPlan = (floorPlan) => {
   selectedFloorNumber.value = floorPlan.floor
 }
-
-watch(viewMode, (newViewMode) => {
-  router.replace({
-    query: {
-      ...route.query,
-      view: newViewMode === 'grid' ? undefined : newViewMode
-    }
-  })
-})
 
 const outdoorSpaces = [
   {
@@ -264,6 +261,8 @@ const filtersQuery = computed(() => {
     minPrice: minPrice.value ?? undefined,
 
     maxPrice: maxPrice.value ?? undefined,
+
+    floor: viewMode.value === 'plan' ? selectedFloorNumber.value : undefined,
 
     sort: selectedSort.value !== 'default' ? selectedSort.value : undefined,
 
