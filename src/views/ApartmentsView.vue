@@ -522,7 +522,9 @@ const getOffersLabel = (count) => {
           Oferta mieszkań
         </p>
 
-        <h1 class="mb-10 max-w-[780px] text-[clamp(48px,6vw,76px)] text-white">
+        <h1
+          class="mb-[30px] max-w-[780px] text-[clamp(48px,6vw,76px)] text-white"
+        >
           Znajdź swoje mieszkanie
         </h1>
 

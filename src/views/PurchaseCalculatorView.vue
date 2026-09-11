@@ -34,18 +34,22 @@ const {
 </script>
 
 <template>
-  <main class="min-h-screen bg-page pt-[74px] sm:pt-[88px]">
-    <section class="bg-brand py-[clamp(48px,7vw,88px)]">
+  <main class="min-h-screen bg-page pt-[88px]">
+    <section class="bg-brand py-[clamp(70px,9vw,130px)] text-white">
       <div class="container">
-        <p class="mb-4 text-xs font-bold tracking-[0.18em] text-gold uppercase">
+        <p
+          class="mb-5 text-[11px] font-bold tracking-[0.16em] text-gold uppercase"
+        >
           Zaplanuj swój budżet
         </p>
 
-        <h1 class="max-w-[760px] text-[clamp(40px,6vw,76px)] text-panel">
+        <h1
+          class="mb-[30px] max-w-[850px] text-[clamp(48px,6vw,76px)] text-white"
+        >
           Kalkulator kosztów zakupu
         </h1>
 
-        <p class="mt-5 max-w-[620px] text-base text-white/70">
+        <p class="mb-0 max-w-[600px] text-[17px] text-[rgba(255,255,255,0.68)]">
           Sprawdź pełny koszt zakupu mieszkania, wysokość dodatkowych opłat oraz
           potrzebnego finansowania.
         </p>

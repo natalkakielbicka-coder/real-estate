@@ -114,26 +114,20 @@ const purchaseSteps = [
       >
         <div class="relative z-[2] sm:max-w-[760px] md:max-w-none">
           <p
-            class="hero__eyebrow mb-[18px] flex items-center gap-3 text-[10px] font-bold tracking-[0.18em] text-gold uppercase xs:mb-6 xs:text-xs"
+            class="mb-5 text-[11px] font-bold tracking-[0.16em] text-gold uppercase"
           >
             Nowoczesne inwestycje
           </p>
 
           <h1
-            class="hero__title mb-7 max-w-[750px] font-copy text-[clamp(39px,11vw,48px)] leading-[1.02] font-semibold tracking-[-0.045em] text-brand xs:mb-[30px] xs:text-[clamp(44px,9vw,62px)] xs:tracking-[-0.055em] sm:text-[clamp(48px,5.2vw,76px)]"
+            class="mb-[30px] max-w-[750px] text-[clamp(48px,6vw,76px)] text-brand"
           >
             Mieszkania stworzone
 
-            <span
-              class="relative mt-[7px] block w-fit font-display font-normal tracking-[-0.025em] text-gold xs:mt-2.5"
-            >
-              do dobrego życia
-            </span>
+            <span class="block text-gold"> do dobrego życia </span>
           </h1>
 
-          <p
-            class="mb-[34px] max-w-[600px] text-[clamp(16px,1.6vw,19px)] text-muted sm:mb-11"
-          >
+          <p class="mb-[34px] max-w-[600px] text-[17px] text-muted sm:mb-11">
             Odkryj starannie wybrane mieszkania w najlepszych lokalizacjach i
             znajdź przestrzeń dopasowaną do Twojego życia.
           </p>
@@ -454,23 +448,5 @@ const purchaseSteps = [
   content: '';
   background-color: #e5ddcf;
   border-radius: 50% 0 0 50%;
-}
-
-.hero__eyebrow::before {
-  width: 38px;
-  height: 1px;
-  flex-shrink: 0;
-  content: '';
-  background-color: var(--color-accent);
-}
-
-.hero__title span::after {
-  position: absolute;
-  right: 0;
-  bottom: -9px;
-  width: 38%;
-  height: 2px;
-  content: '';
-  background-color: var(--color-accent);
 }
 </style>

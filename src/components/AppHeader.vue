@@ -80,6 +80,13 @@ watch(
           Inwestycje
         </RouterLink>
 
+        <RouterLink
+          class="navigation__link"
+          to="/kalkulator-kosztow-zakupu"
+        >
+          Kalkulator kosztów
+        </RouterLink>
+
         <a
           class="navigation__link"
           href="#kontakt"
