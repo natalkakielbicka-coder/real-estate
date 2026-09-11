@@ -72,6 +72,7 @@ const {
             :contribution-percent="contributionPercent"
             :needed-loan="neededLoan"
             :has-low-contribution="hasLowContribution"
+            :apartment-price="selectedApartment?.price || 0"
           />
 
           <CalculatorFinishingStep

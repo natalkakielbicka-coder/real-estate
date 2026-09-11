@@ -2,7 +2,11 @@
 import { formatPrice } from '../utils/apartmentFormatters'
 import { toNonNegativeNumber } from '../utils/numberHelpers'
 
-defineProps({
+const props = defineProps({
+  apartmentPrice: {
+    type: Number,
+    default: 0
+  },
   ownContribution: {
     type: Number,
     default: 0
@@ -25,8 +29,9 @@ const emit = defineEmits(['update:ownContribution'])
 
 const updateOwnContribution = (event) => {
   const value = toNonNegativeNumber(event.target.value)
+  const limitedValue = Math.min(value, props.apartmentPrice)
 
-  emit('update:ownContribution', value)
+  emit('update:ownContribution', limitedValue)
 }
 </script>
 
@@ -65,6 +70,7 @@ const updateOwnContribution = (event) => {
           class="min-h-[54px] w-full rounded-[6px] border border-line bg-panel py-3 pr-16 pl-4 font-semibold text-[var(--color-text)] outline-none transition-colors hover:border-gold focus:border-brand"
           type="number"
           min="0"
+          :max="apartmentPrice"
           step="1000"
           :value="ownContribution"
           @input="updateOwnContribution"
