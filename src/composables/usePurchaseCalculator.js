@@ -267,6 +267,8 @@ export const usePurchaseCalculator = () => {
         null
 
       applyCalculationValues(DEFAULT_CALCULATION)
+
+      showToast('Wczytano zapisaną kalkulację', 'info')
     } catch {
       localStorage.removeItem(STORAGE_KEY)
 

@@ -92,7 +92,9 @@ const chartOptions = {
 <template>
   <div>
     <!-- Wykres -->
-    <div class="relative mx-auto h-[250px] w-full max-w-[290px]">
+    <div
+      class="relative mx-auto h-[220px] w-full max-w-[250px] xs:h-[250px] xs:max-w-[290px]"
+    >
       <Doughnut
         :data="chartData"
         :options="chartOptions"
@@ -119,7 +121,7 @@ const chartOptions = {
     <div class="mt-7 space-y-4">
       <!-- Mieszkanie -->
       <div
-        class="grid grid-cols-[minmax(0,1fr)_42px_100px] items-center gap-3 text-sm"
+        class="grid grid-cols-[minmax(0,1fr)_36px_86px] items-center gap-2 text-xs xs:grid-cols-[minmax(0,1fr)_42px_100px] xs:gap-3 xs:text-sm"
       >
         <div class="flex items-center gap-3">
           <span
@@ -139,7 +141,7 @@ const chartOptions = {
 
       <!-- Wykończenie -->
       <div
-        class="grid grid-cols-[minmax(0,1fr)_42px_100px] items-center gap-3 text-sm"
+        class="grid grid-cols-[minmax(0,1fr)_36px_86px] items-center gap-2 text-xs xs:grid-cols-[minmax(0,1fr)_42px_100px] xs:gap-3 xs:text-sm"
       >
         <div class="flex items-center gap-3">
           <span
@@ -159,7 +161,7 @@ const chartOptions = {
 
       <!-- Opłaty -->
       <div
-        class="grid grid-cols-[minmax(0,1fr)_42px_100px] items-center gap-3 text-sm"
+        class="grid grid-cols-[minmax(0,1fr)_36px_86px] items-center gap-2 text-xs xs:grid-cols-[minmax(0,1fr)_42px_100px] xs:gap-3 xs:text-sm"
       >
         <div class="flex items-center gap-3">
           <span

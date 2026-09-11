@@ -54,9 +54,9 @@ const {
 
     <section class="py-[clamp(48px,7vw,88px)]">
       <div
-        class="container grid items-start gap-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(360px,0.75fr)]"
+        class="container grid items-start gap-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(320px,0.75fr)] xl:grid-cols-[minmax(0,1.25fr)_minmax(360px,0.75fr)]"
       >
-        <div>
+        <div class="min-w-0">
           <CalculatorApartmentStep
             :investments="availableInvestments"
             :apartments="apartmentsFromSelectedInvestment"

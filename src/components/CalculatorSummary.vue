@@ -53,7 +53,7 @@ const costRows = computed(() => {
 
 <template>
   <aside
-    class="rounded-[14px] border border-line bg-panel p-[clamp(24px,3vw,32px)] shadow-[0_10px_35px_rgba(23,63,53,0.08)] lg:sticky lg:top-[112px]"
+    class="min-w-0 rounded-[14px] border border-line bg-panel p-[clamp(20px,3vw,32px)] shadow-[0_10px_35px_rgba(23,63,53,0.08)] lg:sticky lg:top-[112px]"
   >
     <p
       class="mb-4 text-[10px] font-bold tracking-[0.24em] text-muted uppercase"
