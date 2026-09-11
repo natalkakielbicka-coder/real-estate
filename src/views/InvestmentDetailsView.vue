@@ -59,6 +59,22 @@ const investmentApartments = computed(() => {
   })
 })
 
+const selectedApartmentSlug = computed(() => {
+  const queryApartment = Array.isArray(route.query.apartment)
+    ? route.query.apartment[0]
+    : route.query.apartment
+
+  if (!queryApartment) {
+    return null
+  }
+
+  const selectedApartment = investmentApartments.value.find((apartment) => {
+    return apartment.slug === queryApartment
+  })
+
+  return selectedApartment?.slug ?? null
+})
+
 const statusCounts = computed(() => {
   return getInvestmentStatusCounts(apartments, route.params.id)
 })
@@ -315,6 +331,7 @@ const clearFloorSelection = () => {
           class="mb-[clamp(50px,7vw,90px)]"
           :floor-plan="selectedFloorPlan"
           :visible-apartments="displayedApartments"
+          :highlighted-apartment-slug="selectedApartmentSlug"
           @reset-filters="resetApartmentFilters"
         />
 

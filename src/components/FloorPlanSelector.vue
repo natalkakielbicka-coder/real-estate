@@ -13,6 +13,10 @@ const props = defineProps({
   visibleApartments: {
     type: Array,
     default: () => []
+  },
+  highlightedApartmentSlug: {
+    type: String,
+    default: null
   }
 })
 
@@ -201,7 +205,10 @@ const hideTooltip = () => {
               'fill-sold [fill-opacity:0.32]': area.apartment.status === 'sold',
 
               'pointer-events-none cursor-not-allowed fill-white [fill-opacity:0.72] stroke-[rgba(146,152,150,0.35)]':
-                !area.matchesFilters
+                !area.matchesFilters,
+
+              'floor-plan-apartment--highlighted':
+                area.apartment.slug === highlightedApartmentSlug
             }
           ]"
           :points="area.points"
@@ -327,3 +334,14 @@ const hideTooltip = () => {
     </Teleport>
   </div>
 </template>
+
+<style scoped>
+.floor-plan-apartment--highlighted {
+  fill: #da3e3e;
+  stroke: #701f1f;
+  stroke-width: 18;
+  paint-order: stroke fill;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.95))
+    drop-shadow(0 7px 14px rgba(112, 31, 31, 0.55));
+}
+</style>
