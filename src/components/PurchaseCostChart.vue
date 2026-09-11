@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { Doughnut } from 'vue-chartjs'
 import { ArcElement, Chart as ChartJS, Tooltip } from 'chart.js'
+import { formatPrice } from '../utils/apartmentFormatters'
 
 ChartJS.register(ArcElement, Tooltip)
 
@@ -23,10 +24,6 @@ const props = defineProps({
     required: true
   }
 })
-
-const formatPrice = (price) => {
-  return new Intl.NumberFormat('pl-PL').format(price)
-}
 
 const calculatePercentage = (cost) => {
   if (props.totalCost === 0) {
