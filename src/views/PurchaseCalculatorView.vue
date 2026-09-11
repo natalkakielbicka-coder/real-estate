@@ -1,14 +1,25 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { apartments } from '../data/apartments'
 import CalculatorApartmentStep from '../components/CalculatorApartmentStep.vue'
 import CalculatorFinancingStep from '../components/CalculatorFinancingStep.vue'
 import CalculatorFinishingStep from '../components/CalculatorFinishingStep.vue'
 import CalculatorAdditionalCostsStep from '../components/CalculatorAdditionalCostsStep.vue'
 import CalculatorSummary from '../components/CalculatorSummary.vue'
+import { usePurchaseCalculator } from '../composables/usePurchaseCalculator'
 import { useToast } from '../composables/useToast'
 
 const { showToast } = useToast()
+
+const {
+  availableApartments,
+  availableInvestments,
+  apartmentsFromSelectedInvestment,
+  selectedInvestment,
+  selectedApartmentId,
+  selectedApartment,
+  selectInvestment,
+  selectApartment
+} = usePurchaseCalculator()
 
 const formatPrice = (price) => {
   const formattedPrice = new Intl.NumberFormat('pl-PL').format(price)
@@ -16,44 +27,6 @@ const formatPrice = (price) => {
   return formattedPrice
 }
 
-const availableApartments = apartments.filter((apartment) => {
-  return apartment.status === 'available'
-})
-
-const availableInvestments = [
-  ...new Set(
-    availableApartments.map((apartment) => {
-      return apartment.investment
-    })
-  )
-]
-
-const firstAvailableApartment = availableApartments[0]
-const selectedInvestment = ref(availableInvestments[0])
-
-const apartmentsFromSelectedInvestment = computed(() => {
-  return availableApartments.filter((apartment) => {
-    return apartment.investment === selectedInvestment.value
-  })
-})
-
-const handleInvestmentChange = (investmentName) => {
-  selectedInvestment.value = investmentName
-
-  const firstApartment = apartmentsFromSelectedInvestment.value[0]
-
-  selectedApartmentId.value = firstApartment?.id ?? null
-}
-
-const handleApartmentChange = (apartmentId) => {
-  const apartment = apartmentsFromSelectedInvestment.value.find((item) => {
-    return String(item.id) === String(apartmentId)
-  })
-
-  selectedApartmentId.value = apartment?.id ?? null
-}
-
-const selectedApartmentId = ref(firstAvailableApartment.id)
 const ownContribution = ref(100000)
 const finishingCostPerMeter = ref(2500)
 const notaryFee = ref(4000)
@@ -104,16 +77,6 @@ const finishingStandards = [
 const selectFinishingStandard = (price) => {
   finishingCostPerMeter.value = price
 }
-
-const selectedApartment = computed(() => {
-  const foundApartment = apartmentsFromSelectedInvestment.value.find(
-    (apartment) => {
-      return apartment.id === selectedApartmentId.value
-    }
-  )
-
-  return foundApartment || apartmentsFromSelectedInvestment.value[0] || null
-})
 
 const neededLoan = computed(() => {
   if (!selectedApartment.value) {
@@ -289,8 +252,8 @@ onMounted(() => {
             :selected-investment="selectedInvestment"
             :selected-apartment-id="selectedApartmentId"
             :selected-apartment="selectedApartment"
-            @select-investment="handleInvestmentChange"
-            @select-apartment="handleApartmentChange"
+            @select-investment="selectInvestment"
+            @select-apartment="selectApartment"
           />
 
           <CalculatorFinancingStep
