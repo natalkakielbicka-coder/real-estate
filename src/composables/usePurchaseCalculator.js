@@ -1,7 +1,11 @@
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { apartments } from '../data/apartments'
+import { useToast } from './useToast'
+
+const STORAGE_KEY = 'purchase-calculation'
 
 export const usePurchaseCalculator = () => {
+  const { showToast } = useToast()
   const availableApartments = apartments.filter((apartment) => {
     return apartment.status === 'available'
   })
@@ -144,8 +148,99 @@ export const usePurchaseCalculator = () => {
     )
   })
 
+  const resetCalculator = () => {
+    selectedInvestment.value = availableInvestments[0] ?? ''
+
+    const firstApartment = apartmentsFromSelectedInvestment.value[0]
+
+    selectedApartmentId.value = firstApartment?.id ?? null
+
+    ownContribution.value = 100000
+    finishingCostPerMeter.value = 2500
+    notaryFee.value = 4000
+
+    includeParkingSpace.value = false
+    parkingSpacePrice.value = 35000
+
+    includeStorageRoom.value = false
+    storageRoomPrice.value = 15000
+
+    localStorage.removeItem(STORAGE_KEY)
+
+    showToast('Kalkulator został zresetowany', 'info')
+  }
+
+  const saveCalculation = () => {
+    const calculation = {
+      selectedInvestment: selectedInvestment.value,
+      selectedApartmentId: selectedApartmentId.value,
+      ownContribution: ownContribution.value,
+      finishingCostPerMeter: finishingCostPerMeter.value,
+      notaryFee: notaryFee.value,
+      includeParkingSpace: includeParkingSpace.value,
+      parkingSpacePrice: parkingSpacePrice.value,
+      includeStorageRoom: includeStorageRoom.value,
+      storageRoomPrice: storageRoomPrice.value
+    }
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(calculation))
+
+    showToast('Kalkulacja została zapisana')
+  }
+
+  const loadSavedCalculation = () => {
+    const savedCalculation = localStorage.getItem(STORAGE_KEY)
+
+    if (!savedCalculation) {
+      return
+    }
+
+    try {
+      const calculation = JSON.parse(savedCalculation)
+
+      const investmentExists = availableInvestments.includes(
+        calculation.selectedInvestment
+      )
+
+      if (investmentExists) {
+        selectedInvestment.value = calculation.selectedInvestment
+      }
+
+      const apartmentExists = apartmentsFromSelectedInvestment.value.find(
+        (apartment) => {
+          return (
+            String(apartment.id) === String(calculation.selectedApartmentId)
+          )
+        }
+      )
+
+      selectedApartmentId.value =
+        apartmentExists?.id ??
+        apartmentsFromSelectedInvestment.value[0]?.id ??
+        null
+
+      ownContribution.value = calculation.ownContribution ?? 100000
+      finishingCostPerMeter.value = calculation.finishingCostPerMeter ?? 2500
+
+      notaryFee.value = calculation.notaryFee ?? 4000
+
+      includeParkingSpace.value = calculation.includeParkingSpace ?? false
+
+      parkingSpacePrice.value = calculation.parkingSpacePrice ?? 35000
+
+      includeStorageRoom.value = calculation.includeStorageRoom ?? false
+
+      storageRoomPrice.value = calculation.storageRoomPrice ?? 15000
+    } catch {
+      localStorage.removeItem(STORAGE_KEY)
+
+      showToast('Nie udało się wczytać zapisanej kalkulacji', 'error')
+    }
+  }
+
+  onMounted(loadSavedCalculation)
+
   return {
-    availableApartments,
     availableInvestments,
     apartmentsFromSelectedInvestment,
     selectedInvestment,
@@ -166,6 +261,8 @@ export const usePurchaseCalculator = () => {
     includeStorageRoom,
     storageRoomPrice,
     totalAdditionalCosts,
-    totalPurchaseCost
+    totalPurchaseCost,
+    saveCalculation,
+    resetCalculator
   }
 }

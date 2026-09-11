@@ -1,17 +1,12 @@
 <script setup>
-import { onMounted } from 'vue'
 import CalculatorApartmentStep from '../components/CalculatorApartmentStep.vue'
 import CalculatorFinancingStep from '../components/CalculatorFinancingStep.vue'
 import CalculatorFinishingStep from '../components/CalculatorFinishingStep.vue'
 import CalculatorAdditionalCostsStep from '../components/CalculatorAdditionalCostsStep.vue'
 import CalculatorSummary from '../components/CalculatorSummary.vue'
 import { usePurchaseCalculator } from '../composables/usePurchaseCalculator'
-import { useToast } from '../composables/useToast'
-
-const { showToast } = useToast()
 
 const {
-  availableApartments,
   availableInvestments,
   apartmentsFromSelectedInvestment,
   selectedInvestment,
@@ -32,100 +27,10 @@ const {
   includeStorageRoom,
   storageRoomPrice,
   totalAdditionalCosts,
-  totalPurchaseCost
+  totalPurchaseCost,
+  saveCalculation,
+  resetCalculator
 } = usePurchaseCalculator()
-
-const resetCalculator = () => {
-  selectedInvestment.value = availableInvestments[0]
-
-  const firstApartment = availableApartments.find((apartment) => {
-    return apartment.investment === selectedInvestment.value
-  })
-
-  selectedApartmentId.value = firstApartment?.id ?? null
-
-  ownContribution.value = 100000
-  finishingCostPerMeter.value = 2500
-  notaryFee.value = 4000
-
-  includeParkingSpace.value = false
-  parkingSpacePrice.value = 35000
-
-  includeStorageRoom.value = false
-  storageRoomPrice.value = 15000
-
-  showToast('Kalkulator został zresetowany', 'info')
-}
-
-const saveCalculation = () => {
-  const calculation = {
-    selectedInvestment: selectedInvestment.value,
-    selectedApartmentId: selectedApartmentId.value,
-    ownContribution: ownContribution.value,
-    finishingCostPerMeter: finishingCostPerMeter.value,
-    notaryFee: notaryFee.value,
-    includeParkingSpace: includeParkingSpace.value,
-    parkingSpacePrice: parkingSpacePrice.value,
-    includeStorageRoom: includeStorageRoom.value,
-    storageRoomPrice: storageRoomPrice.value
-  }
-
-  localStorage.setItem('purchase-calculation', JSON.stringify(calculation))
-
-  showToast('Kalkulacja została zapisana')
-}
-
-const loadSavedCalculation = () => {
-  const savedCalculation = localStorage.getItem('purchase-calculation')
-
-  if (!savedCalculation) {
-    return
-  }
-
-  try {
-    const calculation = JSON.parse(savedCalculation)
-
-    const investmentExists = availableInvestments.includes(
-      calculation.selectedInvestment
-    )
-
-    if (investmentExists) {
-      selectedInvestment.value = calculation.selectedInvestment
-    }
-
-    const apartmentExists = apartmentsFromSelectedInvestment.value.find(
-      (apartment) => {
-        return apartment.id === calculation.selectedApartmentId
-      }
-    )
-
-    selectedApartmentId.value =
-      apartmentExists?.id ??
-      apartmentsFromSelectedInvestment.value[0]?.id ??
-      null
-
-    ownContribution.value = calculation.ownContribution ?? 100000
-    finishingCostPerMeter.value = calculation.finishingCostPerMeter ?? 2500
-
-    notaryFee.value = calculation.notaryFee ?? 4000
-
-    includeParkingSpace.value = calculation.includeParkingSpace ?? false
-
-    parkingSpacePrice.value = calculation.parkingSpacePrice ?? 35000
-
-    includeStorageRoom.value = calculation.includeStorageRoom ?? false
-
-    storageRoomPrice.value = calculation.storageRoomPrice ?? 15000
-  } catch {
-    localStorage.removeItem('purchase-calculation')
-
-    showToast('Nie udało się wczytać zapisanej kalkulacji', 'error')
-  }
-}
-
-onMounted(() => {
-  loadSavedCalculation()
-})
 </script>
 
 <template>
