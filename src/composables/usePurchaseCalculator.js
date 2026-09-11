@@ -162,27 +162,45 @@ export const usePurchaseCalculator = () => {
     )
   })
 
+  const getBooleanValue = (value, defaultValue) => {
+    if (typeof value === 'boolean') {
+      return value
+    }
+
+    return defaultValue
+  }
+
   const applyCalculationValues = (calculation) => {
-    ownContribution.value =
+    ownContribution.value = toNonNegativeNumber(
       calculation.ownContribution ?? DEFAULT_CALCULATION.ownContribution
+    )
 
-    finishingCostPerMeter.value =
+    finishingCostPerMeter.value = toNonNegativeNumber(
       calculation.finishingCostPerMeter ??
-      DEFAULT_CALCULATION.finishingCostPerMeter
+        DEFAULT_CALCULATION.finishingCostPerMeter
+    )
 
-    notaryFee.value = calculation.notaryFee ?? DEFAULT_CALCULATION.notaryFee
+    notaryFee.value = toNonNegativeNumber(
+      calculation.notaryFee ?? DEFAULT_CALCULATION.notaryFee
+    )
 
-    includeParkingSpace.value =
-      calculation.includeParkingSpace ?? DEFAULT_CALCULATION.includeParkingSpace
+    includeParkingSpace.value = getBooleanValue(
+      calculation.includeParkingSpace,
+      DEFAULT_CALCULATION.includeParkingSpace
+    )
 
-    parkingSpacePrice.value =
+    parkingSpacePrice.value = toNonNegativeNumber(
       calculation.parkingSpacePrice ?? DEFAULT_CALCULATION.parkingSpacePrice
+    )
 
-    includeStorageRoom.value =
-      calculation.includeStorageRoom ?? DEFAULT_CALCULATION.includeStorageRoom
+    includeStorageRoom.value = getBooleanValue(
+      calculation.includeStorageRoom,
+      DEFAULT_CALCULATION.includeStorageRoom
+    )
 
-    storageRoomPrice.value =
+    storageRoomPrice.value = toNonNegativeNumber(
       calculation.storageRoomPrice ?? DEFAULT_CALCULATION.storageRoomPrice
+    )
   }
 
   const resetCalculator = () => {
