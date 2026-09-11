@@ -161,6 +161,29 @@ export const usePurchaseCalculator = () => {
     )
   })
 
+  const applyCalculationValues = (calculation) => {
+    ownContribution.value =
+      calculation.ownContribution ?? DEFAULT_CALCULATION.ownContribution
+
+    finishingCostPerMeter.value =
+      calculation.finishingCostPerMeter ??
+      DEFAULT_CALCULATION.finishingCostPerMeter
+
+    notaryFee.value = calculation.notaryFee ?? DEFAULT_CALCULATION.notaryFee
+
+    includeParkingSpace.value =
+      calculation.includeParkingSpace ?? DEFAULT_CALCULATION.includeParkingSpace
+
+    parkingSpacePrice.value =
+      calculation.parkingSpacePrice ?? DEFAULT_CALCULATION.parkingSpacePrice
+
+    includeStorageRoom.value =
+      calculation.includeStorageRoom ?? DEFAULT_CALCULATION.includeStorageRoom
+
+    storageRoomPrice.value =
+      calculation.storageRoomPrice ?? DEFAULT_CALCULATION.storageRoomPrice
+  }
+
   const resetCalculator = () => {
     selectedInvestment.value = availableInvestments[0] ?? ''
 
@@ -168,19 +191,7 @@ export const usePurchaseCalculator = () => {
 
     selectedApartmentId.value = firstApartment?.id ?? null
 
-    ownContribution.value = DEFAULT_CALCULATION.ownContribution
-
-    finishingCostPerMeter.value = DEFAULT_CALCULATION.finishingCostPerMeter
-
-    notaryFee.value = DEFAULT_CALCULATION.notaryFee
-
-    includeParkingSpace.value = DEFAULT_CALCULATION.includeParkingSpace
-
-    parkingSpacePrice.value = DEFAULT_CALCULATION.parkingSpacePrice
-
-    includeStorageRoom.value = DEFAULT_CALCULATION.includeStorageRoom
-
-    storageRoomPrice.value = DEFAULT_CALCULATION.storageRoomPrices
+    applyCalculationValues(DEFAULT_CALCULATION)
 
     localStorage.removeItem(STORAGE_KEY)
 
@@ -236,27 +247,7 @@ export const usePurchaseCalculator = () => {
         apartmentsFromSelectedInvestment.value[0]?.id ??
         null
 
-      ownContribution.value =
-        calculation.ownContribution ?? DEFAULT_CALCULATION.ownContribution
-
-      finishingCostPerMeter.value =
-        calculation.finishingCostPerMeter ??
-        DEFAULT_CALCULATION.finishingCostPerMeter
-
-      notaryFee.value = calculation.notaryFee ?? DEFAULT_CALCULATION.notaryFee
-
-      includeParkingSpace.value =
-        calculation.includeParkingSpace ??
-        DEFAULT_CALCULATION.includeParkingSpace
-
-      parkingSpacePrice.value =
-        calculation.parkingSpacePrice ?? DEFAULT_CALCULATION.parkingSpacePrice
-
-      includeStorageRoom.value =
-        calculation.includeStorageRoom ?? DEFAULT_CALCULATION.includeStorageRoom
-
-      storageRoomPrice.value =
-        calculation.storageRoomPrice ?? DEFAULT_CALCULATION.storageRoomPrice
+      applyCalculationValues(DEFAULT_CALCULATION)
     } catch {
       localStorage.removeItem(STORAGE_KEY)
 
