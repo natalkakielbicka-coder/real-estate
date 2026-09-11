@@ -1,6 +1,7 @@
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import { apartments } from '../data/apartments'
 import { useToast } from './useToast'
+import { toNonNegativeNumber } from '../utils/numberHelpers'
 
 const STORAGE_KEY = 'purchase-calculation'
 
@@ -254,6 +255,19 @@ export const usePurchaseCalculator = () => {
       showToast('Nie udało się wczytać zapisanej kalkulacji', 'error')
     }
   }
+
+  watch(
+    () => selectedApartment.value?.price,
+    (apartmentPrice) => {
+      if (apartmentPrice === undefined) {
+        return
+      }
+
+      const contribution = toNonNegativeNumber(ownContribution.value)
+
+      ownContribution.value = Math.min(contribution, apartmentPrice)
+    }
+  )
 
   onMounted(loadSavedCalculation)
 
