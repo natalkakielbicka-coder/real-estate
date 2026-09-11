@@ -40,7 +40,8 @@ const matchingApartmentsCount = computed(() => {
       apartment.rooms === Number(selectedRooms.value)
 
     const matchesMaxPrice =
-      selectedMaxPrice.value === '' || apartment.price <= selectedMaxPrice.value
+      selectedMaxPrice.value === '' ||
+      apartment.price <= Number(selectedMaxPrice.value)
 
     return matchesCity && matchesRooms && matchesMaxPrice
   }).length

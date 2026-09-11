@@ -73,7 +73,7 @@ const selectedFloorPlan = computed(() => {
     return (
       plan.investmentId === route.params.id &&
       plan.building === buildingPlan.value?.building &&
-      plan.floor === selectedFloorNumber.value
+      Number(plan.floor) === Number(selectedFloorNumber.value)
     )
   })
 })

@@ -11,7 +11,7 @@ const props = defineProps({
     default: () => []
   },
   selectedFloorNumber: {
-    type: Number,
+    type: [Number, String],
     default: null
   }
 })
@@ -42,9 +42,21 @@ const moveTooltip = (event) => {
   tooltipBelow.value = cursorY < 100
 }
 
+const isFloorSelected = (floorNumber) => {
+  if (props.selectedFloorNumber === null) {
+    return false
+  }
+
+  return Number(props.selectedFloorNumber) === Number(floorNumber)
+}
+
 const selectedFloorLabel = computed(() => {
+  if (props.selectedFloorNumber === null) {
+    return 'Nie wybrano piętra'
+  }
+
   const selectedFloor = props.plan.floors.find((floor) => {
-    return floor.floor === props.selectedFloorNumber
+    return isFloorSelected(floor.floor)
   })
 
   return selectedFloor?.label ?? 'Nie wybrano piętra'
@@ -56,12 +68,12 @@ const hoveredFloorApartmentsCount = computed(() => {
   }
 
   return props.apartments.filter((apartment) => {
-    return apartment.floor === hoveredFloor.value.floor
+    return Number(apartment.floor) === Number(hoveredFloor.value.floor)
   }).length
 })
 
 const selectFloor = (floor) => {
-  const isAlreadySelected = props.selectedFloorNumber === floor.floor
+  const isAlreadySelected = isFloorSelected(floor.floor)
 
   emit('select-floor', isAlreadySelected ? null : floor)
 }
@@ -129,7 +141,7 @@ const getFloorLabel = (floorNumber) => {
           :key="floor.floor"
           class="building-floor cursor-pointer"
           :class="{
-            'building-floor--selected': selectedFloorNumber === floor.floor
+            'building-floor--selected': isFloorSelected(floor.floor)
           }"
           :points="floor.points"
           tabindex="0"
