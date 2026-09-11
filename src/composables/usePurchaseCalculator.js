@@ -17,6 +17,7 @@ export const usePurchaseCalculator = () => {
   const selectedInvestment = ref(availableInvestments[0] ?? '')
   const selectedApartmentId = ref(availableApartments[0]?.id ?? null)
   const ownContribution = ref(100000)
+  const finishingCostPerMeter = ref(2500)
 
   const apartmentsFromSelectedInvestment = computed(() => {
     return availableApartments.filter((apartment) => {
@@ -41,6 +42,32 @@ export const usePurchaseCalculator = () => {
     const contribution = ownContribution.value || 0
 
     return Math.max(apartmentPrice - contribution, 0)
+  })
+
+  const finishingStandards = [
+    {
+      name: 'Podstawowy',
+      price: 1800
+    },
+    {
+      name: 'Komfort',
+      price: 2500
+    },
+    {
+      name: 'Premium',
+      price: 3500
+    }
+  ]
+
+  const totalFinishingCost = computed(() => {
+    if (!selectedApartment.value) {
+      return 0
+    }
+
+    const apartmentArea = selectedApartment.value.area
+    const costPerMeter = finishingCostPerMeter.value || 0
+
+    return apartmentArea * costPerMeter
   })
 
   const contributionPercent = computed(() => {
@@ -87,6 +114,9 @@ export const usePurchaseCalculator = () => {
     ownContribution,
     neededLoan,
     contributionPercent,
-    hasLowContribution
+    hasLowContribution,
+    finishingCostPerMeter,
+    finishingStandards,
+    totalFinishingCost
   }
 }

@@ -22,10 +22,12 @@ const {
   ownContribution,
   neededLoan,
   contributionPercent,
-  hasLowContribution
+  hasLowContribution,
+  finishingCostPerMeter,
+  finishingStandards,
+  totalFinishingCost
 } = usePurchaseCalculator()
 
-const finishingCostPerMeter = ref(2500)
 const notaryFee = ref(4000)
 
 const includeParkingSpace = ref(false)
@@ -54,32 +56,6 @@ const totalAdditionalCosts = computed(() => {
   const notaryCost = notaryFee.value || 0
 
   return notaryCost + parkingCost.value + storageRoomCost.value
-})
-
-const finishingStandards = [
-  {
-    name: 'Podstawowy',
-    price: 1800
-  },
-  {
-    name: 'Komfort',
-    price: 2500
-  },
-  {
-    name: 'Premium',
-    price: 3500
-  }
-]
-
-const totalFinishingCost = computed(() => {
-  if (!selectedApartment.value) {
-    return 0
-  }
-
-  const apartmentArea = selectedApartment.value.area
-  const costPerMeter = finishingCostPerMeter.value || 0
-
-  return apartmentArea * costPerMeter
 })
 
 const totalPurchaseCost = computed(() => {
