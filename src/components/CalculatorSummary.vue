@@ -49,14 +49,6 @@ const costRows = computed(() => {
     }
   ]
 })
-
-const saveCalculation = () => {
-  emit('save')
-}
-
-const resetCalculator = () => {
-  emit('reset')
-}
 </script>
 
 <template>
@@ -130,7 +122,7 @@ const resetCalculator = () => {
     <button
       class="group mt-5 flex min-h-[54px] w-full items-center justify-center gap-3 rounded-[6px] bg-gold px-5 text-sm font-semibold text-panel shadow-[0_8px_24px_rgba(199,157,98,0.2)] transition-[background-color,transform,box-shadow] hover:bg-[#b98e52]"
       type="button"
-      @click="saveCalculation"
+      @click="emit('save')"
     >
       <svg
         class="size-[18px]"
@@ -153,7 +145,7 @@ const resetCalculator = () => {
     <button
       class="group mt-4 flex min-h-[54px] w-full items-center justify-center gap-3 rounded-[6px] border border-line bg-panel px-5 text-sm font-semibold text-[var(--color-text)] transition-[border-color,color,background-color] hover:border-brand hover:bg-page hover:text-brand"
       type="button"
-      @click="resetCalculator"
+      @click="emit('reset')"
     >
       <svg
         class="size-[18px] transition-transform duration-300 group-hover:-rotate-90"
