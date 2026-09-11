@@ -15,7 +15,7 @@ const DEFAULT_CALCULATION = {
   storageRoomPrice: 15000
 }
 
-export const usePurchaseCalculator = () => {
+export const usePurchaseCalculator = (initialApartmentSlug = null) => {
   const { showToast } = useToast()
   const availableApartments = apartments.filter((apartment) => {
     return apartment.status === 'available'
@@ -126,6 +126,23 @@ export const usePurchaseCalculator = () => {
     })
 
     selectedApartmentId.value = apartment?.id ?? null
+  }
+
+  const selectApartmentBySlug = (apartmentSlug) => {
+    if (!apartmentSlug) {
+      return
+    }
+
+    const apartment = availableApartments.find((item) => {
+      return item.slug === apartmentSlug
+    })
+
+    if (!apartment) {
+      return
+    }
+
+    selectedInvestment.value = apartment.investment
+    selectedApartmentId.value = apartment.id
   }
 
   const parkingCost = computed(() => {
@@ -289,7 +306,10 @@ export const usePurchaseCalculator = () => {
     }
   )
 
-  onMounted(loadSavedCalculation)
+  onMounted(() => {
+    loadSavedCalculation()
+    selectApartmentBySlug(initialApartmentSlug)
+  })
 
   return {
     availableInvestments,

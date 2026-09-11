@@ -1,10 +1,17 @@
 <script setup>
+import { useRoute } from 'vue-router'
 import CalculatorApartmentStep from '../components/CalculatorApartmentStep.vue'
 import CalculatorFinancingStep from '../components/CalculatorFinancingStep.vue'
 import CalculatorFinishingStep from '../components/CalculatorFinishingStep.vue'
 import CalculatorAdditionalCostsStep from '../components/CalculatorAdditionalCostsStep.vue'
 import CalculatorSummary from '../components/CalculatorSummary.vue'
 import { usePurchaseCalculator } from '../composables/usePurchaseCalculator'
+
+const route = useRoute()
+
+const apartmentFromQuery = Array.isArray(route.query.apartment)
+  ? route.query.apartment[0]
+  : route.query.apartment
 
 const {
   availableInvestments,
@@ -30,7 +37,7 @@ const {
   totalPurchaseCost,
   saveCalculation,
   resetCalculator
-} = usePurchaseCalculator()
+} = usePurchaseCalculator(apartmentFromQuery)
 </script>
 
 <template>
@@ -56,7 +63,10 @@ const {
       </div>
     </section>
 
-    <section class="py-[clamp(48px,7vw,88px)]">
+    <section
+      id="calculator"
+      class="py-[clamp(48px,7vw,88px)]"
+    >
       <div
         class="container grid items-start gap-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(320px,0.75fr)] xl:grid-cols-[minmax(0,1.25fr)_minmax(360px,0.75fr)]"
       >

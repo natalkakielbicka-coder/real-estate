@@ -262,30 +262,53 @@ const hasInteractiveFloorPlan = computed(() => {
               </strong>
             </div>
 
-            <RouterLink
-              v-if="hasInteractiveFloorPlan"
-              class="group mt-5 flex min-h-[54px] w-full items-center justify-center gap-3 bg-brand px-5 text-sm font-bold text-white transition-colors hover:bg-brand-light"
-              :to="{
-                name: 'investment-details',
-                params: {
-                  id: apartment.investmentId
-                },
-                query: {
-                  floor: apartment.floor,
-                  apartment: apartment.slug
-                },
-                hash: '#floor-plan'
-              }"
-            >
-              Pokaż na rzucie piętra
-
-              <span
-                class="text-lg transition-transform duration-200 group-hover:translate-x-1"
-                aria-hidden="true"
+            <div class="mt-5 flex flex-col gap-3 xs:flex-row">
+              <RouterLink
+                v-if="apartment.status === 'available'"
+                class="group flex min-h-[54px] flex-1 items-center justify-center gap-3 bg-gold px-5 text-center text-sm font-bold text-white transition-colors hover:bg-[#b98e52]"
+                :to="{
+                  name: 'purchase-calculator',
+                  query: {
+                    apartment: apartment.slug
+                  },
+                  hash: '#calculator'
+                }"
               >
-                →
-              </span>
-            </RouterLink>
+                Oblicz koszt zakupu
+
+                <span
+                  class="text-lg transition-transform duration-200 group-hover:translate-x-1"
+                  aria-hidden="true"
+                >
+                  →
+                </span>
+              </RouterLink>
+
+              <RouterLink
+                v-if="hasInteractiveFloorPlan"
+                class="group flex min-h-[54px] flex-1 items-center justify-center gap-3 bg-brand px-5 text-center text-sm font-bold text-white transition-colors hover:bg-brand-light"
+                :to="{
+                  name: 'investment-details',
+                  params: {
+                    id: apartment.investmentId
+                  },
+                  query: {
+                    floor: apartment.floor,
+                    apartment: apartment.slug
+                  },
+                  hash: '#floor-plan'
+                }"
+              >
+                Pokaż na rzucie piętra
+
+                <span
+                  class="text-lg transition-transform duration-200 group-hover:translate-x-1"
+                  aria-hidden="true"
+                >
+                  →
+                </span>
+              </RouterLink>
+            </div>
           </div>
         </div>
       </div>
