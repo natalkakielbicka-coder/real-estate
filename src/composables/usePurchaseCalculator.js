@@ -4,6 +4,16 @@ import { useToast } from './useToast'
 
 const STORAGE_KEY = 'purchase-calculation'
 
+const DEFAULT_CALCULATION = {
+  ownContribution: 100000,
+  finishingCostPerMeter: 2500,
+  notaryFee: 4000,
+  includeParkingSpace: false,
+  parkingSpacePrice: 35000,
+  includeStorageRoom: false,
+  storageRoomPrice: 15000
+}
+
 export const usePurchaseCalculator = () => {
   const { showToast } = useToast()
   const availableApartments = apartments.filter((apartment) => {
@@ -20,16 +30,19 @@ export const usePurchaseCalculator = () => {
 
   const selectedInvestment = ref(availableInvestments[0] ?? '')
   const selectedApartmentId = ref(availableApartments[0]?.id ?? null)
-  const ownContribution = ref(100000)
-  const finishingCostPerMeter = ref(2500)
+  const ownContribution = ref(DEFAULT_CALCULATION.ownContribution)
 
-  const notaryFee = ref(4000)
+  const finishingCostPerMeter = ref(DEFAULT_CALCULATION.finishingCostPerMeter)
 
-  const includeParkingSpace = ref(false)
-  const parkingSpacePrice = ref(35000)
+  const notaryFee = ref(DEFAULT_CALCULATION.notaryFee)
 
-  const includeStorageRoom = ref(false)
-  const storageRoomPrice = ref(15000)
+  const includeParkingSpace = ref(DEFAULT_CALCULATION.includeParkingSpace)
+
+  const parkingSpacePrice = ref(DEFAULT_CALCULATION.parkingSpacePrice)
+
+  const includeStorageRoom = ref(DEFAULT_CALCULATION.includeStorageRoom)
+
+  const storageRoomPrice = ref(DEFAULT_CALCULATION.storageRoomPrice)
 
   const apartmentsFromSelectedInvestment = computed(() => {
     return availableApartments.filter((apartment) => {
@@ -155,15 +168,19 @@ export const usePurchaseCalculator = () => {
 
     selectedApartmentId.value = firstApartment?.id ?? null
 
-    ownContribution.value = 100000
-    finishingCostPerMeter.value = 2500
-    notaryFee.value = 4000
+    ownContribution.value = DEFAULT_CALCULATION.ownContribution
 
-    includeParkingSpace.value = false
-    parkingSpacePrice.value = 35000
+    finishingCostPerMeter.value = DEFAULT_CALCULATION.finishingCostPerMeter
 
-    includeStorageRoom.value = false
-    storageRoomPrice.value = 15000
+    notaryFee.value = DEFAULT_CALCULATION.notaryFee
+
+    includeParkingSpace.value = DEFAULT_CALCULATION.includeParkingSpace
+
+    parkingSpacePrice.value = DEFAULT_CALCULATION.parkingSpacePrice
+
+    includeStorageRoom.value = DEFAULT_CALCULATION.includeStorageRoom
+
+    storageRoomPrice.value = DEFAULT_CALCULATION.storageRoomPrices
 
     localStorage.removeItem(STORAGE_KEY)
 
@@ -219,18 +236,27 @@ export const usePurchaseCalculator = () => {
         apartmentsFromSelectedInvestment.value[0]?.id ??
         null
 
-      ownContribution.value = calculation.ownContribution ?? 100000
-      finishingCostPerMeter.value = calculation.finishingCostPerMeter ?? 2500
+      ownContribution.value =
+        calculation.ownContribution ?? DEFAULT_CALCULATION.ownContribution
 
-      notaryFee.value = calculation.notaryFee ?? 4000
+      finishingCostPerMeter.value =
+        calculation.finishingCostPerMeter ??
+        DEFAULT_CALCULATION.finishingCostPerMeter
 
-      includeParkingSpace.value = calculation.includeParkingSpace ?? false
+      notaryFee.value = calculation.notaryFee ?? DEFAULT_CALCULATION.notaryFee
 
-      parkingSpacePrice.value = calculation.parkingSpacePrice ?? 35000
+      includeParkingSpace.value =
+        calculation.includeParkingSpace ??
+        DEFAULT_CALCULATION.includeParkingSpace
 
-      includeStorageRoom.value = calculation.includeStorageRoom ?? false
+      parkingSpacePrice.value =
+        calculation.parkingSpacePrice ?? DEFAULT_CALCULATION.parkingSpacePrice
 
-      storageRoomPrice.value = calculation.storageRoomPrice ?? 15000
+      includeStorageRoom.value =
+        calculation.includeStorageRoom ?? DEFAULT_CALCULATION.includeStorageRoom
+
+      storageRoomPrice.value =
+        calculation.storageRoomPrice ?? DEFAULT_CALCULATION.storageRoomPrice
     } catch {
       localStorage.removeItem(STORAGE_KEY)
 
