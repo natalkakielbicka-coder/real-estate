@@ -5,7 +5,7 @@ import CalculatorApartmentStep from '../components/CalculatorApartmentStep.vue'
 import CalculatorFinancingStep from '../components/CalculatorFinancingStep.vue'
 import CalculatorFinishingStep from '../components/CalculatorFinishingStep.vue'
 import CalculatorAdditionalCostsStep from '../components/CalculatorAdditionalCostsStep.vue'
-import PurchaseCostChart from '../components/PurchaseCostChart.vue'
+import CalculatorSummary from '../components/CalculatorSummary.vue'
 import { useToast } from '../composables/useToast'
 
 const { showToast } = useToast()
@@ -317,146 +317,15 @@ onMounted(() => {
           />
         </div>
 
-        <aside
-          class="rounded-[14px] border border-line bg-panel p-[clamp(24px,3vw,32px)] shadow-[0_10px_35px_rgba(23,63,53,0.08)] lg:sticky lg:top-[112px]"
-        >
-          <!-- Wynik -->
-          <p
-            class="mb-4 text-[10px] font-bold tracking-[0.24em] text-muted uppercase"
-          >
-            Twój wynik
-          </p>
-
-          <strong
-            class="block font-display text-[clamp(42px,5vw,62px)] font-normal leading-none text-brand"
-          >
-            {{ formatPrice(totalPurchaseCost) }} zł
-          </strong>
-
-          <p class="mt-3 mb-0 text-sm text-[var(--color-text)]">
-            Całkowity koszt zakupu
-          </p>
-
-          <!-- Wykres i legenda -->
-          <div class="mt-8">
-            <PurchaseCostChart
-              v-if="selectedApartment"
-              :apartment-price="selectedApartment.price"
-              :finishing-cost="totalFinishingCost"
-              :additional-costs="totalAdditionalCosts"
-              :total-cost="totalPurchaseCost"
-            />
-          </div>
-
-          <!-- Szczegółowe koszty -->
-          <div class="mt-8 border-t border-line pt-5">
-            <dl class="divide-y divide-line">
-              <div class="flex justify-between gap-5 py-3 text-sm">
-                <dt class="text-[var(--color-text)]">Cena mieszkania</dt>
-
-                <dd
-                  class="m-0 text-right font-semibold text-[var(--color-text)]"
-                >
-                  {{ formatPrice(selectedApartment?.price || 0) }} zł
-                </dd>
-              </div>
-
-              <div class="flex justify-between gap-5 py-3 text-sm">
-                <dt class="text-[var(--color-text)]">Wykończenie</dt>
-
-                <dd
-                  class="m-0 text-right font-semibold text-[var(--color-text)]"
-                >
-                  {{ formatPrice(totalFinishingCost) }} zł
-                </dd>
-              </div>
-
-              <div class="flex justify-between gap-5 py-3 text-sm">
-                <dt class="flex items-center gap-2 text-[var(--color-text)]">
-                  PCC
-
-                  <span
-                    class="grid size-4 place-items-center rounded-full border border-muted text-[9px] text-muted"
-                    title="Podatek od czynności cywilnoprawnych"
-                  >
-                    i
-                  </span>
-                </dt>
-
-                <dd
-                  class="m-0 text-right font-semibold text-[var(--color-text)]"
-                >
-                  0 zł
-                </dd>
-              </div>
-
-              <div class="flex justify-between gap-5 py-3 text-sm">
-                <dt class="text-[var(--color-text)]">Pozostałe koszty</dt>
-
-                <dd
-                  class="m-0 text-right font-semibold text-[var(--color-text)]"
-                >
-                  {{ formatPrice(totalAdditionalCosts) }} zł
-                </dd>
-              </div>
-            </dl>
-          </div>
-
-          <!-- Kredyt -->
-          <div
-            class="mt-5 flex items-center justify-between gap-4 rounded-[6px] bg-brand px-5 py-4 text-panel shadow-[0_8px_24px_rgba(23,63,53,0.18)]"
-          >
-            <span class="text-sm font-semibold"> Potrzebny kredyt </span>
-
-            <strong class="font-display text-2xl font-normal">
-              {{ formatPrice(neededLoan) }} zł
-            </strong>
-          </div>
-          <button
-            class="group mt-5 flex min-h-[54px] w-full items-center justify-center gap-3 rounded-[6px] bg-gold px-5 text-sm font-semibold text-panel shadow-[0_8px_24px_rgba(199,157,98,0.2)] transition-[background-color,transform,box-shadow] hover:bg-[#b98e52] hover:shadow-[0_12px_28px_rgba(199,157,98,0.28)]"
-            type="button"
-            @click="saveCalculation"
-          >
-            <svg
-              class="size-[18px]"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.7"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M5 3h12l2 2v16H5z" />
-              <path d="M8 3v6h8V3" />
-              <path d="M8 21v-7h8v7" />
-            </svg>
-
-            Zapisz kalkulację
-          </button>
-
-          <button
-            class="group mt-4 flex min-h-[54px] w-full items-center justify-center gap-3 rounded-[6px] border border-line bg-panel px-5 text-sm font-semibold text-[var(--color-text)] transition-[border-color,color,background-color] hover:border-brand hover:bg-page hover:text-brand"
-            type="button"
-            @click="resetCalculator"
-          >
-            <svg
-              class="size-[18px] transition-transform duration-300 group-hover:-rotate-90"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.7"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M3 12a9 9 0 1 0 3-6.7" />
-              <path d="M3 4v6h6" />
-            </svg>
-
-            Resetuj
-          </button>
-        </aside>
+        <CalculatorSummary
+          :apartment-price="selectedApartment?.price || 0"
+          :finishing-cost="totalFinishingCost"
+          :additional-costs="totalAdditionalCosts"
+          :total-cost="totalPurchaseCost"
+          :needed-loan="neededLoan"
+          @save="saveCalculation"
+          @reset="resetCalculator"
+        />
       </div>
     </section>
   </main>
