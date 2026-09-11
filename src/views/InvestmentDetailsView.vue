@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref, nextTick } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { investments } from '../data/investments'
 import { apartments } from '../data/apartments'
 import { buildingPlans } from '../data/buildingPlans'
@@ -15,9 +15,36 @@ import { useToast } from '../composables/useToast'
 const { showToast } = useToast()
 
 const route = useRoute()
+const router = useRouter()
+
+const getInitialFloorNumber = () => {
+  const queryFloor = Array.isArray(route.query.floor)
+    ? route.query.floor[0]
+    : route.query.floor
+
+  if (queryFloor === undefined || queryFloor === '') {
+    return null
+  }
+
+  const floorNumber = Number(queryFloor)
+
+  if (!Number.isFinite(floorNumber)) {
+    return null
+  }
+
+  const currentBuildingPlan = buildingPlans.find((plan) => {
+    return plan.investmentId === route.params.id
+  })
+
+  const floorExists = currentBuildingPlan?.floors.some((floor) => {
+    return Number(floor.floor) === floorNumber
+  })
+
+  return floorExists ? floorNumber : null
+}
 
 const selectedStatus = ref('all')
-const selectedFloorNumber = ref(null)
+const selectedFloorNumber = ref(getInitialFloorNumber())
 const apartmentsSection = ref(null)
 
 const investment = computed(() => {
@@ -70,8 +97,19 @@ const selectedFloorPlan = computed(() => {
   })
 })
 
+const updateFloorQuery = (floorNumber) => {
+  router.replace({
+    query: {
+      ...route.query,
+      floor: floorNumber ?? undefined
+    }
+  })
+}
+
 const handleFloorSelect = async (floor) => {
   selectedFloorNumber.value = floor?.floor ?? null
+
+  updateFloorQuery(selectedFloorNumber.value)
 
   await nextTick()
 
@@ -100,6 +138,8 @@ const selectedFloorLabel = computed(() => {
 const clearFloorSelection = () => {
   selectedFloorNumber.value = null
   selectedStatus.value = 'all'
+
+  updateFloorQuery(null)
 
   showToast('Filtry zostały wyczyszczone', 'success')
 }
