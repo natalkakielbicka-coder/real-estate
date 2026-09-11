@@ -18,16 +18,13 @@ const {
   selectedApartmentId,
   selectedApartment,
   selectInvestment,
-  selectApartment
+  selectApartment,
+  ownContribution,
+  neededLoan,
+  contributionPercent,
+  hasLowContribution
 } = usePurchaseCalculator()
 
-const formatPrice = (price) => {
-  const formattedPrice = new Intl.NumberFormat('pl-PL').format(price)
-
-  return formattedPrice
-}
-
-const ownContribution = ref(100000)
 const finishingCostPerMeter = ref(2500)
 const notaryFee = ref(4000)
 
@@ -74,22 +71,6 @@ const finishingStandards = [
   }
 ]
 
-const selectFinishingStandard = (price) => {
-  finishingCostPerMeter.value = price
-}
-
-const neededLoan = computed(() => {
-  if (!selectedApartment.value) {
-    return 0
-  }
-
-  const apartmentPrice = selectedApartment.value.price
-  const contribution = ownContribution.value || 0
-  const loanAmount = apartmentPrice - contribution
-
-  return Math.max(loanAmount, 0)
-})
-
 const totalFinishingCost = computed(() => {
   if (!selectedApartment.value) {
     return 0
@@ -111,22 +92,6 @@ const totalPurchaseCost = computed(() => {
     totalFinishingCost.value +
     totalAdditionalCosts.value
   )
-})
-
-const contributionPercent = computed(() => {
-  if (!selectedApartment.value) {
-    return 0
-  }
-
-  const apartmentPrice = selectedApartment.value.price
-  const contribution = ownContribution.value || 0
-  const percent = (contribution / apartmentPrice) * 100
-
-  return Math.min(Math.round(percent), 100)
-})
-
-const hasLowContribution = computed(() => {
-  return contributionPercent.value < 20
 })
 
 const resetCalculator = () => {

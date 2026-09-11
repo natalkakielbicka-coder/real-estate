@@ -16,6 +16,7 @@ export const usePurchaseCalculator = () => {
 
   const selectedInvestment = ref(availableInvestments[0] ?? '')
   const selectedApartmentId = ref(availableApartments[0]?.id ?? null)
+  const ownContribution = ref(100000)
 
   const apartmentsFromSelectedInvestment = computed(() => {
     return availableApartments.filter((apartment) => {
@@ -29,6 +30,33 @@ export const usePurchaseCalculator = () => {
     })
 
     return apartment ?? apartmentsFromSelectedInvestment.value[0] ?? null
+  })
+
+  const neededLoan = computed(() => {
+    if (!selectedApartment.value) {
+      return 0
+    }
+
+    const apartmentPrice = selectedApartment.value.price
+    const contribution = ownContribution.value || 0
+
+    return Math.max(apartmentPrice - contribution, 0)
+  })
+
+  const contributionPercent = computed(() => {
+    if (!selectedApartment.value) {
+      return 0
+    }
+
+    const apartmentPrice = selectedApartment.value.price
+    const contribution = ownContribution.value || 0
+    const percent = (contribution / apartmentPrice) * 100
+
+    return Math.min(Math.round(percent), 100)
+  })
+
+  const hasLowContribution = computed(() => {
+    return contributionPercent.value < 20
   })
 
   const selectInvestment = (investmentName) => {
@@ -55,6 +83,10 @@ export const usePurchaseCalculator = () => {
     selectedApartmentId,
     selectedApartment,
     selectInvestment,
-    selectApartment
+    selectApartment,
+    ownContribution,
+    neededLoan,
+    contributionPercent,
+    hasLowContribution
   }
 }
