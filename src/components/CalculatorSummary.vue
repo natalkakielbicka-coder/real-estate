@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import PurchaseCostChart from './PurchaseCostChart.vue'
 import { formatPrice } from '../utils/apartmentFormatters'
+import AppTooltip from './AppTooltip.vue'
 
 const props = defineProps({
   apartmentPrice: {
@@ -41,7 +42,8 @@ const costRows = computed(() => {
     {
       label: 'PCC',
       value: 0,
-      description: 'Podatek od czynności cywilnoprawnych'
+      description:
+        'Kalkulator zakłada zakup nowego mieszkania od dewelopera, dlatego podatek PCC wynosi 0 zł.'
     },
     {
       label: 'Pozostałe koszty',
@@ -93,13 +95,10 @@ const costRows = computed(() => {
           <dt class="flex items-center gap-2 text-[var(--color-text)]">
             {{ row.label }}
 
-            <span
+            <AppTooltip
               v-if="row.description"
-              class="grid size-4 place-items-center rounded-full border border-muted text-[9px] text-muted"
-              :title="row.description"
-            >
-              i
-            </span>
+              :text="row.description"
+            />
           </dt>
 
           <dd class="m-0 text-right font-semibold text-[var(--color-text)]">
