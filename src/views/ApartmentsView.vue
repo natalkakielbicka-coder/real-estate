@@ -91,7 +91,17 @@ const viewMode = ref(
   availableViewModes.includes(route.query.view) ? route.query.view : 'grid'
 )
 
-const selectedFloorPlan = ref(floorPlans[0])
+const selectedFloorNumber = ref(floorPlans[0].floor)
+
+const selectedFloorPlan = computed(() => {
+  return floorPlans.find((floorPlan) => {
+    return floorPlan.floor === selectedFloorNumber.value
+  })
+})
+
+const selectFloorPlan = (floorPlan) => {
+  selectedFloorNumber.value = floorPlan.floor
+}
 
 watch(viewMode, (newViewMode) => {
   router.replace({
@@ -367,6 +377,13 @@ const apartmentMatchesFilters = (apartment, ignoredFilter = null) => {
     !onlyWithStorage.value ||
     apartment.storageRoom
 
+  const matchesFloor =
+    ignoredFilter === 'floor' ||
+    viewMode.value !== 'plan' ||
+    (apartment.investmentId === selectedFloorPlan.value.investmentId &&
+      apartment.building === selectedFloorPlan.value.building &&
+      Number(apartment.floor) === Number(selectedFloorNumber.value))
+
   return (
     matchesCity &&
     matchesRooms &&
@@ -375,7 +392,8 @@ const apartmentMatchesFilters = (apartment, ignoredFilter = null) => {
     matchesMaxPrice &&
     matchesOutdoorSpace &&
     matchesParking &&
-    matchesStorage
+    matchesStorage &&
+    matchesFloor
   )
 }
 
@@ -960,7 +978,7 @@ const getOffersLabel = (count) => {
             </label>
           </div>
 
-          <template v-if="sortedApartments.length > 0">
+          <template v-if="sortedApartments.length > 0 || viewMode === 'plan'">
             <ApartmentGrid
               v-if="viewMode === 'grid'"
               :apartments="sortedApartments"
@@ -989,13 +1007,13 @@ const getOffersLabel = (count) => {
                   :key="floorPlan.id"
                   class="min-h-[38px] rounded-[3px] border px-3.5 text-[10px] font-bold transition-colors"
                   :class="
-                    selectedFloorPlan.id === floorPlan.id
+                    selectedFloorNumber === floorPlan.floor
                       ? 'border-brand bg-brand text-white'
                       : 'border-line bg-page text-brand hover:border-gold hover:text-gold'
                   "
                   type="button"
-                  :aria-pressed="selectedFloorPlan.id === floorPlan.id"
-                  @click="selectedFloorPlan = floorPlan"
+                  :aria-pressed="selectedFloorNumber === floorPlan.floor"
+                  @click="selectFloorPlan(floorPlan)"
                 >
                   {{ floorPlan.floor === 0 ? 'Parter' : `${floorPlan.floor}.` }}
                 </button>
