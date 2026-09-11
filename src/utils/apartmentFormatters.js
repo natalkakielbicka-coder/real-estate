@@ -45,3 +45,7 @@ export const getOffersLabel = (count) => {
 
   return usesOferty ? 'oferty' : 'ofert'
 }
+
+export const getRoomsLabel = (rooms) => {
+  return rooms === 1 ? 'pokój' : 'pokoje'
+}

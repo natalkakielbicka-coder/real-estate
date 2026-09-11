@@ -7,7 +7,8 @@ import { outdoorSpaceLabels } from '../constants/apartmentAttributes'
 import {
   getFloorLabel,
   formatPrice,
-  formatPricePerMeter
+  formatPricePerMeter,
+  getRoomsLabel
 } from '../utils/apartmentFormatters'
 
 defineProps({
@@ -88,7 +89,7 @@ defineProps({
           </strong>
 
           <span class="mt-[3px] block text-[9px] text-muted uppercase">
-            pokoje
+            {{ getRoomsLabel(apartment.rooms) }}
           </span>
         </div>
 

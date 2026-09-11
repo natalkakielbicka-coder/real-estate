@@ -3,7 +3,11 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { apartments } from '../data/apartments'
 import { apartmentStatusLabels } from '../constants/apartmentStatuses'
-import { getFloorLabel, formatPrice } from '../utils/apartmentFormatters'
+import {
+  getFloorLabel,
+  formatPrice,
+  getRoomsLabel
+} from '../utils/apartmentFormatters'
 
 const props = defineProps({
   floorPlan: {
@@ -314,7 +318,10 @@ const hideTooltip = () => {
         </div>
 
         <div class="mb-[14px] flex gap-3 border-y border-white/18 py-[11px]">
-          <span class="text-[9px]"> {{ activeApartment.rooms }} pokoje </span>
+          <span class="text-[9px]">
+            {{ activeApartment.rooms }}
+            {{ getRoomsLabel(activeApartment.rooms) }}
+          </span>
 
           <span class="text-[9px]"> {{ activeApartment.area }} m² </span>
 

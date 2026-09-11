@@ -6,7 +6,8 @@ import {
 import {
   getFloorLabel,
   formatPrice,
-  formatPricePerMeter
+  formatPricePerMeter,
+  getRoomsLabel
 } from '../utils/apartmentFormatters'
 
 defineProps({
@@ -66,7 +67,7 @@ defineProps({
           <strong class="mr-[3px] text-xs text-brand">
             {{ apartment.rooms }}
           </strong>
-          pokoje
+          {{ getRoomsLabel(apartment.rooms) }}
         </span>
 
         <span>

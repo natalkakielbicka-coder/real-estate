@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue'
+import { getRoomsLabel } from '../utils/apartmentFormatters'
 
 const props = defineProps({
   apartment: {
@@ -51,7 +52,8 @@ const formatFloor = (floor) => {
         </h3>
 
         <p class="mb-4 text-sm text-muted">
-          Lokal {{ apartment.number }} · {{ apartment.rooms }} pokoje
+          Lokal {{ apartment.number }} · {{ apartment.rooms }}
+          {{ getRoomsLabel(apartment.rooms) }}
         </p>
 
         <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">

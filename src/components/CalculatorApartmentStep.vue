@@ -1,5 +1,6 @@
 <script setup>
 import SelectedApartmentCard from './SelectedApartmentCard.vue'
+import { getRoomsLabel } from '../utils/apartmentFormatters'
 
 defineProps({
   investments: {
@@ -116,8 +117,8 @@ const handleApartmentChange = (event) => {
               :key="apartment.id"
               :value="apartment.id"
             >
-              {{ apartment.number }} · {{ apartment.rooms }} pokoje ·
-              {{ apartment.area }} m²
+              {{ apartment.number }} · {{ apartment.rooms }}
+              {{ getRoomsLabel(apartment.rooms) }} · {{ apartment.area }} m²
             </option>
           </select>
 
