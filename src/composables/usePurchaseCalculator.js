@@ -132,6 +132,18 @@ export const usePurchaseCalculator = () => {
     return notaryCost + parkingCost.value + storageRoomCost.value
   })
 
+  const totalPurchaseCost = computed(() => {
+    if (!selectedApartment.value) {
+      return 0
+    }
+
+    return (
+      selectedApartment.value.price +
+      totalFinishingCost.value +
+      totalAdditionalCosts.value
+    )
+  })
+
   return {
     availableApartments,
     availableInvestments,
@@ -153,6 +165,7 @@ export const usePurchaseCalculator = () => {
     parkingSpacePrice,
     includeStorageRoom,
     storageRoomPrice,
-    totalAdditionalCosts
+    totalAdditionalCosts,
+    totalPurchaseCost
   }
 }

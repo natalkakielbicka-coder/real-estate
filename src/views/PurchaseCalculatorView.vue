@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import CalculatorApartmentStep from '../components/CalculatorApartmentStep.vue'
 import CalculatorFinancingStep from '../components/CalculatorFinancingStep.vue'
 import CalculatorFinishingStep from '../components/CalculatorFinishingStep.vue'
@@ -31,20 +31,9 @@ const {
   parkingSpacePrice,
   includeStorageRoom,
   storageRoomPrice,
-  totalAdditionalCosts
+  totalAdditionalCosts,
+  totalPurchaseCost
 } = usePurchaseCalculator()
-
-const totalPurchaseCost = computed(() => {
-  if (!selectedApartment.value) {
-    return 0
-  }
-
-  return (
-    selectedApartment.value.price +
-    totalFinishingCost.value +
-    totalAdditionalCosts.value
-  )
-})
 
 const resetCalculator = () => {
   selectedInvestment.value = availableInvestments[0]
