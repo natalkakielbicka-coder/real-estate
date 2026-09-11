@@ -1,5 +1,6 @@
 <script setup>
 import { formatPrice } from '../utils/apartmentFormatters'
+import { toNonNegativeNumber } from '../utils/numberHelpers'
 
 defineProps({
   ownContribution: {
@@ -23,7 +24,7 @@ defineProps({
 const emit = defineEmits(['update:ownContribution'])
 
 const updateOwnContribution = (event) => {
-  const value = Number(event.target.value)
+  const value = toNonNegativeNumber(event.target.value)
 
   emit('update:ownContribution', value)
 }

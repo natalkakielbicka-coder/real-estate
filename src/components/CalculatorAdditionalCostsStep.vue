@@ -1,5 +1,6 @@
 <script setup>
 import { formatPrice } from '../utils/apartmentFormatters'
+import { toNonNegativeNumber } from '../utils/numberHelpers'
 
 defineProps({
   includeParkingSpace: {
@@ -41,7 +42,9 @@ const updateParkingSelection = (event) => {
 }
 
 const updateParkingPrice = (event) => {
-  emit('update:parkingSpacePrice', Number(event.target.value))
+  const value = toNonNegativeNumber(event.target.value)
+
+  emit('update:parkingSpacePrice', value)
 }
 
 const updateStorageSelection = (event) => {
@@ -49,11 +52,15 @@ const updateStorageSelection = (event) => {
 }
 
 const updateStoragePrice = (event) => {
-  emit('update:storageRoomPrice', Number(event.target.value))
+  const value = toNonNegativeNumber(event.target.value)
+
+  emit('update:storageRoomPrice', value)
 }
 
 const updateNotaryFee = (event) => {
-  emit('update:notaryFee', Number(event.target.value))
+  const value = toNonNegativeNumber(event.target.value)
+
+  emit('update:notaryFee', value)
 }
 </script>
 
