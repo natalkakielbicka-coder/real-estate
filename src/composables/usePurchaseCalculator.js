@@ -19,6 +19,14 @@ export const usePurchaseCalculator = () => {
   const ownContribution = ref(100000)
   const finishingCostPerMeter = ref(2500)
 
+  const notaryFee = ref(4000)
+
+  const includeParkingSpace = ref(false)
+  const parkingSpacePrice = ref(35000)
+
+  const includeStorageRoom = ref(false)
+  const storageRoomPrice = ref(15000)
+
   const apartmentsFromSelectedInvestment = computed(() => {
     return availableApartments.filter((apartment) => {
       return apartment.investment === selectedInvestment.value
@@ -102,6 +110,28 @@ export const usePurchaseCalculator = () => {
     selectedApartmentId.value = apartment?.id ?? null
   }
 
+  const parkingCost = computed(() => {
+    if (includeParkingSpace.value) {
+      return parkingSpacePrice.value || 0
+    }
+
+    return 0
+  })
+
+  const storageRoomCost = computed(() => {
+    if (includeStorageRoom.value) {
+      return storageRoomPrice.value || 0
+    }
+
+    return 0
+  })
+
+  const totalAdditionalCosts = computed(() => {
+    const notaryCost = notaryFee.value || 0
+
+    return notaryCost + parkingCost.value + storageRoomCost.value
+  })
+
   return {
     availableApartments,
     availableInvestments,
@@ -117,6 +147,12 @@ export const usePurchaseCalculator = () => {
     hasLowContribution,
     finishingCostPerMeter,
     finishingStandards,
-    totalFinishingCost
+    totalFinishingCost,
+    notaryFee,
+    includeParkingSpace,
+    parkingSpacePrice,
+    includeStorageRoom,
+    storageRoomPrice,
+    totalAdditionalCosts
   }
 }
