@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watchEffect } from 'vue'
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { apartments } from '../data/apartments'
 import {
@@ -25,14 +25,6 @@ const apartment = computed(() => {
   return apartments.find((item) => {
     return item.slug === route.params.slug
   })
-})
-
-watchEffect(() => {
-  if (!apartment.value) {
-    return
-  }
-
-  document.title = `Mieszkanie ${apartment.value.number} - Real Estate`
 })
 
 const similarApartments = computed(() => {

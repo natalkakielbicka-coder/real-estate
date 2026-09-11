@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, nextTick, watchEffect } from 'vue'
+import { computed, ref, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import { investments } from '../data/investments'
 import { apartments } from '../data/apartments'
@@ -24,14 +24,6 @@ const investment = computed(() => {
   return investments.find((item) => {
     return item.id === route.params.id
   })
-})
-
-watchEffect(() => {
-  if (!investment.value) {
-    return
-  }
-
-  document.title = `${investment.value.name} - Real Estate`
 })
 
 const investmentApartments = computed(() => {

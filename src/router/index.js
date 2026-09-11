@@ -1,5 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import { apartments } from '../data/apartments'
+import { investments } from '../data/investments'
+
 const ApartmentsView = () => import('../views/ApartmentsView.vue')
 
 const ApartmentDetailsView = () => import('../views/ApartmentDetailsView.vue')
@@ -35,7 +38,15 @@ const routes = [
     name: 'apartment-details',
     component: ApartmentDetailsView,
     meta: {
-      title: 'Szczegóły mieszkania'
+      title: (to) => {
+        const apartment = apartments.find((item) => {
+          return item.slug === to.params.slug
+        })
+
+        return apartment
+          ? `Mieszkanie ${apartment.number}`
+          : 'Szczegóły mieszkania'
+      }
     }
   },
   {
@@ -51,7 +62,13 @@ const routes = [
     name: 'investment-details',
     component: InvestmentDetailsView,
     meta: {
-      title: 'Szczegóły inwestycji'
+      title: (to) => {
+        const investment = investments.find((item) => {
+          return item.id === to.params.id
+        })
+
+        return investment?.name ?? 'Szczegóły inwestycji'
+      }
     }
   },
   {
@@ -94,7 +111,8 @@ const router = createRouter({
 })
 
 router.afterEach((to) => {
-  const pageTitle = to.meta.title
+  const pageTitle =
+    typeof to.meta.title === 'function' ? to.meta.title(to) : to.meta.title
 
   document.title = pageTitle ? `${pageTitle} - Real Estate` : 'Real Estate'
 })
