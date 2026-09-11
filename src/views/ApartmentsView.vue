@@ -10,6 +10,7 @@ import { floorPlans } from '../data/floorPlans'
 import { apartments } from '../data/apartments'
 import { apartmentStatusClasses } from '../constants/apartmentStatuses'
 import { useToast } from '../composables/useToast'
+import { getApartmentsLabel } from '../utils/apartmentFormatters'
 
 const { showToast } = useToast()
 
@@ -875,10 +876,10 @@ const getOffersLabel = (count) => {
           >
             <p class="mb-0 text-xs text-muted">
               Znaleziono
-              <strong class="text-sm text-brand">{{
-                sortedApartments.length
-              }}</strong>
-              mieszkań
+              <strong class="text-sm text-brand">
+                {{ sortedApartments.length }}
+              </strong>
+              {{ getApartmentsLabel(sortedApartments.length) }}
             </p>
 
             <div
