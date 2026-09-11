@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { apartments } from '../data/apartments'
+import { floorPlans } from '../data/floorPlans'
 import {
   apartmentStatusLabels,
   apartmentStatusClasses
@@ -40,6 +41,23 @@ const similarApartments = computed(() => {
       )
     })
     .slice(0, 3)
+})
+
+const hasInteractiveFloorPlan = computed(() => {
+  if (!apartment.value) {
+    return false
+  }
+
+  return floorPlans.some((floorPlan) => {
+    return (
+      floorPlan.investmentId === apartment.value.investmentId &&
+      floorPlan.building === apartment.value.building &&
+      Number(floorPlan.floor) === Number(apartment.value.floor) &&
+      floorPlan.apartmentAreas.some((area) => {
+        return area.apartmentId === apartment.value.id
+      })
+    )
+  })
 })
 </script>
 
@@ -243,6 +261,31 @@ const similarApartments = computed(() => {
                 }}
               </strong>
             </div>
+
+            <RouterLink
+              v-if="hasInteractiveFloorPlan"
+              class="group mt-5 flex min-h-[54px] w-full items-center justify-center gap-3 bg-brand px-5 text-sm font-bold text-white transition-colors hover:bg-brand-light"
+              :to="{
+                name: 'investment-details',
+                params: {
+                  id: apartment.investmentId
+                },
+                query: {
+                  floor: apartment.floor,
+                  apartment: apartment.slug
+                },
+                hash: '#floor-plan'
+              }"
+            >
+              Pokaż na rzucie piętra
+
+              <span
+                class="text-lg transition-transform duration-200 group-hover:translate-x-1"
+                aria-hidden="true"
+              >
+                →
+              </span>
+            </RouterLink>
           </div>
         </div>
       </div>

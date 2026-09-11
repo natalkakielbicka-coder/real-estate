@@ -97,6 +97,14 @@ const router = createRouter({
       return savedPosition
     }
 
+    if (to.hash) {
+      return {
+        el: to.hash,
+        top: 88,
+        behavior: 'smooth'
+      }
+    }
+
     const onlyQueryChanged = to.path === from.path && to.hash === from.hash
 
     if (onlyQueryChanged) {

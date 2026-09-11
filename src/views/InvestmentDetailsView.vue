@@ -321,6 +321,7 @@ const clearFloorSelection = () => {
     </section>
 
     <section
+      id="floor-plan"
       v-if="investment"
       ref="apartmentsSection"
       class="scroll-mt-[88px] py-[clamp(60px,8vw,110px)]"
