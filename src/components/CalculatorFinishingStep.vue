@@ -1,6 +1,6 @@
 <script setup>
 import { formatPrice } from '../utils/apartmentFormatters'
-import { toNonNegativeNumber } from '../utils/numberHelpers'
+import { toNumberInputValue } from '../utils/numberHelpers'
 
 defineProps({
   standards: {
@@ -8,7 +8,7 @@ defineProps({
     default: () => []
   },
   costPerMeter: {
-    type: Number,
+    type: [Number, String],
     default: 0
   },
   totalCost: {
@@ -28,7 +28,7 @@ const selectStandard = (price) => {
 }
 
 const updateCostPerMeter = (event) => {
-  const value = toNonNegativeNumber(event.target.value)
+  const value = toNumberInputValue(event.target.value)
 
   emit('update:costPerMeter', value)
 }

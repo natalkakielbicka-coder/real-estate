@@ -7,3 +7,11 @@ export const toNonNegativeNumber = (value) => {
 
   return number
 }
+
+export const toNumberInputValue = (value) => {
+  if (value === '') {
+    return ''
+  }
+
+  return toNonNegativeNumber(value)
+}
