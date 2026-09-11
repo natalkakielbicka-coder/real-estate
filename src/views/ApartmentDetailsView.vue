@@ -19,14 +19,53 @@ import {
   outdoorSpaceLabels
 } from '../constants/apartmentAttributes'
 import { formatCompletionDate } from '../utils/dateFormatters'
+import { useToast } from '../composables/useToast'
 
 const route = useRoute()
+const { showToast } = useToast()
 
 const apartment = computed(() => {
   return apartments.find((item) => {
     return item.slug === route.params.slug
   })
 })
+
+const isMobileDevice = () => {
+  if (navigator.userAgentData?.mobile !== undefined) {
+    return navigator.userAgentData.mobile
+  }
+
+  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+}
+
+const shareApartment = async () => {
+  if (!apartment.value) {
+    return
+  }
+
+  const shareData = {
+    title: `Mieszkanie ${apartment.value.number} – ${apartment.value.investment}`,
+    text: `Zobacz mieszkanie ${apartment.value.number} w inwestycji ${apartment.value.investment}.`,
+    url: window.location.href
+  }
+
+  try {
+    if (isMobileDevice() && navigator.share) {
+      await navigator.share(shareData)
+      return
+    }
+
+    await navigator.clipboard.writeText(shareData.url)
+
+    showToast('Link do mieszkania został skopiowany', 'success')
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      return
+    }
+
+    showToast('Nie udało się udostępnić linku', 'error')
+  }
+}
 
 const similarApartments = computed(() => {
   if (!apartment.value) {
@@ -309,6 +348,20 @@ const hasInteractiveFloorPlan = computed(() => {
                 </span>
               </RouterLink>
             </div>
+
+            <button
+              class="group mt-3 flex min-h-[50px] w-full items-center justify-center gap-3 border border-line bg-transparent px-5 text-sm font-bold text-brand transition-colors hover:border-brand hover:bg-panel"
+              type="button"
+              @click="shareApartment"
+            >
+              Udostępnij mieszkanie
+              <span
+                class="text-lg transition-transform duration-200 group-hover:translate-x-1"
+                aria-hidden="true"
+              >
+                →
+              </span>
+            </button>
           </div>
         </div>
       </div>
