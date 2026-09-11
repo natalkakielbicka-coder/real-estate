@@ -266,7 +266,7 @@ export const usePurchaseCalculator = () => {
         apartmentsFromSelectedInvestment.value[0]?.id ??
         null
 
-      applyCalculationValues(DEFAULT_CALCULATION)
+      applyCalculationValues(calculation)
 
       showToast('Wczytano zapisaną kalkulację', 'info')
     } catch {
