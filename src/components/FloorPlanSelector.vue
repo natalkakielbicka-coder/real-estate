@@ -22,6 +22,13 @@ const router = useRouter()
 
 const activeApartment = ref(null)
 
+const apartmentLabelPositions = [
+  { x: 410, y: 285 },
+  { x: 1125, y: 285 },
+  { x: 410, y: 700 },
+  { x: 1125, y: 700 }
+]
+
 const tooltipPosition = ref({
   x: 0,
   y: 0
@@ -31,7 +38,7 @@ const tooltipBelowCursor = ref(false)
 
 const mappedAreas = computed(() => {
   return props.floorPlan.apartmentAreas
-    .map((area) => {
+    .map((area, index) => {
       const apartment = apartments.find((item) => {
         return item.id === area.apartmentId
       })
@@ -43,7 +50,8 @@ const mappedAreas = computed(() => {
       return {
         ...area,
         apartment,
-        matchesFilters
+        matchesFilters,
+        labelPosition: apartmentLabelPositions[index]
       }
     })
     .filter((area) => area.apartment)
@@ -212,6 +220,20 @@ const hideTooltip = () => {
           @mouseleave="hideTooltip"
           @blur="hideTooltip"
         />
+
+        <text
+          v-for="area in mappedAreas"
+          :key="`label-${area.apartmentId}`"
+          class="pointer-events-none fill-brand font-display text-[46px]"
+          :class="{ 'opacity-35': !area.matchesFilters }"
+          :x="area.labelPosition.x"
+          :y="area.labelPosition.y"
+          text-anchor="middle"
+          dominant-baseline="middle"
+          aria-hidden="true"
+        >
+          {{ area.apartment.number }}
+        </text>
       </svg>
 
       <div

@@ -113,7 +113,7 @@ const apartmentsData = [
     district: 'Prądnik Biały',
     address: 'ul. Zielona 18',
     building: 'A',
-    floor: 3,
+    floor: 4,
     rooms: 4,
     area: 79.6,
     price: 1059000,
@@ -521,6 +521,264 @@ const apartmentsData = [
   }
 ]
 
+const apartmentPlanByRooms = {
+  1: '/images/apartments/plans/zielone-tarasy-b-03.jpg',
+  2: '/images/apartments/plans/zielone-tarasy-a-08.jpg',
+  3: '/images/apartments/plans/zielone-tarasy-a-12.jpg',
+  4: '/images/apartments/plans/zielone-tarasy-a-18.jpg'
+}
+
+const createZieloneTarasyApartment = ({
+  id,
+  number,
+  floor,
+  rooms,
+  area,
+  price,
+  status,
+  exposure,
+  outdoorSpace,
+  parkingSpace,
+  storageRoom,
+  features
+}) => ({
+  id,
+  slug: `zielone-tarasy-${number.toLowerCase().replace('.', '-')}`,
+  number,
+  investmentId: 'zielone-tarasy',
+  investment: 'Zielone Tarasy',
+  city: 'Kraków',
+  district: 'Prądnik Biały',
+  address: 'ul. Zielona 18',
+  building: 'A',
+  floor,
+  rooms,
+  area,
+  price,
+  status,
+  exposure,
+  outdoorSpace,
+  parkingSpace,
+  storageRoom,
+  completionDate: '2027-06-30',
+  featured: false,
+  features,
+  floorPlan: apartmentPlanByRooms[rooms]
+})
+
+const additionalZieloneTarasyApartments = [
+  createZieloneTarasyApartment({
+    id: 21,
+    number: 'A.03',
+    floor: 0,
+    rooms: 1,
+    area: 33.8,
+    price: 479000,
+    status: 'available',
+    exposure: ['east'],
+    outdoorSpace: { type: 'garden', area: 18.2 },
+    parkingSpace: false,
+    storageRoom: false,
+    features: ['Ogródek', 'Kompaktowy układ', 'Duże przeszklenia']
+  }),
+  createZieloneTarasyApartment({
+    id: 22,
+    number: 'A.04',
+    floor: 0,
+    rooms: 3,
+    area: 65.1,
+    price: 829000,
+    status: 'sold',
+    exposure: ['north', 'west'],
+    outdoorSpace: { type: 'garden', area: 36.4 },
+    parkingSpace: true,
+    storageRoom: true,
+    features: ['Ogródek', 'Narożny salon', 'Dwie sypialnie']
+  }),
+  createZieloneTarasyApartment({
+    id: 23,
+    number: 'A.05',
+    floor: 1,
+    rooms: 2,
+    area: 45.7,
+    price: 629000,
+    status: 'available',
+    exposure: ['south', 'west'],
+    outdoorSpace: { type: 'balcony', area: 6.4 },
+    parkingSpace: true,
+    storageRoom: false,
+    features: ['Balkon', 'Jasny salon', 'Winda']
+  }),
+  createZieloneTarasyApartment({
+    id: 24,
+    number: 'A.06',
+    floor: 1,
+    rooms: 3,
+    area: 63.2,
+    price: 799000,
+    status: 'reserved',
+    exposure: ['east', 'south'],
+    outdoorSpace: { type: 'balcony', area: 8.1 },
+    parkingSpace: true,
+    storageRoom: true,
+    features: ['Balkon', 'Garderoba', 'Dwie sypialnie']
+  }),
+  createZieloneTarasyApartment({
+    id: 25,
+    number: 'A.07',
+    floor: 1,
+    rooms: 1,
+    area: 35.4,
+    price: 509000,
+    status: 'available',
+    exposure: ['north'],
+    outdoorSpace: { type: 'balcony', area: 4.6 },
+    parkingSpace: false,
+    storageRoom: true,
+    features: ['Balkon', 'Kompaktowy układ', 'Winda']
+  }),
+  createZieloneTarasyApartment({
+    id: 26,
+    number: 'A.09',
+    floor: 2,
+    rooms: 2,
+    area: 47.6,
+    price: 659000,
+    status: 'sold',
+    exposure: ['east'],
+    outdoorSpace: { type: 'balcony', area: 6.1 },
+    parkingSpace: false,
+    storageRoom: true,
+    features: ['Balkon', 'Funkcjonalny układ', 'Winda']
+  }),
+  createZieloneTarasyApartment({
+    id: 27,
+    number: 'A.10',
+    floor: 2,
+    rooms: 3,
+    area: 64.8,
+    price: 839000,
+    status: 'available',
+    exposure: ['south', 'west'],
+    outdoorSpace: { type: 'loggia', area: 7.9 },
+    parkingSpace: true,
+    storageRoom: true,
+    features: ['Loggia', 'Garderoba', 'Widok na zieleń']
+  }),
+  createZieloneTarasyApartment({
+    id: 28,
+    number: 'A.11',
+    floor: 2,
+    rooms: 1,
+    area: 36.2,
+    price: 529000,
+    status: 'reserved',
+    exposure: ['north'],
+    outdoorSpace: { type: 'balcony', area: 4.8 },
+    parkingSpace: false,
+    storageRoom: false,
+    features: ['Balkon', 'Otwarta kuchnia', 'Winda']
+  }),
+  createZieloneTarasyApartment({
+    id: 29,
+    number: 'A.13',
+    floor: 3,
+    rooms: 2,
+    area: 48.9,
+    price: 689000,
+    status: 'available',
+    exposure: ['west'],
+    outdoorSpace: { type: 'balcony', area: 6.7 },
+    parkingSpace: true,
+    storageRoom: true,
+    features: ['Balkon', 'Widok na zieleń', 'Winda']
+  }),
+  createZieloneTarasyApartment({
+    id: 30,
+    number: 'A.14',
+    floor: 3,
+    rooms: 3,
+    area: 66.5,
+    price: 879000,
+    status: 'available',
+    exposure: ['east', 'south'],
+    outdoorSpace: { type: 'balcony', area: 9.2 },
+    parkingSpace: true,
+    storageRoom: true,
+    features: ['Duży balkon', 'Narożny salon', 'Garderoba']
+  }),
+  createZieloneTarasyApartment({
+    id: 31,
+    number: 'A.15',
+    floor: 3,
+    rooms: 1,
+    area: 36.9,
+    price: 549000,
+    status: 'sold',
+    exposure: ['north'],
+    outdoorSpace: { type: 'balcony', area: 4.5 },
+    parkingSpace: false,
+    storageRoom: false,
+    features: ['Balkon', 'Kompaktowy układ', 'Winda']
+  }),
+  createZieloneTarasyApartment({
+    id: 32,
+    number: 'A.16',
+    floor: 3,
+    rooms: 4,
+    area: 81.3,
+    price: 1099000,
+    status: 'reserved',
+    exposure: ['south', 'west'],
+    outdoorSpace: { type: 'terrace', area: 14.8 },
+    parkingSpace: true,
+    storageRoom: true,
+    features: ['Taras', 'Trzy sypialnie', 'Dwie łazienki']
+  }),
+  createZieloneTarasyApartment({
+    id: 33,
+    number: 'A.17',
+    floor: 4,
+    rooms: 3,
+    area: 68.1,
+    price: 929000,
+    status: 'available',
+    exposure: ['east', 'south'],
+    outdoorSpace: { type: 'terrace', area: 12.6 },
+    parkingSpace: true,
+    storageRoom: true,
+    features: ['Taras', 'Panoramiczne okna', 'Garderoba']
+  }),
+  createZieloneTarasyApartment({
+    id: 34,
+    number: 'A.19',
+    floor: 4,
+    rooms: 2,
+    area: 51.7,
+    price: 749000,
+    status: 'available',
+    exposure: ['west'],
+    outdoorSpace: { type: 'terrace', area: 10.2 },
+    parkingSpace: true,
+    storageRoom: false,
+    features: ['Taras', 'Widok na zieleń', 'Ostatnie piętro']
+  }),
+  createZieloneTarasyApartment({
+    id: 35,
+    number: 'A.20',
+    floor: 4,
+    rooms: 3,
+    area: 70.4,
+    price: 969000,
+    status: 'sold',
+    exposure: ['north', 'west'],
+    outdoorSpace: { type: 'terrace', area: 13.5 },
+    parkingSpace: true,
+    storageRoom: true,
+    features: ['Taras', 'Ostatnie piętro', 'Dwie łazienki']
+  })
+]
+
 const investmentGalleries = {
   'zielone-tarasy': [
     'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1400&q=85',
@@ -539,8 +797,12 @@ const investmentGalleries = {
   ]
 }
 
-export const apartments = apartmentsData.map((apartment) => ({
+export const apartments = [
+  ...apartmentsData,
+  ...additionalZieloneTarasyApartments
+].map((apartment) => ({
   ...apartment,
-  floorPlan: `/images/apartments/plans/${apartment.slug}.jpg`,
+  floorPlan:
+    apartment.floorPlan ?? `/images/apartments/plans/${apartment.slug}.jpg`,
   gallery: investmentGalleries[apartment.investmentId]
 }))
