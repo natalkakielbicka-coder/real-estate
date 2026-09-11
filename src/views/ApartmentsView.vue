@@ -19,6 +19,7 @@ const selectedOutdoorSpaces = ref([])
 const onlyWithParking = ref(false)
 const onlyWithStorage = ref(false)
 const selectedSort = ref('default')
+const priceRangeError = ref('')
 
 const route = useRoute()
 const router = useRouter()
@@ -277,10 +278,22 @@ watch(filtersQuery, (newQuery) => {
 })
 
 const applyPriceFilter = () => {
-  minPrice.value =
+  const priceFrom =
     priceFromInput.value === '' ? null : Number(priceFromInput.value)
 
-  maxPrice.value = priceToInput.value === '' ? null : Number(priceToInput.value)
+  const priceTo = priceToInput.value === '' ? null : Number(priceToInput.value)
+
+  if (priceFrom !== null && priceTo !== null && priceFrom > priceTo) {
+    priceRangeError.value =
+      'Cena minimalna nie może być wyższa niż cena maksymalna.'
+
+    return
+  }
+
+  priceRangeError.value = ''
+
+  minPrice.value = priceFrom
+  maxPrice.value = priceTo
 }
 
 const resetFilters = () => {
@@ -577,12 +590,16 @@ const getOffersLabel = (count) => {
             <strong
               class="font-display text-[46px] leading-none font-normal text-gold"
             >
-              {{ apartments.length }}
+              {{
+                apartments.filter(
+                  (apartment) => apartment.status === 'available'
+                ).length
+              }}
             </strong>
             <span
               class="max-w-[75px] text-[10px] leading-[1.4] font-bold tracking-[0.08em] uppercase"
             >
-              dostępnych ofert
+              dostępnych {{ getOffersLabel(apartments.length) }}
             </span>
           </div>
         </div>
@@ -810,6 +827,9 @@ const getOffersLabel = (count) => {
                   <input
                     v-model="priceFromInput"
                     class="w-full min-w-0 border-0 bg-transparent p-0 text-[11px] font-semibold text-brand outline-0"
+                    :class="priceRangeError ? 'border-red-600' : 'border-line'"
+                    :aria-invalid="Boolean(priceRangeError)"
+                    aria-describedby="price-range-error"
                     type="number"
                     min="0"
                     step="50000"
@@ -828,6 +848,9 @@ const getOffersLabel = (count) => {
                   <input
                     v-model="priceToInput"
                     class="w-full min-w-0 border-0 bg-transparent p-0 text-[11px] font-semibold text-brand outline-0"
+                    :class="priceRangeError ? 'border-red-600' : 'border-line'"
+                    :aria-invalid="Boolean(priceRangeError)"
+                    aria-describedby="price-range-error"
                     type="number"
                     min="0"
                     step="50000"
@@ -837,6 +860,14 @@ const getOffersLabel = (count) => {
                 </div>
               </label>
             </div>
+            <p
+              v-if="priceRangeError"
+              id="price-range-error"
+              class="mt-3 text-xs font-semibold text-red-700"
+              role="alert"
+            >
+              {{ priceRangeError }}
+            </p>
             <button
               class="mt-3 min-h-[42px] w-full rounded-[3px] border-0 bg-brand px-4 text-[11px] font-bold text-white transition-colors hover:bg-brand-light"
               type="submit"

@@ -114,7 +114,7 @@ const hasInteractiveFloorPlan = computed(() => {
       </RouterLink>
 
       <div
-        class="grid grid-cols-1 items-center gap-[clamp(50px,7vw,100px)] md:grid-cols-[minmax(0,1.15fr)_minmax(360px,0.85fr)]"
+        class="grid grid-cols-1 gap-[clamp(50px,7vw,100px)] md:grid-cols-[minmax(0,1.15fr)_minmax(360px,0.85fr)]"
       >
         <ApartmentGallery
           :key="apartment.id"
@@ -136,7 +136,7 @@ const hasInteractiveFloorPlan = computed(() => {
             {{ apartmentStatusLabels[apartment.status] }}
           </span>
 
-          <h1 class="mb-4 text-[clamp(48px,6vw,76px)]">
+          <h1 class="mb-4 text-[clamp(36px,4vw,56px)]">
             Mieszkanie {{ apartment.number }}
           </h1>
 
