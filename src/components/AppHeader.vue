@@ -81,7 +81,7 @@ watch(
         </RouterLink>
 
         <RouterLink
-          class="navigation__link"
+          class="navigation__link navigation__link--calculator"
           to="/kalkulator-kosztow-zakupu"
         >
           Kalkulator kosztów
@@ -155,6 +155,24 @@ watch(
   color: var(--color-accent);
 }
 
+.navigation__link--calculator {
+  margin-top: 8px;
+  padding-inline: 14px;
+  color: var(--color-primary);
+  background-color: rgba(199, 157, 98, 0.14);
+  border: 1px solid rgba(199, 157, 98, 0.45);
+  transition:
+    color 0.25s ease,
+    background-color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.navigation__link--calculator:hover,
+.navigation__link--calculator.router-link-active {
+  color: var(--color-primary);
+  background-color: rgba(199, 157, 98, 0.3);
+}
+
 @media (min-width: 992px) {
   .navigation__link {
     display: flex;
@@ -176,6 +194,22 @@ watch(
     transform: scaleX(0);
     transform-origin: right;
     transition: transform 0.3s ease;
+  }
+  .navigation__link:hover::after,
+  .navigation__link.router-link-active::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .navigation__link--calculator {
+    height: 42px;
+    margin-top: 0;
+    padding-inline: 14px;
+    border: 1px solid rgba(199, 157, 98, 0.45);
+  }
+
+  .navigation__link--calculator::after {
+    display: none;
   }
 }
 </style>
