@@ -66,14 +66,6 @@ const selectedRooms = ref(
   getQueryValues(route.query.rooms).map(Number).filter(Number.isFinite)
 )
 
-selectedStatuses.value = getQueryValues(route.query.status)
-
-selectedOutdoorSpaces.value = getQueryValues(route.query.outdoor)
-
-onlyWithParking.value = route.query.parking === '1'
-
-onlyWithStorage.value = route.query.storage === '1'
-
 const availableStatusValues = ['available', 'reserved', 'sold']
 
 const availableOutdoorSpaceValues = ['balcony', 'terrace', 'garden', 'loggia']
