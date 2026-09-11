@@ -36,10 +36,8 @@ const matchingApartmentsCount = computed(() => {
       selectedCity.value === '' || apartment.city === selectedCity.value
 
     const matchesRooms =
-      selectedRooms.value.length === 0 ||
-      selectedRooms.value.some((rooms) => {
-        return apartment.rooms === rooms
-      })
+      selectedRooms.value === '' ||
+      apartment.rooms === Number(selectedRooms.value)
 
     const matchesMaxPrice =
       selectedMaxPrice.value === '' || apartment.price <= selectedMaxPrice.value
