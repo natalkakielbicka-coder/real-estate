@@ -489,7 +489,24 @@ const sortedApartments = computed(() => {
     })
   }
 
-  return apartmentsToSort
+  return apartmentsToSort.sort((a, b) => {
+    const investmentComparison = a.investment.localeCompare(
+      b.investment,
+      'pl',
+      {
+        sensitivity: 'base'
+      }
+    )
+
+    if (investmentComparison !== 0) {
+      return investmentComparison
+    }
+
+    return a.number.localeCompare(b.number, 'pl', {
+      numeric: true,
+      sensitivity: 'base'
+    })
+  })
 })
 
 const getOffersLabel = (count) => {
@@ -929,7 +946,7 @@ const getOffersLabel = (count) => {
                 v-model="selectedSort"
                 class="h-[42px] w-full rounded-[3px] border border-transparent bg-page pr-8 pl-3.5 text-[11px] font-semibold text-brand outline-none focus:border-gold xs:w-auto"
               >
-                <option value="default">Domyślna kolejność</option>
+                <option value="default">Inwestycja i numer</option>
                 <option value="price-asc">Cena: od najniższej</option>
                 <option value="price-desc">Cena: od najwyższej</option>
                 <option value="area-asc">Metraż: od najmniejszego</option>
