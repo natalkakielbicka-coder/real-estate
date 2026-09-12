@@ -542,6 +542,26 @@ const sortedApartments = computed(() => {
   })
 })
 
+const availableApartmentsCount = computed(() => {
+  return apartments.filter((apartment) => {
+    return apartment.status === 'available'
+  }).length
+})
+
+const getAvailableLabel = (count) => {
+  const offersLabel = getOffersLabel(count)
+
+  if (offersLabel === 'oferta') {
+    return 'dostępna'
+  }
+
+  if (offersLabel === 'oferty') {
+    return 'dostępne'
+  }
+
+  return 'dostępnych'
+}
+
 const getOffersLabel = (count) => {
   if (count === 1) {
     return 'oferta'
@@ -590,16 +610,13 @@ const getOffersLabel = (count) => {
             <strong
               class="font-display text-[46px] leading-none font-normal text-gold"
             >
-              {{
-                apartments.filter(
-                  (apartment) => apartment.status === 'available'
-                ).length
-              }}
+              {{ availableApartmentsCount }}
             </strong>
             <span
               class="max-w-[75px] text-[10px] leading-[1.4] font-bold tracking-[0.08em] uppercase"
             >
-              dostępnych {{ getOffersLabel(apartments.length) }}
+              {{ getAvailableLabel(availableApartmentsCount) }}
+              {{ getOffersLabel(availableApartmentsCount) }}
             </span>
           </div>
         </div>
