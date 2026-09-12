@@ -311,12 +311,7 @@ const resetFilters = () => {
   minPrice.value = null
   maxPrice.value = null
   selectedSort.value = 'default'
-
-  router.replace({
-    query: {
-      view: route.query.view
-    }
-  })
+  priceRangeError.value = ''
 
   showToast('Filtry zostały wyczyszczone', 'success')
 }
