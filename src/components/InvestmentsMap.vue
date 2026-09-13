@@ -41,38 +41,69 @@ const createMarkerIcon = (apartmentsCount) => {
 }
 
 const createPopupContent = (investment, apartmentsCount, statusCounts) => {
-  return `
-    <div class="investment-popup">
-      <p class="investment-popup__eyebrow">Inwestycja</p>
+  const popup = document.createElement('div')
+  popup.className = 'investment-popup'
 
-      <h3>${investment.name}</h3>
+  const eyebrow = document.createElement('p')
+  eyebrow.className = 'investment-popup__eyebrow'
+  eyebrow.textContent = 'Inwestycja'
 
-      <p>
-        ${investment.city}, ${investment.district}<br>
-        ${investment.address}
-      </p>
+  const title = document.createElement('h3')
+  title.textContent = investment.name
 
-      <strong>${apartmentsCount} ${getApartmentsLabel(apartmentsCount)}</strong>
+  const address = document.createElement('p')
+  address.append(
+    document.createTextNode(`${investment.city}, ${investment.district}`),
+    document.createElement('br'),
+    document.createTextNode(investment.address)
+  )
 
-      <div class="investment-popup__statuses">
-        <span class="investment-popup__status investment-popup__status--available">
-          ${statusCounts.available} dostępnych
-        </span>
+  const apartmentsSummary = document.createElement('strong')
+  apartmentsSummary.textContent = `${apartmentsCount} ${getApartmentsLabel(
+    apartmentsCount
+  )}`
 
-        <span class="investment-popup__status investment-popup__status--reserved">
-          ${statusCounts.reserved} rezerwacji
-        </span>
+  const statuses = document.createElement('div')
+  statuses.className = 'investment-popup__statuses'
 
-        <span class="investment-popup__status investment-popup__status--sold">
-          ${statusCounts.sold} sprzedanych
-        </span>
-      </div>
+  const statusItems = [
+    {
+      type: 'available',
+      label: `${statusCounts.available} dostępnych`
+    },
+    {
+      type: 'reserved',
+      label: `${statusCounts.reserved} rezerwacji`
+    },
+    {
+      type: 'sold',
+      label: `${statusCounts.sold} sprzedanych`
+    }
+  ]
 
-      <button class="investment-popup__button" type="button">
-        Pokaż mieszkania <span>→</span>
-      </button>
-    </div>
-  `
+  statusItems.forEach((status) => {
+    const statusElement = document.createElement('span')
+
+    statusElement.className = `investment-popup__status investment-popup__status--${status.type}`
+    statusElement.textContent = status.label
+
+    statuses.append(statusElement)
+  })
+
+  const button = document.createElement('button')
+  button.className = 'investment-popup__button'
+  button.type = 'button'
+  button.textContent = 'Pokaż mieszkania '
+
+  const arrow = document.createElement('span')
+  arrow.textContent = '→'
+  arrow.setAttribute('aria-hidden', 'true')
+
+  button.append(arrow)
+
+  popup.append(eyebrow, title, address, apartmentsSummary, statuses, button)
+
+  return popup
 }
 
 const addInvestmentMarker = (investment) => {

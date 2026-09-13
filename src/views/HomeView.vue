@@ -6,6 +6,7 @@ import { investments } from '../data/investments'
 import InvestmentCard from '../components/InvestmentCard.vue'
 import ApartmentGrid from '../components/ApartmentGrid.vue'
 import { getApartmentsCountByInvestment } from '../utils/investmentHelpers'
+import { shuffleArray } from '../utils/arrayHelpers'
 
 const router = useRouter()
 
@@ -70,10 +71,11 @@ const searchButtonLabel = computed(() => {
 })
 
 const featuredApartments = computed(() => {
-  return apartments
-    .filter((apartment) => apartment.featured)
-    .sort(() => Math.random() - 0.5)
-    .slice(0, 3)
+  const featuredItems = apartments.filter((apartment) => {
+    return apartment.featured
+  })
+
+  return shuffleArray(featuredItems).slice(0, 3)
 })
 
 const purchaseSteps = [

@@ -229,9 +229,16 @@ export const usePurchaseCalculator = (initialApartmentSlug = null) => {
 
     applyCalculationValues(DEFAULT_CALCULATION)
 
-    localStorage.removeItem(STORAGE_KEY)
+    try {
+      localStorage.removeItem(STORAGE_KEY)
 
-    showToast('Kalkulator został zresetowany', 'info')
+      showToast('Kalkulator został zresetowany', 'info')
+    } catch {
+      showToast(
+        'Kalkulator został zresetowany, ale nie udało się usunąć zapisu',
+        'error'
+      )
+    }
   }
 
   const saveCalculation = () => {
@@ -247,19 +254,23 @@ export const usePurchaseCalculator = (initialApartmentSlug = null) => {
       storageRoomPrice: storageRoomPrice.value
     }
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(calculation))
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(calculation))
 
-    showToast('Kalkulacja została zapisana')
+      showToast('Kalkulacja została zapisana')
+    } catch {
+      showToast('Nie udało się zapisać kalkulacji', 'error')
+    }
   }
 
   const loadSavedCalculation = () => {
-    const savedCalculation = localStorage.getItem(STORAGE_KEY)
-
-    if (!savedCalculation) {
-      return
-    }
-
     try {
+      const savedCalculation = localStorage.getItem(STORAGE_KEY)
+
+      if (!savedCalculation) {
+        return
+      }
+
       const calculation = JSON.parse(savedCalculation)
 
       const investmentExists = availableInvestments.includes(
@@ -287,7 +298,11 @@ export const usePurchaseCalculator = (initialApartmentSlug = null) => {
 
       showToast('Wczytano zapisaną kalkulację', 'info')
     } catch {
-      localStorage.removeItem(STORAGE_KEY)
+      try {
+        localStorage.removeItem(STORAGE_KEY)
+      } catch {
+        // Pamięć przeglądarki może być całkowicie niedostępna.
+      }
 
       showToast('Nie udało się wczytać zapisanej kalkulacji', 'error')
     }
