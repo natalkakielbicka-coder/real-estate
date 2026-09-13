@@ -1,4 +1,5 @@
 <script setup>
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import CalculatorApartmentStep from '../components/CalculatorApartmentStep.vue'
 import CalculatorFinancingStep from '../components/CalculatorFinancingStep.vue'
@@ -9,9 +10,11 @@ import { usePurchaseCalculator } from '../composables/usePurchaseCalculator'
 
 const route = useRoute()
 
-const apartmentFromQuery = Array.isArray(route.query.apartment)
-  ? route.query.apartment[0]
-  : route.query.apartment
+const apartmentFromQuery = computed(() => {
+  const queryApartment = route.query.apartment
+
+  return Array.isArray(queryApartment) ? queryApartment[0] : queryApartment
+})
 
 const {
   availableInvestments,

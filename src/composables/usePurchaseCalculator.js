@@ -1,4 +1,4 @@
-import { computed, ref, onMounted, watch } from 'vue'
+import { computed, ref, onMounted, watch, unref } from 'vue'
 import { apartments } from '../data/apartments'
 import { useToast } from './useToast'
 import { toNonNegativeNumber } from '../utils/numberHelpers'
@@ -321,9 +321,16 @@ export const usePurchaseCalculator = (initialApartmentSlug = null) => {
     }
   )
 
+  watch(
+    () => unref(initialApartmentSlug),
+    (apartmentSlug) => {
+      selectApartmentBySlug(apartmentSlug)
+    }
+  )
+
   onMounted(() => {
     loadSavedCalculation()
-    selectApartmentBySlug(initialApartmentSlug)
+    selectApartmentBySlug(unref(initialApartmentSlug))
   })
 
   return {
