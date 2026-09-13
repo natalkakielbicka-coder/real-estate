@@ -84,17 +84,27 @@ const statusCounts = computed(() => {
   return getInvestmentStatusCounts(apartments, route.params.id)
 })
 
-const displayedApartments = computed(() => {
+const floorApartments = computed(() => {
+  if (selectedFloorNumber.value === null) {
+    return investmentApartments.value
+  }
+
   return investmentApartments.value.filter((apartment) => {
-    const matchesFloor =
-      selectedFloorNumber.value === null ||
-      Number(apartment.floor) === Number(selectedFloorNumber.value)
+    return Number(apartment.floor) === Number(selectedFloorNumber.value)
+  })
+})
 
-    const matchesStatus =
-      selectedStatus.value === 'all' ||
-      apartment.status === selectedStatus.value
+const floorStatusCounts = computed(() => {
+  return getInvestmentStatusCounts(floorApartments.value, route.params.id)
+})
 
-    return matchesFloor && matchesStatus
+const displayedApartments = computed(() => {
+  if (selectedStatus.value === 'all') {
+    return floorApartments.value
+  }
+
+  return floorApartments.value.filter((apartment) => {
+    return apartment.status === selectedStatus.value
   })
 })
 
@@ -401,7 +411,7 @@ const clearFloorSelection = () => {
               class="grid h-5 min-w-5 place-items-center rounded-full text-[9px]"
               :class="selectedStatus === 'all' ? 'bg-white/16' : 'bg-brand/10'"
             >
-              {{ investmentApartments.length }}
+              {{ floorApartments.length }}
             </span>
           </button>
 
@@ -423,7 +433,7 @@ const clearFloorSelection = () => {
                 selectedStatus === 'available' ? 'bg-white/16' : 'bg-brand/10'
               "
             >
-              {{ statusCounts.available }}
+              {{ floorStatusCounts.available }}
             </span>
           </button>
 
@@ -445,7 +455,7 @@ const clearFloorSelection = () => {
                 selectedStatus === 'reserved' ? 'bg-white/16' : 'bg-brand/10'
               "
             >
-              {{ statusCounts.reserved }}
+              {{ floorStatusCounts.reserved }}
             </span>
           </button>
 
@@ -465,7 +475,7 @@ const clearFloorSelection = () => {
               class="grid h-5 min-w-5 place-items-center rounded-full text-[9px]"
               :class="selectedStatus === 'sold' ? 'bg-white/16' : 'bg-brand/10'"
             >
-              {{ statusCounts.sold }}
+              {{ floorStatusCounts.sold }}
             </span>
           </button>
         </div>

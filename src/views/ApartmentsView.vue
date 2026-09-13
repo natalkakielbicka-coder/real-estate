@@ -64,10 +64,24 @@ if (availableSortValues.includes(sortQueryValue)) {
   selectedSort.value = sortQueryValue
 }
 
-const selectedCities = ref(getQueryValues(route.query.city))
+const cities = [...new Set(apartments.map((apartment) => apartment.city))]
+
+const rooms = [...new Set(apartments.map((apartment) => apartment.rooms))].sort(
+  (a, b) => a - b
+)
+
+const selectedCities = ref(
+  getQueryValues(route.query.city).filter((city) => {
+    return cities.includes(city)
+  })
+)
 
 const selectedRooms = ref(
-  getQueryValues(route.query.rooms).map(Number).filter(Number.isFinite)
+  getQueryValues(route.query.rooms)
+    .map(Number)
+    .filter((room) => {
+      return Number.isFinite(room) && rooms.includes(room)
+    })
 )
 
 const availableStatusValues = ['available', 'reserved', 'sold']
@@ -238,11 +252,15 @@ const activeFilters = computed(() => {
 })
 
 const syncFiltersFromQuery = (query) => {
-  selectedCities.value = getQueryValues(query.city)
+  selectedCities.value = getQueryValues(query.city).filter((city) => {
+    return cities.includes(city)
+  })
 
   selectedRooms.value = getQueryValues(query.rooms)
     .map(Number)
-    .filter(Number.isFinite)
+    .filter((room) => {
+      return Number.isFinite(room) && rooms.includes(room)
+    })
 
   selectedStatuses.value = getQueryValues(query.status).filter((status) => {
     return availableStatusValues.includes(status)
@@ -386,12 +404,6 @@ const showInvestmentApartments = (city) => {
   selectedCities.value = [city]
   viewMode.value = 'grid'
 }
-
-const cities = [...new Set(apartments.map((apartment) => apartment.city))]
-
-const rooms = [...new Set(apartments.map((apartment) => apartment.rooms))].sort(
-  (a, b) => a - b
-)
 
 const statuses = [
   {
