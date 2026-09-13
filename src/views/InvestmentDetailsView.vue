@@ -321,8 +321,8 @@ const clearFloorSelection = () => {
     </section>
 
     <section
-      id="floor-plan"
       v-if="investment"
+      id="floor-plan"
       ref="apartmentsSection"
       class="scroll-mt-[88px] py-[clamp(60px,8vw,110px)]"
     >
@@ -423,7 +423,7 @@ const clearFloorSelection = () => {
           </button>
 
           <button
-            class="flex items-center Turnstile gap-[9px] border border-[rgba(23,63,53,0.16)] px-[15px] py-[11px] text-[10px] font-bold tracking-[0.05em] uppercase transition-colors"
+            class="flex items-center gap-[9px] border border-[rgba(23,63,53,0.16)] px-[15px] py-[11px] text-[10px] font-bold tracking-[0.05em] uppercase transition-colors"
             :class="
               selectedStatus === 'reserved'
                 ? 'bg-brand text-white'
