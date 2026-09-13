@@ -34,12 +34,16 @@ const getQueryValues = (value) => {
   return queryValue.split(',')
 }
 
+const getQueryValue = (value) => {
+  return Array.isArray(value) ? value[0] : value
+}
+
 const getQueryNumber = (value) => {
   if (value === undefined || value === '') {
     return null
   }
 
-  const queryValue = Array.isArray(value) ? value[0] : value
+  const queryValue = getQueryValue(value)
   const numberValue = Number(queryValue)
 
   return Number.isFinite(numberValue) && numberValue >= 0 ? numberValue : null
@@ -54,9 +58,7 @@ const availableSortValues = [
   'price-per-meter-asc'
 ]
 
-const sortQueryValue = Array.isArray(route.query.sort)
-  ? route.query.sort[0]
-  : route.query.sort
+const sortQueryValue = getQueryValue(route.query.sort)
 
 if (availableSortValues.includes(sortQueryValue)) {
   selectedSort.value = sortQueryValue
@@ -89,8 +91,10 @@ const availableViewModes = ['grid', 'list', 'table', 'plan', 'map']
 
 const isFiltersOpen = ref(false)
 
+const initialViewMode = getQueryValue(route.query.view)
+
 const viewMode = ref(
-  availableViewModes.includes(route.query.view) ? route.query.view : 'grid'
+  availableViewModes.includes(initialViewMode) ? initialViewMode : 'grid'
 )
 
 const floorFromQuery = getQueryNumber(route.query.floor)
@@ -232,6 +236,66 @@ const activeFilters = computed(() => {
 
   return filters
 })
+
+const syncFiltersFromQuery = (query) => {
+  selectedCities.value = getQueryValues(query.city)
+
+  selectedRooms.value = getQueryValues(query.rooms)
+    .map(Number)
+    .filter(Number.isFinite)
+
+  selectedStatuses.value = getQueryValues(query.status).filter((status) => {
+    return availableStatusValues.includes(status)
+  })
+
+  selectedOutdoorSpaces.value = getQueryValues(query.outdoorSpace).filter(
+    (outdoorSpace) => {
+      return availableOutdoorSpaceValues.includes(outdoorSpace)
+    }
+  )
+
+  onlyWithParking.value = getQueryValue(query.parking) === '1'
+  onlyWithStorage.value = getQueryValue(query.storage) === '1'
+
+  const queryMinPrice = getQueryNumber(query.minPrice)
+  const queryMaxPrice = getQueryNumber(query.maxPrice)
+
+  minPrice.value = queryMinPrice
+  maxPrice.value = queryMaxPrice
+
+  priceFromInput.value = queryMinPrice ?? ''
+  priceToInput.value = queryMaxPrice ?? ''
+  priceRangeError.value = ''
+
+  const querySort = getQueryValue(query.sort)
+
+  selectedSort.value = availableSortValues.includes(querySort)
+    ? querySort
+    : 'default'
+
+  const queryView = getQueryValue(query.view)
+
+  viewMode.value = availableViewModes.includes(queryView) ? queryView : 'grid'
+
+  const queryFloor = getQueryNumber(query.floor)
+
+  if (
+    viewMode.value === 'plan' &&
+    floorPlans.some((floorPlan) => floorPlan.floor === queryFloor)
+  ) {
+    selectedFloorNumber.value = queryFloor
+  }
+}
+
+watch(
+  () => route.query,
+  (query) => {
+    syncFiltersFromQuery(query)
+  },
+  {
+    deep: true
+  }
+)
 
 const filtersQuery = computed(() => {
   return {

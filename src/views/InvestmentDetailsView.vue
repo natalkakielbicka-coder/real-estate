@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, nextTick } from 'vue'
+import { computed, ref, nextTick, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { investments } from '../data/investments'
 import { apartments } from '../data/apartments'
@@ -17,10 +17,10 @@ const { showToast } = useToast()
 const route = useRoute()
 const router = useRouter()
 
-const getInitialFloorNumber = () => {
-  const queryFloor = Array.isArray(route.query.floor)
-    ? route.query.floor[0]
-    : route.query.floor
+const getFloorNumberFromQuery = (queryFloorValue = route.query.floor) => {
+  const queryFloor = Array.isArray(queryFloorValue)
+    ? queryFloorValue[0]
+    : queryFloorValue
 
   if (queryFloor === undefined || queryFloor === '') {
     return null
@@ -44,8 +44,13 @@ const getInitialFloorNumber = () => {
 }
 
 const selectedStatus = ref('all')
-const selectedFloorNumber = ref(getInitialFloorNumber())
+const selectedFloorNumber = ref(getFloorNumberFromQuery())
 const apartmentsSection = ref(null)
+
+watch([() => route.params.id, () => route.query.floor], ([, queryFloor]) => {
+  selectedFloorNumber.value = getFloorNumberFromQuery(queryFloor)
+  selectedStatus.value = 'all'
+})
 
 const investment = computed(() => {
   return investments.find((item) => {

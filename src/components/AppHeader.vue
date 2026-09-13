@@ -87,13 +87,13 @@ watch(
           Kalkulator kosztów
         </RouterLink>
 
-        <a
+        <!-- <a
           class="navigation__link"
           href="#kontakt"
           @click="closeMenu"
         >
           Kontakt
-        </a>
+        </a> -->
       </nav>
 
       <div class="flex items-center gap-3">
