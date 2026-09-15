@@ -17,6 +17,9 @@ Frontendowa aplikacja dla dewelopera nieruchomości zbudowana w Vue 3. Aplikacja
 - mobilny panel filtrów,
 - widok siatki, listy, tabeli, rzutu i mapy,
 - komunikat o braku wyników wraz z możliwością wyczyszczenia filtrów.
+- dodawanie i usuwanie mieszkań z ulubionych,
+- zapisywanie ulubionych mieszkań w `localStorage`,
+- synchronizacja stanu ulubionych pomiędzy różnymi widokami,
 
 ### Szczegóły mieszkania
 
@@ -29,6 +32,15 @@ Frontendowa aplikacja dla dewelopera nieruchomości zbudowana w Vue 3. Aplikacja
 - przejście do kalkulatora kosztów zakupu,
 - wyróżnienie mieszkania na interaktywnym rzucie,
 - lista podobnych mieszkań.
+
+### Ulubione
+
+- osobna podstrona z zapisanymi mieszkaniami,
+- licznik ulubionych mieszkań w nagłówku,
+- możliwość usuwania mieszkań bezpośrednio z listy ulubionych,
+- zachowanie listy po odświeżeniu strony,
+- komunikaty toast po dodaniu i usunięciu mieszkania,
+- pusty stan z odnośnikiem do listy mieszkań.
 
 ### Inwestycje
 
@@ -155,4 +167,4 @@ npm run preview
 
 Projekt korzysta obecnie z lokalnych danych zapisanych w katalogu `src/data`. Nie wymaga zewnętrznego API ani backendu.
 
-Zapisana kalkulacja jest przechowywana lokalnie w przeglądarce przy użyciu `localStorage`.
+Zapisana kalkulacja oraz lista ulubionych mieszkań są przechowywane lokalnie w przeglądarce przy użyciu `localStorage`.
