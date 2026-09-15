@@ -1,6 +1,6 @@
 # Residence – Real Estate
 
-Frontendowa aplikacja dla dewelopera nieruchomości zbudowana w Vue 3. UAplikacja umożliwia przeglądanie inwestycji i mieszkań, korzystanie z rozbudowanych filtrów, interaktywnych rzutów oraz kalkulatora kosztów zakupu.
+Frontendowa aplikacja dla dewelopera nieruchomości zbudowana w Vue 3. Aplikacja umożliwia przeglądanie inwestycji i mieszkań, korzystanie z rozbudowanych filtrów, interaktywnych rzutów oraz kalkulatora kosztów zakupu.
 
 ## Funkcjonalności
 
