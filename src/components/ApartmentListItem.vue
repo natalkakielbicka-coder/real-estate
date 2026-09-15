@@ -9,6 +9,10 @@ import {
   formatPricePerMeter,
   getRoomsLabel
 } from '../utils/apartmentFormatters'
+import FavoriteButton from './FavoriteButton.vue'
+import { useFavorites } from '../composables/useFavorites'
+
+const { isFavorite, toggleFavorite } = useFavorites()
 
 defineProps({
   apartment: {
@@ -87,7 +91,7 @@ defineProps({
     </div>
 
     <div
-      class="flex flex-col items-stretch justify-between gap-5 border-t border-line p-[22px] text-left xs:col-span-full xs:flex-row xs:items-center xs:p-7 md:col-auto md:flex-col md:items-end md:border-t-0 md:border-l md:text-right"
+      class="flex flex-col items-stretch justify-between gap-5 border-t border-line p-[22px] text-left xs:col-span-full xs:flex-row xs:items-center xs:p-5 md:col-auto md:flex-col md:items-end md:border-t-0 md:border-l md:text-right"
     >
       <div>
         <span class="block text-[9px] text-muted">Cena mieszkania</span>
@@ -103,13 +107,22 @@ defineProps({
         </small>
       </div>
 
-      <RouterLink
-        class="inline-flex min-h-[43px] items-center justify-center gap-3 bg-brand px-4 text-[10px] font-bold text-white transition-colors hover:bg-brand-light xs:justify-start"
-        :to="`/mieszkania/${apartment.slug}`"
-      >
-        Zobacz lokal
-        <span aria-hidden="true">→</span>
-      </RouterLink>
+      <div class="flex items-center gap-3">
+        <FavoriteButton
+          class="shrink-0 border border-line"
+          :is-favorite="isFavorite(apartment.id)"
+          :apartment-number="apartment.number"
+          @toggle="toggleFavorite(apartment.id)"
+        />
+
+        <RouterLink
+          class="inline-flex min-h-[43px] items-center justify-center gap-3 bg-brand px-4 text-[10px] font-bold text-white transition-colors hover:bg-brand-light xs:justify-start"
+          :to="`/mieszkania/${apartment.slug}`"
+        >
+          Zobacz lokal
+          <span aria-hidden="true">→</span>
+        </RouterLink>
+      </div>
     </div>
   </article>
 </template>
