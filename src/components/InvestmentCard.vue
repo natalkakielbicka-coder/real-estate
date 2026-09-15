@@ -1,6 +1,9 @@
 <script setup>
+import { ref } from 'vue'
 import { formatCompletionDate } from '../utils/dateFormatters'
 import { getApartmentsLabel } from '../utils/apartmentFormatters'
+
+const isImageLoaded = ref(false)
 
 defineProps({
   investment: {
@@ -20,20 +23,28 @@ defineProps({
     :to="`/inwestycje/${investment.id}`"
   >
     <div class="investment-card__image relative overflow-hidden">
+      <div
+        v-if="!isImageLoaded"
+        class="absolute inset-0 animate-pulse bg-gradient-to-br from-[#315c51] via-[#416d61] to-[#234b41]"
+        aria-hidden="true"
+      ></div>
+
       <img
         loading="lazy"
-        class="h-full w-full object-cover transition-transform duration-[600ms] group-hover:scale-105"
+        class="relative z-[1] h-full w-full object-cover transition-[opacity,transform] duration-[600ms] group-hover:scale-105"
+        :class="isImageLoaded ? 'opacity-100' : 'opacity-0'"
         :src="investment.image"
         :alt="`Wizualizacja inwestycji ${investment.name}`"
+        @load="isImageLoaded = true"
       />
 
       <div
-        class="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_50%,rgba(23,63,53,0.55)_100%)]"
+        class="pointer-events-none absolute inset-0 z-[2] bg-[linear-gradient(180deg,transparent_50%,rgba(23,63,53,0.55)_100%)]"
         aria-hidden="true"
       ></div>
 
       <span
-        class="absolute right-[18px] bottom-[18px] z-[1] bg-gold px-[11px] py-2 text-[9px] font-bold tracking-[0.08em] text-brand uppercase"
+        class="absolute right-[18px] bottom-[18px] z-[3] bg-gold px-[11px] py-2 text-[9px] font-bold tracking-[0.08em] text-brand uppercase"
       >
         {{ investment.city }}
       </span>
