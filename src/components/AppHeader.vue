@@ -1,9 +1,11 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useFavorites } from '../composables/useFavorites'
 
 const route = useRoute()
 const isMenuOpen = ref(false)
+const { favoriteCount } = useFavorites()
 
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
@@ -97,6 +99,23 @@ watch(
       </nav>
 
       <div class="flex items-center gap-3">
+        <RouterLink
+          class="relative grid size-11 shrink-0 place-items-center rounded-full border border-line bg-panel text-[23px] leading-none text-brand transition-[color,border-color,transform] duration-200 hover:scale-105 hover:border-brand hover:text-[#a94d4d] sm:size-12"
+          to="/ulubione"
+          :aria-label="`Ulubione mieszkania: ${favoriteCount}`"
+          title="Ulubione mieszkania"
+        >
+          <span aria-hidden="true">♡</span>
+
+          <span
+            v-if="favoriteCount"
+            class="absolute -top-1 -right-1 grid min-h-5 min-w-5 place-items-center rounded-full bg-[#a94d4d] px-1 text-[10px] font-bold leading-none text-white"
+            aria-hidden="true"
+          >
+            {{ favoriteCount }}
+          </span>
+        </RouterLink>
+
         <RouterLink
           class="group hidden min-h-12 items-center gap-3.5 bg-brand px-[22px] text-[13px] font-bold text-panel transition-[background-color,transform] duration-[250ms] hover:-translate-y-0.5 hover:bg-brand-light md:inline-flex"
           to="/mieszkania"
