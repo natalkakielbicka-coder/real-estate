@@ -9,6 +9,7 @@ import {
 } from '../constants/apartmentStatuses'
 import ApartmentGallery from '../components/ApartmentGallery.vue'
 import ApartmentGrid from '../components/ApartmentGrid.vue'
+import FavoriteButton from '../components/FavoriteButton.vue'
 import {
   getFloorLabel,
   formatPrice,
@@ -20,9 +21,11 @@ import {
 } from '../constants/apartmentAttributes'
 import { formatCompletionDate } from '../utils/dateFormatters'
 import { useToast } from '../composables/useToast'
+import { useFavorites } from '../composables/useFavorites'
 
 const route = useRoute()
 const { showToast } = useToast()
+const { isFavorite, toggleFavorite } = useFavorites()
 
 const apartment = computed(() => {
   return apartments.find((item) => {
@@ -129,12 +132,21 @@ const hasInteractiveFloorPlan = computed(() => {
             {{ apartment.building }}
           </p>
 
-          <span
-            class="mb-[18px] inline-flex px-3 py-[7px] text-[9px] font-bold tracking-[0.08em] text-white uppercase"
-            :class="apartmentStatusClasses[apartment.status]"
-          >
-            {{ apartmentStatusLabels[apartment.status] }}
-          </span>
+          <div class="mb-[18px] flex items-center justify-between gap-4">
+            <span
+              class="inline-flex px-3 py-[7px] text-[9px] font-bold tracking-[0.08em] text-white uppercase"
+              :class="apartmentStatusClasses[apartment.status]"
+            >
+              {{ apartmentStatusLabels[apartment.status] }}
+            </span>
+
+            <FavoriteButton
+              class="shrink-0 border border-line"
+              :is-favorite="isFavorite(apartment.id)"
+              :apartment-number="apartment.number"
+              @toggle="toggleFavorite(apartment.id)"
+            />
+          </div>
 
           <h1 class="mb-4 text-[clamp(36px,4vw,56px)]">
             Mieszkanie {{ apartment.number }}
