@@ -10,6 +10,10 @@ import {
   formatPricePerMeter,
   getRoomsLabel
 } from '../utils/apartmentFormatters'
+import FavoriteButton from './FavoriteButton.vue'
+import { useFavorites } from '../composables/useFavorites'
+
+const { isFavorite, toggleFavorite } = useFavorites()
 
 defineProps({
   apartment: {
@@ -33,13 +37,12 @@ defineProps({
         {{ apartmentStatusLabels[apartment.status] }}
       </div>
 
-      <!-- <button
-        class="absolute top-[15px] right-4 z-[2] grid size-[42px] place-items-center rounded-full border-0 bg-white/90 text-[25px] leading-none text-brand transition-[color,transform] duration-200 hover:scale-[1.08] hover:text-[#a94d4d]"
-        type="button"
-        :aria-label="`Dodaj mieszkanie ${apartment.number} do ulubionych`"
-      >
-        ♡
-      </button> -->
+      <FavoriteButton
+        class="absolute top-[15px] right-4 z-[2]"
+        :is-favorite="isFavorite(apartment.id)"
+        :apartment-number="apartment.number"
+        @toggle="toggleFavorite(apartment.id)"
+      />
 
       <div class="relative z-[1] flex flex-col items-center">
         <span
