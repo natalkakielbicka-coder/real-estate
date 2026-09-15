@@ -10,7 +10,7 @@ import { floorPlans } from '../data/floorPlans'
 import { apartments } from '../data/apartments'
 import { apartmentStatusClasses } from '../constants/apartmentStatuses'
 import { useToast } from '../composables/useToast'
-import { getApartmentsLabel } from '../utils/apartmentFormatters'
+import { getApartmentsLabel, getFloorLabel } from '../utils/apartmentFormatters'
 
 const { showToast } = useToast()
 
@@ -70,6 +70,10 @@ const rooms = [...new Set(apartments.map((apartment) => apartment.rooms))].sort(
   (a, b) => a - b
 )
 
+const floors = [
+  ...new Set(apartments.map((apartment) => apartment.floor))
+].sort((a, b) => a - b)
+
 const selectedCities = ref(
   getQueryValues(route.query.city).filter((city) => {
     return cities.includes(city)
@@ -81,6 +85,14 @@ const selectedRooms = ref(
     .map(Number)
     .filter((room) => {
       return Number.isFinite(room) && rooms.includes(room)
+    })
+)
+
+const selectedFloors = ref(
+  getQueryValues(route.query.floors)
+    .map(Number)
+    .filter((floor) => {
+      return Number.isFinite(floor) && floors.includes(floor)
     })
 )
 
@@ -186,6 +198,14 @@ const activeFilters = computed(() => {
     })
   })
 
+  selectedFloors.value.forEach((floor) => {
+    filters.push({
+      id: `floor-${floor}`,
+      label: getFloorLabel(floor),
+      remove: () => removeArrayFilter(selectedFloors, floor)
+    })
+  })
+
   selectedStatuses.value.forEach((statusValue) => {
     const status = statuses.find((item) => item.value === statusValue)
 
@@ -262,6 +282,12 @@ const syncFiltersFromQuery = (query) => {
       return Number.isFinite(room) && rooms.includes(room)
     })
 
+  selectedFloors.value = getQueryValues(query.floors)
+    .map(Number)
+    .filter((floor) => {
+      return Number.isFinite(floor) && floors.includes(floor)
+    })
+
   selectedStatuses.value = getQueryValues(query.status).filter((status) => {
     return availableStatusValues.includes(status)
   })
@@ -327,6 +353,11 @@ const filtersQuery = computed(() => {
         ? selectedRooms.value.join(',')
         : undefined,
 
+    floors:
+      selectedFloors.value.length > 0
+        ? selectedFloors.value.join(',')
+        : undefined,
+
     status:
       selectedStatuses.value.length > 0
         ? selectedStatuses.value.join(',')
@@ -381,6 +412,7 @@ const applyPriceFilter = () => {
 const resetFilters = () => {
   selectedCities.value = []
   selectedRooms.value = []
+  selectedFloors.value = []
   selectedStatuses.value = []
   selectedOutdoorSpaces.value = []
 
@@ -461,12 +493,17 @@ const apartmentMatchesFilters = (apartment, ignoredFilter = null) => {
     !onlyWithStorage.value ||
     apartment.storageRoom
 
-  const matchesFloor =
+  const matchesPlanFloor =
     ignoredFilter === 'floor' ||
     viewMode.value !== 'plan' ||
     (apartment.investmentId === selectedFloorPlan.value.investmentId &&
       apartment.building === selectedFloorPlan.value.building &&
       Number(apartment.floor) === Number(selectedFloorNumber.value))
+
+  const matchesSelectedFloors =
+    ignoredFilter === 'floors' ||
+    selectedFloors.value.length === 0 ||
+    selectedFloors.value.includes(apartment.floor)
 
   return (
     matchesCity &&
@@ -477,7 +514,8 @@ const apartmentMatchesFilters = (apartment, ignoredFilter = null) => {
     matchesOutdoorSpace &&
     matchesParking &&
     matchesStorage &&
-    matchesFloor
+    matchesPlanFloor &&
+    matchesSelectedFloors
   )
 }
 
@@ -498,6 +536,21 @@ const roomCounts = computed(() => {
       }).length
 
       return [room, count]
+    })
+  )
+})
+
+const floorCounts = computed(() => {
+  return Object.fromEntries(
+    floors.map((floor) => {
+      const count = apartments.filter((apartment) => {
+        return (
+          apartmentMatchesFilters(apartment, 'floors') &&
+          apartment.floor === floor
+        )
+      }).length
+
+      return [floor, count]
     })
   )
 })
@@ -793,6 +846,37 @@ const getOffersLabel = (count) => {
 
               <small class="ml-auto min-w-5 text-right text-[9px] text-muted">
                 {{ roomCounts[room] }}
+              </small>
+            </label>
+          </fieldset>
+
+          <fieldset class="mt-[22px] border-0 border-t border-line pt-[22px]">
+            <legend
+              class="pr-[5px] text-[11px] font-bold tracking-[0.08em] text-brand uppercase"
+            >
+              Piętro
+            </legend>
+
+            <label
+              v-for="floor in floors"
+              :key="floor"
+              class="filter-checkbox has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-40"
+            >
+              <input
+                v-model="selectedFloors"
+                type="checkbox"
+                :value="floor"
+                :disabled="
+                  floorCounts[floor] === 0 && !selectedFloors.includes(floor)
+                "
+              />
+
+              <span class="filter-checkbox__mark"></span>
+
+              <span>{{ getFloorLabel(floor) }}</span>
+
+              <small class="ml-auto min-w-5 text-right text-[9px] text-muted">
+                {{ floorCounts[floor] }}
               </small>
             </label>
           </fieldset>
