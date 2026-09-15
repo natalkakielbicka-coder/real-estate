@@ -19,6 +19,17 @@ const modules = [Navigation, Thumbs, Keyboard, A11y]
 
 const thumbsSwiper = ref(null)
 
+const loadedMainImages = ref(new Set())
+const loadedThumbnailImages = ref(new Set())
+
+const markMainImageAsLoaded = (imageSrc) => {
+  loadedMainImages.value.add(imageSrc)
+}
+
+const markThumbnailAsLoaded = (imageSrc) => {
+  loadedThumbnailImages.value.add(imageSrc)
+}
+
 const lightboxVisible = ref(false)
 const lightboxIndex = ref(0)
 
@@ -83,13 +94,21 @@ const closeLightbox = () => {
             'p-[35px] max-xs:p-[15px]': image.type === 'floor-plan'
           }"
         >
+          <div
+            v-if="!loadedMainImages.has(image.src)"
+            class="absolute inset-0 animate-pulse bg-gradient-to-br from-[#eee9df] via-[#f7f4ee] to-[#e5ddcf]"
+            aria-hidden="true"
+          ></div>
+
           <img
-            class="h-full w-full cursor-zoom-in"
-            :class="
-              image.type === 'floor-plan' ? 'object-contain' : 'object-cover'
-            "
+            class="relative h-full w-full cursor-zoom-in transition-opacity duration-300"
+            :class="[
+              image.type === 'floor-plan' ? 'object-contain' : 'object-cover',
+              loadedMainImages.has(image.src) ? 'opacity-100' : 'opacity-0'
+            ]"
             :src="image.src"
             :alt="image.alt"
+            @load="markMainImageAsLoaded(image.src)"
             @click="openLightbox(index)"
           />
 
@@ -119,10 +138,20 @@ const closeLightbox = () => {
           class="relative h-[95px] w-full cursor-pointer overflow-hidden border-2 border-transparent bg-panel p-0 max-sm:h-[78px] max-xs:h-[60px]"
           type="button"
         >
+          <div
+            v-if="!loadedThumbnailImages.has(image.src)"
+            class="absolute inset-0 animate-pulse bg-gradient-to-br from-[#eee9df] via-[#f7f4ee] to-[#e5ddcf]"
+            aria-hidden="true"
+          ></div>
+
           <img
-            class="h-full w-full object-cover"
+            class="relative h-full w-full object-cover transition-opacity duration-300"
+            :class="
+              loadedThumbnailImages.has(image.src) ? 'opacity-100' : 'opacity-0'
+            "
             :src="image.src"
             :alt="image.alt"
+            @load="markThumbnailAsLoaded(image.src)"
           />
 
           <span
