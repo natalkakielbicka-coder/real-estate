@@ -67,12 +67,14 @@ export const downloadApartmentPdf = async (apartment) => {
     ['Termin oddania', formatCompletionDate(apartment.completionDate)]
   ]
 
-  const apartmentFeatures = [
-    ...apartment.features,
+  const outdoorSpaceLabel = outdoorSpaceLabels[apartment.outdoorSpace.type]
 
-    `${outdoorSpaceLabels[apartment.outdoorSpace.type]} ${
-      apartment.outdoorSpace.area
-    } m²`,
+  const apartmentFeatures = [
+    ...apartment.features.filter((feature) => {
+      return feature !== outdoorSpaceLabel
+    }),
+
+    `${outdoorSpaceLabel} ${apartment.outdoorSpace.area} m²`,
 
     ...(apartment.parkingSpace ? ['Miejsce parkingowe'] : []),
 
