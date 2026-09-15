@@ -13,6 +13,7 @@ const router = useRouter()
 const selectedCity = ref('')
 const selectedRooms = ref('')
 const selectedMaxPrice = ref('')
+const isHeroImageLoaded = ref(false)
 
 const searchApartments = () => {
   router.push({
@@ -236,10 +237,18 @@ const purchaseSteps = [
         <div
           class="hero__visual relative z-[1] ml-auto h-[480px] min-h-0 w-[calc(100%-30px)] xs:h-[520px] sm:h-[620px] sm:w-[85%] md:ml-0 md:h-[min(68vh,720px)] md:min-h-[540px] md:w-full"
         >
+          <div
+            v-if="!isHeroImageLoaded"
+            class="absolute inset-0 animate-pulse rounded-tl-[100px] bg-gradient-to-br from-[#eee9df] via-[#f7f4ee] to-[#e5ddcf] xs:rounded-tl-[140px] sm:rounded-tl-[180px]"
+            aria-hidden="true"
+          ></div>
+
           <img
-            class="block h-full w-full rounded-tl-[100px] object-cover xs:rounded-tl-[140px] sm:rounded-tl-[180px]"
+            class="block h-full w-full rounded-tl-[100px] object-cover transition-opacity duration-500 xs:rounded-tl-[140px] sm:rounded-tl-[180px]"
+            :class="isHeroImageLoaded ? 'opacity-100' : 'opacity-0'"
             src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=85"
             alt="Nowoczesne wnętrze apartamentu"
+            @load="isHeroImageLoaded = true"
           />
 
           <div

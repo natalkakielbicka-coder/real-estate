@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { getRoomsLabel } from '../utils/apartmentFormatters'
 
 const props = defineProps({
@@ -11,6 +11,12 @@ const props = defineProps({
 
 const investmentImage = computed(() => {
   return `/images/investments/${props.apartment.investmentId}.png`
+})
+
+const isImageLoaded = ref(false)
+
+watch(investmentImage, () => {
+  isImageLoaded.value = false
 })
 
 const outdoorSpaceLabels = {
@@ -37,11 +43,21 @@ const formatFloor = (floor) => {
   <article
     class="grid overflow-hidden border border-line bg-page sm:grid-cols-[180px_minmax(0,1fr)]"
   >
-    <img
-      class="h-[190px] w-full object-cover sm:h-full"
-      :src="investmentImage"
-      :alt="`Inwestycja ${apartment.investment}`"
-    />
+    <div class="relative min-h-[190px] overflow-hidden sm:min-h-full">
+      <div
+        v-if="!isImageLoaded"
+        class="absolute inset-0 animate-pulse bg-gradient-to-br from-[#eee9df] via-[#f7f4ee] to-[#e5ddcf]"
+        aria-hidden="true"
+      ></div>
+
+      <img
+        class="absolute inset-0 h-full w-full object-cover transition-opacity duration-300"
+        :class="isImageLoaded ? 'opacity-100' : 'opacity-0'"
+        :src="investmentImage"
+        :alt="`Inwestycja ${apartment.investment}`"
+        @load="isImageLoaded = true"
+      />
+    </div>
 
     <div
       class="grid gap-5 p-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
