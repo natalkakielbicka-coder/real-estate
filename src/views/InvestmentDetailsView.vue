@@ -46,10 +46,12 @@ const getFloorNumberFromQuery = (queryFloorValue = route.query.floor) => {
 const selectedStatus = ref('all')
 const selectedFloorNumber = ref(getFloorNumberFromQuery())
 const apartmentsSection = ref(null)
+const isHeroImageLoaded = ref(false)
 
 watch([() => route.params.id, () => route.query.floor], ([, queryFloor]) => {
   selectedFloorNumber.value = getFloorNumberFromQuery(queryFloor)
   selectedStatus.value = 'all'
+  isHeroImageLoaded.value = false
 })
 
 const investment = computed(() => {
@@ -182,10 +184,18 @@ const clearFloorSelection = () => {
       v-if="investment"
       class="relative min-h-[620px] overflow-hidden bg-brand py-[clamp(70px,10vw,140px)] text-white max-sm:min-h-[560px]"
     >
+      <div
+        v-if="!isHeroImageLoaded"
+        class="absolute top-0 right-0 h-full w-full animate-pulse bg-gradient-to-br from-[#315c51] via-[#416d61] to-[#234b41] md:w-[55%]"
+        aria-hidden="true"
+      ></div>
+
       <img
-        class="absolute top-0 right-0 h-full w-full object-cover md:w-[55%]"
+        class="absolute top-0 right-0 h-full w-full object-cover transition-opacity duration-500 md:w-[55%]"
+        :class="isHeroImageLoaded ? 'opacity-100' : 'opacity-0'"
         :src="investment.image"
         :alt="`Wizualizacja inwestycji ${investment.name}`"
+        @load="isHeroImageLoaded = true"
       />
 
       <div class="investment-details__hero-overlay"></div>
