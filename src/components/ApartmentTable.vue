@@ -9,6 +9,11 @@ import {
   formatPricePerMeter
 } from '../utils/apartmentFormatters'
 
+import FavoriteButton from './FavoriteButton.vue'
+import { useFavorites } from '../composables/useFavorites'
+
+const { isFavorite, toggleFavorite } = useFavorites()
+
 defineProps({
   apartments: {
     type: Array,
@@ -32,7 +37,9 @@ defineProps({
           <th>Cena za m²</th>
           <th>Cena</th>
           <th>Status</th>
-
+          <th>
+            <span class="sr-only">Ulubione</span>
+          </th>
           <th>
             <span class="sr-only">Szczegóły</span>
           </th>
@@ -78,6 +85,14 @@ defineProps({
             >
               {{ apartmentStatusLabels[apartment.status] }}
             </span>
+          </td>
+
+          <td>
+            <FavoriteButton
+              :is-favorite="isFavorite(apartment.id)"
+              :apartment-number="apartment.number"
+              @toggle="toggleFavorite(apartment.id)"
+            />
           </td>
 
           <td>
