@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import ApartmentGrid from '../components/ApartmentGrid.vue'
 import ApartmentList from '../components/ApartmentList.vue'
@@ -48,6 +48,12 @@ const getQueryNumber = (value) => {
 
   return Number.isFinite(numberValue) && numberValue >= 0 ? numberValue : null
 }
+
+const ITEMS_PER_PAGE = 9
+
+const pageFromQuery = getQueryNumber(route.query.page)
+
+const currentPage = ref(Math.max(1, Math.floor(pageFromQuery ?? 1)))
 
 const availableSortValues = [
   'default',
@@ -116,6 +122,8 @@ onlyWithStorage.value = route.query.storage === '1'
 const availableViewModes = ['grid', 'list', 'table', 'plan', 'map']
 
 const isFiltersOpen = ref(false)
+
+const resultsContainer = ref(null)
 
 const initialViewMode = getQueryValue(route.query.view)
 
@@ -321,6 +329,10 @@ const syncFiltersFromQuery = (query) => {
 
   viewMode.value = availableViewModes.includes(queryView) ? queryView : 'grid'
 
+  const queryPage = getQueryNumber(query.page)
+
+  currentPage.value = Math.max(1, Math.floor(queryPage ?? 1))
+
   const queryFloor = getQueryNumber(query.floor)
 
   if (
@@ -340,6 +352,10 @@ watch(
     deep: true
   }
 )
+
+const usesPagination = computed(() => {
+  return ['grid', 'list', 'table'].includes(viewMode.value)
+})
 
 const filtersQuery = computed(() => {
   return {
@@ -380,7 +396,12 @@ const filtersQuery = computed(() => {
 
     sort: selectedSort.value !== 'default' ? selectedSort.value : undefined,
 
-    view: viewMode.value !== 'grid' ? viewMode.value : undefined
+    view: viewMode.value !== 'grid' ? viewMode.value : undefined,
+
+    page:
+      usesPagination.value && currentPage.value > 1
+        ? currentPage.value
+        : undefined
   }
 })
 
@@ -665,6 +686,77 @@ const sortedApartments = computed(() => {
     })
   })
 })
+
+const totalPages = computed(() => {
+  if (!usesPagination.value) {
+    return 1
+  }
+
+  return Math.max(1, Math.ceil(sortedApartments.value.length / ITEMS_PER_PAGE))
+})
+
+const paginatedApartments = computed(() => {
+  if (!usesPagination.value) {
+    return sortedApartments.value
+  }
+
+  const startIndex = (currentPage.value - 1) * ITEMS_PER_PAGE
+  const endIndex = startIndex + ITEMS_PER_PAGE
+
+  return sortedApartments.value.slice(startIndex, endIndex)
+})
+
+const paginationRange = computed(() => {
+  if (sortedApartments.value.length === 0) {
+    return {
+      start: 0,
+      end: 0
+    }
+  }
+
+  const start = (currentPage.value - 1) * ITEMS_PER_PAGE + 1
+
+  const end = Math.min(
+    currentPage.value * ITEMS_PER_PAGE,
+    sortedApartments.value.length
+  )
+
+  return {
+    start,
+    end
+  }
+})
+
+watch(
+  totalPages,
+  (newTotalPages) => {
+    if (currentPage.value > newTotalPages) {
+      currentPage.value = newTotalPages
+    }
+
+    if (currentPage.value < 1) {
+      currentPage.value = 1
+    }
+  },
+  {
+    immediate: true
+  }
+)
+
+const changePage = async (page) => {
+  if (page < 1 || page > totalPages.value || page === currentPage.value) {
+    return
+  }
+
+  currentPage.value = page
+
+  await nextTick()
+
+  resultsContainer.value?.scrollIntoView({
+    behavior: 'smooth',
+    block: 'start'
+  })
+}
 
 const availableApartmentsCount = computed(() => {
   return apartments.filter((apartment) => {
@@ -1049,7 +1141,10 @@ const getOffersLabel = (count) => {
           </form>
         </aside>
 
-        <div class="min-w-0">
+        <div
+          ref="resultsContainer"
+          class="min-w-0 scroll-mt-[120px]"
+        >
           <div
             v-if="activeFilters.length > 0"
             class="mb-4 flex flex-wrap items-center gap-2"
@@ -1077,11 +1172,31 @@ const getOffersLabel = (count) => {
             class="mb-6 flex flex-col items-stretch gap-3 bg-panel p-4 xs:min-h-[62px] xs:flex-row xs:items-center xs:justify-between xs:gap-6 xs:py-2.5 xs:pr-3 xs:pl-5"
           >
             <p class="mb-0 text-xs text-muted">
-              Znaleziono
-              <strong class="text-sm text-brand">
-                {{ sortedApartments.length }}
-              </strong>
-              {{ getApartmentsLabel(sortedApartments.length) }}
+              <template v-if="usesPagination && sortedApartments.length > 0">
+                Pokazano
+
+                <strong class="text-sm text-brand">
+                  {{ paginationRange.start }}–{{ paginationRange.end }}
+                </strong>
+
+                z
+
+                <strong class="text-sm text-brand">
+                  {{ sortedApartments.length }}
+                </strong>
+
+                {{ getApartmentsLabel(sortedApartments.length) }}
+              </template>
+
+              <template v-else>
+                Znaleziono
+
+                <strong class="text-sm text-brand">
+                  {{ sortedApartments.length }}
+                </strong>
+
+                {{ getApartmentsLabel(sortedApartments.length) }}
+              </template>
             </p>
 
             <div
@@ -1184,15 +1299,15 @@ const getOffersLabel = (count) => {
           <template v-if="sortedApartments.length > 0 || viewMode === 'plan'">
             <ApartmentGrid
               v-if="viewMode === 'grid'"
-              :apartments="sortedApartments"
+              :apartments="paginatedApartments"
             />
             <ApartmentList
               v-else-if="viewMode === 'list'"
-              :apartments="sortedApartments"
+              :apartments="paginatedApartments"
             />
             <ApartmentTable
               v-else-if="viewMode === 'table'"
-              :apartments="sortedApartments"
+              :apartments="paginatedApartments"
             />
             <div v-else-if="viewMode === 'plan'">
               <div
@@ -1233,6 +1348,49 @@ const getOffersLabel = (count) => {
               :apartments="sortedApartments"
               @show-investment="showInvestmentApartments"
             />
+
+            <nav
+              v-if="usesPagination && totalPages > 1"
+              class="mt-10 flex flex-wrap items-center justify-center gap-2"
+              aria-label="Paginacja mieszkań"
+            >
+              <button
+                class="grid min-h-10 min-w-10 place-items-center rounded-[3px] border border-line bg-panel px-3 text-sm font-semibold text-brand transition-colors enabled:hover:border-brand enabled:hover:bg-brand enabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-35"
+                type="button"
+                :disabled="currentPage === 1"
+                aria-label="Poprzednia strona"
+                @click="changePage(currentPage - 1)"
+              >
+                ←
+              </button>
+
+              <button
+                v-for="page in totalPages"
+                :key="page"
+                class="grid min-h-10 min-w-10 place-items-center rounded-[3px] border px-3 text-sm font-semibold transition-colors"
+                :class="
+                  page === currentPage
+                    ? 'border-brand bg-brand text-white'
+                    : 'border-line bg-panel text-brand hover:border-brand'
+                "
+                type="button"
+                :aria-current="page === currentPage ? 'page' : undefined"
+                :aria-label="`Strona ${page}`"
+                @click="changePage(page)"
+              >
+                {{ page }}
+              </button>
+
+              <button
+                class="grid min-h-10 min-w-10 place-items-center rounded-[3px] border border-line bg-panel px-3 text-sm font-semibold text-brand transition-colors enabled:hover:border-brand enabled:hover:bg-brand enabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-35"
+                type="button"
+                :disabled="currentPage === totalPages"
+                aria-label="Następna strona"
+                @click="changePage(currentPage + 1)"
+              >
+                →
+              </button>
+            </nav>
           </template>
 
           <div
