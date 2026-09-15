@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { apartments } from '../data/apartments'
 import { apartmentStatusLabels } from '../constants/apartmentStatuses'
@@ -29,6 +29,16 @@ const emit = defineEmits(['reset-filters'])
 const router = useRouter()
 
 const activeApartment = ref(null)
+
+const isImageLoaded = ref(false)
+
+watch(
+  () => props.floorPlan.image,
+  () => {
+    isImageLoaded.value = false
+    activeApartment.value = null
+  }
+)
 
 const apartmentLabelPositions = [
   { x: 410, y: 285 },
@@ -182,13 +192,22 @@ const hideTooltip = () => {
     </div>
 
     <div class="relative overflow-hidden bg-[#f5f3ee] max-sm:overflow-x-auto">
+      <div
+        v-if="!isImageLoaded"
+        class="absolute inset-0 animate-pulse bg-gradient-to-br from-[#eeeae2] via-[#f8f6f1] to-[#e3ded4]"
+        aria-hidden="true"
+      ></div>
+
       <img
-        class="block h-auto w-full max-sm:min-w-[720px]"
+        class="block h-auto w-full transition-opacity duration-300 max-sm:min-w-[720px]"
+        :class="isImageLoaded ? 'opacity-100' : 'opacity-0'"
         :src="floorPlan.image"
         :alt="`Rzut ${floorPlan.name}`"
+        @load="isImageLoaded = true"
       />
 
       <svg
+        v-if="isImageLoaded"
         class="absolute inset-0 h-full w-full max-sm:min-w-[720px]"
         :viewBox="floorPlan.viewBox"
         preserveAspectRatio="xMidYMid meet"
@@ -248,7 +267,7 @@ const hideTooltip = () => {
       </svg>
 
       <div
-        v-if="visiblePlanApartmentsCount === 0"
+        v-if="isImageLoaded && visiblePlanApartmentsCount === 0"
         class="absolute inset-0 z-3 flex flex-col items-center justify-center bg-[rgba(245,243,238,0.9)] p-[30px] text-center backdrop-blur-[3px]"
       >
         <span
