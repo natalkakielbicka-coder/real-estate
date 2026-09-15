@@ -14,6 +14,8 @@ const InvestmentDetailsView = () => import('../views/InvestmentDetailsView.vue')
 const PurchaseCalculatorView = () =>
   import('../views/PurchaseCalculatorView.vue')
 
+const FavoritesView = () => import('../views/FavoritesView.vue')
+
 const NotFoundView = () => import('../views/NotFoundView.vue')
 
 const routes = [
@@ -31,6 +33,14 @@ const routes = [
     component: ApartmentsView,
     meta: {
       title: 'Mieszkania'
+    }
+  },
+  {
+    path: '/ulubione',
+    name: 'favorites',
+    component: FavoritesView,
+    meta: {
+      title: 'Ulubione mieszkania'
     }
   },
   {
