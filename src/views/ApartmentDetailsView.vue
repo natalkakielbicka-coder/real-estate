@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { apartments } from '../data/apartments'
 import { floorPlans } from '../data/floorPlans'
@@ -22,16 +22,33 @@ import {
 import { formatCompletionDate } from '../utils/dateFormatters'
 import { useToast } from '../composables/useToast'
 import { useFavorites } from '../composables/useFavorites'
+import { useRecentlyViewed } from '../composables/useRecentlyViewed'
 
 const route = useRoute()
 const { showToast } = useToast()
 const { isFavorite, toggleFavorite } = useFavorites()
+const { recentlyViewedApartmentIds, addRecentlyViewedApartment } =
+  useRecentlyViewed()
 
 const apartment = computed(() => {
   return apartments.find((item) => {
     return item.slug === route.params.slug
   })
 })
+
+watch(
+  () => apartment.value?.id,
+  (apartmentId) => {
+    if (apartmentId === undefined) {
+      return
+    }
+
+    addRecentlyViewedApartment(apartmentId)
+  },
+  {
+    immediate: true
+  }
+)
 
 const isMobileDevice = () => {
   if (navigator.userAgentData?.mobile !== undefined) {
@@ -83,6 +100,24 @@ const similarApartments = computed(() => {
       )
     })
     .slice(0, 3)
+})
+
+const recentlyViewedApartments = computed(() => {
+  if (!apartment.value) {
+    return []
+  }
+
+  return recentlyViewedApartmentIds.value
+    .filter((apartmentId) => {
+      return apartmentId !== apartment.value.id
+    })
+    .map((apartmentId) => {
+      return apartments.find((item) => {
+        return item.id === apartmentId
+      })
+    })
+    .filter(Boolean)
+    .slice(0, 6)
 })
 
 const hasInteractiveFloorPlan = computed(() => {
@@ -411,6 +446,23 @@ const hasInteractiveFloorPlan = computed(() => {
         </div>
 
         <ApartmentGrid :apartments="similarApartments" />
+      </section>
+
+      <section
+        v-if="recentlyViewedApartments.length > 0"
+        class="mt-[clamp(80px,10vw,140px)] border-t border-line pt-[clamp(50px,7vw,90px)]"
+      >
+        <div class="mb-[35px]">
+          <p
+            class="mb-2.5 text-[10px] font-bold tracking-[0.13em] text-gold uppercase"
+          >
+            Wróć do oglądanych ofert
+          </p>
+
+          <h2 class="mb-0 text-[clamp(36px,5vw,56px)]">Ostatnio oglądane</h2>
+        </div>
+
+        <ApartmentGrid :apartments="recentlyViewedApartments" />
       </section>
     </div>
 
