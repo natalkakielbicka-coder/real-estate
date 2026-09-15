@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { apartments } from '../data/apartments'
 import { floorPlans } from '../data/floorPlans'
@@ -15,6 +15,7 @@ import {
   formatPrice,
   formatPricePerMeter
 } from '../utils/apartmentFormatters'
+import { downloadApartmentPdf } from '../utils/apartmentPdf'
 import {
   exposureLabels,
   outdoorSpaceLabels
@@ -26,6 +27,7 @@ import { useRecentlyViewed } from '../composables/useRecentlyViewed'
 
 const route = useRoute()
 const { showToast } = useToast()
+const isGeneratingPdf = ref(false)
 const { isFavorite, toggleFavorite } = useFavorites()
 const { recentlyViewedApartmentIds, addRecentlyViewedApartment } =
   useRecentlyViewed()
@@ -84,6 +86,24 @@ const shareApartment = async () => {
     }
 
     showToast('Nie udało się udostępnić linku', 'error')
+  }
+}
+
+const handleDownloadPdf = async () => {
+  if (!apartment.value || isGeneratingPdf.value) {
+    return
+  }
+
+  isGeneratingPdf.value = true
+
+  try {
+    await downloadApartmentPdf(apartment.value)
+
+    showToast('Karta mieszkania została pobrana', 'success')
+  } catch {
+    showToast('Nie udało się utworzyć karty mieszkania', 'error')
+  } finally {
+    isGeneratingPdf.value = false
   }
 }
 
@@ -396,19 +416,39 @@ const hasInteractiveFloorPlan = computed(() => {
               </RouterLink>
             </div>
 
-            <button
-              class="group mt-3 flex min-h-[50px] w-full items-center justify-center gap-3 border border-line bg-transparent px-5 text-sm font-bold text-brand transition-colors hover:border-brand hover:bg-panel"
-              type="button"
-              @click="shareApartment"
-            >
-              Udostępnij mieszkanie
-              <span
-                class="text-lg transition-transform duration-200 group-hover:translate-x-1"
-                aria-hidden="true"
+            <div class="mt-3 grid grid-cols-1 gap-3 xs:grid-cols-2">
+              <button
+                class="group flex min-h-[50px] w-full items-center justify-center gap-3 border border-line bg-transparent px-5 text-sm font-bold text-brand transition-colors hover:border-brand hover:bg-panel"
+                type="button"
+                @click="shareApartment"
               >
-                →
-              </span>
-            </button>
+                Udostępnij mieszkanie
+
+                <span
+                  class="text-lg transition-transform duration-200 group-hover:translate-x-1"
+                  aria-hidden="true"
+                >
+                  →
+                </span>
+              </button>
+
+              <button
+                class="group flex min-h-[50px] w-full items-center justify-center gap-3 border border-brand bg-transparent px-5 text-sm font-bold text-brand transition-colors enabled:hover:bg-brand enabled:hover:text-white disabled:cursor-wait disabled:opacity-60"
+                type="button"
+                :disabled="isGeneratingPdf"
+                @click="handleDownloadPdf"
+              >
+                {{ isGeneratingPdf ? 'Generowanie PDF…' : 'Pobierz kartę PDF' }}
+
+                <span
+                  v-if="!isGeneratingPdf"
+                  class="text-lg transition-transform duration-200 group-hover:translate-y-1"
+                  aria-hidden="true"
+                >
+                  ↓
+                </span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
