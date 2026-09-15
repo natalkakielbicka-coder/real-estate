@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const props = defineProps({
   plan: {
@@ -19,6 +19,15 @@ const props = defineProps({
 const emit = defineEmits(['select-floor'])
 
 const hoveredFloor = ref(null)
+const isImageLoaded = ref(false)
+
+watch(
+  () => props.plan.image,
+  () => {
+    isImageLoaded.value = false
+    hoveredFloor.value = null
+  }
+)
 
 const tooltipPosition = ref({
   x: 0,
@@ -120,17 +129,26 @@ const getFloorLabel = (floorNumber) => {
     </div>
 
     <div
-      class="relative overflow-hidden bg-[#e8ebe8]"
+      class="relative aspect-[3/2] overflow-hidden bg-[#e8ebe8]"
       @mouseleave="hoveredFloor = null"
       @mousemove="moveTooltip"
     >
+      <div
+        v-if="!isImageLoaded"
+        class="absolute inset-0 animate-pulse bg-gradient-to-br from-[#dce2de] via-[#edf0ed] to-[#d1d9d4]"
+        aria-hidden="true"
+      ></div>
+
       <img
-        class="block h-auto w-full"
+        class="absolute inset-0 h-full w-full object-contain transition-opacity duration-300"
+        :class="isImageLoaded ? 'opacity-100' : 'opacity-0'"
         :src="plan.image"
         :alt="`Wizualizacja ${plan.name}`"
+        @load="isImageLoaded = true"
       />
 
       <svg
+        v-if="isImageLoaded"
         class="absolute inset-0 h-full w-full"
         :viewBox="plan.viewBox"
         preserveAspectRatio="xMidYMid meet"
