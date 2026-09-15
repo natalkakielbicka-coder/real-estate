@@ -1,4 +1,5 @@
 import { computed, ref } from 'vue'
+import { useToast } from './useToast'
 
 const STORAGE_KEY = 'favorite-apartment-ids'
 
@@ -27,6 +28,8 @@ const loadFavorites = () => {
 loadFavorites()
 
 export const useFavorites = () => {
+  const { showToast } = useToast()
+
   const favoriteCount = computed(() => {
     return favoriteApartmentIds.value.length
   })
@@ -36,7 +39,9 @@ export const useFavorites = () => {
   }
 
   const toggleFavorite = (apartmentId) => {
-    const nextFavoriteIds = isFavorite(apartmentId)
+    const wasFavorite = isFavorite(apartmentId)
+
+    const nextFavoriteIds = wasFavorite
       ? favoriteApartmentIds.value.filter((id) => id !== apartmentId)
       : [...favoriteApartmentIds.value, apartmentId]
 
@@ -44,9 +49,14 @@ export const useFavorites = () => {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(nextFavoriteIds))
       favoriteApartmentIds.value = nextFavoriteIds
 
-      return true
+      showToast(
+        wasFavorite
+          ? 'Mieszkanie usunięto z ulubionych'
+          : 'Mieszkanie dodano do ulubionych',
+        'success'
+      )
     } catch {
-      return false
+      showToast('Nie udało się zapisać ulubionych', 'error')
     }
   }
 
