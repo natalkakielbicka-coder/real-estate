@@ -31,8 +31,10 @@ defineProps({
 
       <img
         loading="lazy"
-        class="relative z-[1] h-full w-full object-cover transition-[opacity,transform] duration-[600ms] group-hover:scale-105"
-        :class="isImageLoaded ? 'opacity-100' : 'opacity-0'"
+        class="investment-card__photo relative z-[1] h-full w-full object-cover"
+        :class="{
+          'investment-card__photo--loaded': isImageLoaded
+        }"
         :src="investment.image"
         :alt="`Wizualizacja inwestycji ${investment.name}`"
         @load="isImageLoaded = true"
@@ -97,3 +99,22 @@ defineProps({
     </div>
   </RouterLink>
 </template>
+
+<style scoped>
+.investment-card__photo {
+  opacity: 0;
+  transform: scale(1);
+  will-change: transform;
+  transition:
+    opacity 300ms ease,
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.investment-card__photo--loaded {
+  opacity: 1;
+}
+
+.investment-card:hover .investment-card__photo {
+  transform: scale(1.05);
+}
+</style>
