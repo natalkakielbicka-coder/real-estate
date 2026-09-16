@@ -59,7 +59,7 @@ const updateCostPerMeter = (event) => {
       <button
         v-for="standard in standards"
         :key="standard.name"
-        class="group relative overflow-hidden rounded-[8px] border p-5 text-left transition-[border-color,background-color,transform,box-shadow] duration-200 hover:-translate-y-0.5"
+        class="group relative overflow-hidden rounded-[8px] border p-5 text-left transition-[border-color,background-color,box-shadow] duration-200"
         :class="
           costPerMeter === standard.price
             ? 'border-brand bg-[rgba(23,63,53,0.05)] shadow-[0_8px_24px_rgba(23,63,53,0.08)]'
