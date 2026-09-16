@@ -24,6 +24,8 @@ import { formatCompletionDate } from '../utils/dateFormatters'
 import { useToast } from '../composables/useToast'
 import { useFavorites } from '../composables/useFavorites'
 import { useRecentlyViewed } from '../composables/useRecentlyViewed'
+import CompareButton from '../components/CompareButton.vue'
+import { useComparison } from '../composables/useComparison'
 
 const route = useRoute()
 const { showToast } = useToast()
@@ -31,6 +33,7 @@ const isGeneratingPdf = ref(false)
 const { isFavorite, toggleFavorite } = useFavorites()
 const { recentlyViewedApartmentIds, addRecentlyViewedApartment } =
   useRecentlyViewed()
+const { isInComparison, toggleComparison } = useComparison()
 
 const apartment = computed(() => {
   return apartments.find((item) => {
@@ -195,12 +198,19 @@ const hasInteractiveFloorPlan = computed(() => {
               {{ apartmentStatusLabels[apartment.status] }}
             </span>
 
-            <FavoriteButton
-              class="shrink-0 border border-line"
-              :is-favorite="isFavorite(apartment.id)"
-              :apartment-number="apartment.number"
-              @toggle="toggleFavorite(apartment.id)"
-            />
+            <div class="flex flex-wrap items-center gap-3">
+              <FavoriteButton
+                :is-favorite="isFavorite(apartment.id)"
+                :apartment-number="apartment.number"
+                @toggle="toggleFavorite(apartment.id)"
+              />
+
+              <CompareButton
+                :is-selected="isInComparison(apartment.id)"
+                :apartment-number="apartment.number"
+                @toggle="toggleComparison(apartment.id)"
+              />
+            </div>
           </div>
 
           <h1 class="mb-4 text-[clamp(36px,4vw,56px)]">
