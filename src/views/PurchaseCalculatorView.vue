@@ -44,7 +44,10 @@ const {
   customApartmentArea,
   customApartmentPrice,
   apartmentArea,
-  apartmentPrice
+  apartmentPrice,
+  customMarketType,
+  isFirstHomePurchase,
+  propertyPurchaseTax
 } = usePurchaseCalculator(apartmentFromQuery)
 </script>
 
@@ -88,11 +91,15 @@ const {
             :selected-investment="selectedInvestment"
             :selected-apartment-id="selectedApartmentId"
             :selected-apartment="selectedApartment"
+            :custom-market-type="customMarketType"
+            :is-first-home-purchase="isFirstHomePurchase"
             @select-investment="selectInvestment"
             @select-apartment="selectApartment"
             @change-mode="calculationMode = $event"
             @update-custom-price="customApartmentPrice = $event"
             @update-custom-area="customApartmentArea = $event"
+            @update-custom-market-type="customMarketType = $event"
+            @update-first-home-purchase="isFirstHomePurchase = $event"
           />
 
           <CalculatorFinancingStep
@@ -126,6 +133,7 @@ const {
           :additional-costs="totalAdditionalCosts"
           :total-cost="totalPurchaseCost"
           :needed-loan="neededLoan"
+          :property-purchase-tax="propertyPurchaseTax"
           @save="saveCalculation"
           @reset="resetCalculator"
         />

@@ -13,6 +13,10 @@ const props = defineProps({
     type: Number,
     default: 0
   },
+  propertyPurchaseTax: {
+    type: Number,
+    default: 0
+  },
   additionalCosts: {
     type: Number,
     default: 0
@@ -41,7 +45,7 @@ const costRows = computed(() => {
     },
     {
       label: 'PCC',
-      value: 0,
+      value: props.propertyPurchaseTax,
       description:
         'Kalkulator zakłada zakup nowego mieszkania od dewelopera, dlatego podatek PCC wynosi 0 zł.'
     },
@@ -80,7 +84,7 @@ const costRows = computed(() => {
       <PurchaseCostChart
         :apartment-price="apartmentPrice"
         :finishing-cost="finishingCost"
-        :additional-costs="additionalCosts"
+        :additional-costs="additionalCosts + propertyPurchaseTax"
         :total-cost="totalCost"
       />
     </div>

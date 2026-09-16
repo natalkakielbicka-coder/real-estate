@@ -15,6 +15,14 @@ defineProps({
     type: Number,
     default: 0
   },
+  customMarketType: {
+    type: String,
+    default: 'primary'
+  },
+  isFirstHomePurchase: {
+    type: Boolean,
+    default: false
+  },
   investments: {
     type: Array,
     default: () => []
@@ -42,7 +50,9 @@ const emit = defineEmits([
   'select-apartment',
   'change-mode',
   'update-custom-price',
-  'update-custom-area'
+  'update-custom-area',
+  'update-custom-market-type',
+  'update-first-home-purchase'
 ])
 
 const handleInvestmentChange = (event) => {
@@ -281,6 +291,68 @@ const handleCustomAreaInput = (event) => {
           Wpisz powierzchnię większą od 0 m².
         </p>
       </div>
+
+      <fieldset class="sm:col-span-2">
+        <legend class="mb-2 text-sm font-semibold text-[var(--color-text)]">
+          Rynek
+        </legend>
+
+        <div
+          class="grid overflow-hidden rounded-[6px] border border-line sm:grid-cols-2"
+        >
+          <button
+            class="min-h-[48px] px-4 py-3 text-sm font-semibold transition-colors"
+            :class="
+              customMarketType === 'primary'
+                ? 'bg-brand text-white'
+                : 'bg-panel text-brand hover:bg-brand/5'
+            "
+            type="button"
+            :aria-pressed="customMarketType === 'primary'"
+            @click="emit('update-custom-market-type', 'primary')"
+          >
+            Rynek pierwotny
+          </button>
+
+          <button
+            class="min-h-[48px] border-t border-line px-4 py-3 text-sm font-semibold transition-colors sm:border-t-0 sm:border-l"
+            :class="
+              customMarketType === 'secondary'
+                ? 'bg-brand text-white'
+                : 'bg-panel text-brand hover:bg-brand/5'
+            "
+            type="button"
+            :aria-pressed="customMarketType === 'secondary'"
+            @click="emit('update-custom-market-type', 'secondary')"
+          >
+            Rynek wtórny
+          </button>
+        </div>
+      </fieldset>
+
+      <label
+        v-if="customMarketType === 'secondary'"
+        class="flex cursor-pointer items-start gap-3 border-t border-line pt-5 sm:col-span-2"
+      >
+        <input
+          class="mt-0.5 size-5 shrink-0 accent-brand"
+          type="checkbox"
+          :checked="isFirstHomePurchase"
+          @change="emit('update-first-home-purchase', $event.target.checked)"
+        />
+
+        <span>
+          <strong class="block text-sm text-[var(--color-text)]">
+            Spełniam warunki zwolnienia z PCC przy zakupie pierwszego mieszkania
+          </strong>
+
+          <span class="mt-1 block text-xs leading-relaxed text-muted">
+            Zaznacz tylko wtedy, gdy wcześniej nie posiadałaś lub nie posiadałeś
+            mieszkania ani domu, z uwzględnieniem wyjątków przewidzianych w
+            przepisach.
+          </span>
+        </span>
+      </label>
     </div>
   </section>
 </template>

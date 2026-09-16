@@ -9,6 +9,8 @@ const DEFAULT_CALCULATION = {
   calculationMode: 'apartment',
   customApartmentPrice: 0,
   customApartmentArea: 0,
+  customMarketType: 'primary',
+  isFirstHomePurchase: false,
   ownContribution: 100000,
   finishingCostPerMeter: 2500,
   notaryFee: 4000,
@@ -54,6 +56,10 @@ export const usePurchaseCalculator = (initialApartmentSlug = null) => {
 
   const customApartmentArea = ref(0)
 
+  const customMarketType = ref('primary')
+
+  const isFirstHomePurchase = ref(false)
+
   const apartmentsFromSelectedInvestment = computed(() => {
     return availableApartments.filter((apartment) => {
       return apartment.investment === selectedInvestment.value
@@ -82,6 +88,22 @@ export const usePurchaseCalculator = (initialApartmentSlug = null) => {
     }
 
     return selectedApartment.value?.area ?? 0
+  })
+
+  const propertyPurchaseTax = computed(() => {
+    if (calculationMode.value === 'apartment') {
+      return 0
+    }
+
+    if (customMarketType.value === 'primary') {
+      return 0
+    }
+
+    if (isFirstHomePurchase.value) {
+      return 0
+    }
+
+    return Math.round(apartmentPrice.value * 0.02)
   })
 
   const neededLoan = computed(() => {
@@ -185,7 +207,8 @@ export const usePurchaseCalculator = (initialApartmentSlug = null) => {
     return (
       apartmentPrice.value +
       totalFinishingCost.value +
-      totalAdditionalCosts.value
+      totalAdditionalCosts.value +
+      propertyPurchaseTax.value
     )
   })
 
@@ -388,6 +411,9 @@ export const usePurchaseCalculator = (initialApartmentSlug = null) => {
     customApartmentArea,
     customApartmentPrice,
     apartmentPrice,
-    apartmentArea
+    apartmentArea,
+    customMarketType,
+    isFirstHomePurchase,
+    propertyPurchaseTax
   }
 }
