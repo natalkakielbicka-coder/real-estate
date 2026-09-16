@@ -6,6 +6,9 @@ import { toNonNegativeNumber } from '../utils/numberHelpers'
 const STORAGE_KEY = 'purchase-calculation'
 
 const DEFAULT_CALCULATION = {
+  calculationMode: 'apartment',
+  customApartmentPrice: 0,
+  customApartmentArea: 0,
   ownContribution: 100000,
   finishingCostPerMeter: 2500,
   notaryFee: 4000,
@@ -196,15 +199,19 @@ export const usePurchaseCalculator = (initialApartmentSlug = null) => {
 
   const applyCalculationValues = (calculation) => {
     calculationMode.value =
-      calculation.calculationMode === 'custom' ? 'custom' : 'apartment'
+      calculation.calculationMode === 'custom'
+        ? 'custom'
+        : DEFAULT_CALCULATION.calculationMode
 
     customApartmentPrice.value = toNonNegativeNumber(
-      calculation.customApartmentPrice ?? 0
+      calculation.customApartmentPrice ??
+        DEFAULT_CALCULATION.customApartmentPrice
     )
 
     customApartmentArea.value = toNonNegativeNumber(
-      calculation.customApartmentArea ?? 0
+      calculation.customApartmentArea ?? DEFAULT_CALCULATION.customApartmentArea
     )
+
     ownContribution.value = toNonNegativeNumber(
       calculation.ownContribution ?? DEFAULT_CALCULATION.ownContribution
     )
