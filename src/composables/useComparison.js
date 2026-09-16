@@ -82,11 +82,19 @@ export const useComparison = () => {
     }
   }
 
+  const clearComparison = () => {
+    comparisonApartmentIds.value = []
+    localStorage.removeItem(STORAGE_KEY)
+
+    showToast('Wyczyszczono porównanie', 'success')
+  }
+
   return {
     comparisonApartmentIds,
     comparisonCount,
     isComparisonFull,
     isInComparison,
-    toggleComparison
+    toggleComparison,
+    clearComparison
   }
 }

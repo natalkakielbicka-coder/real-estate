@@ -13,7 +13,8 @@ import {
   apartmentStatusLabels
 } from '../constants/apartmentStatuses'
 
-const { comparisonApartmentIds, toggleComparison } = useComparison()
+const { comparisonApartmentIds, toggleComparison, clearComparison } =
+  useComparison()
 
 const comparedApartments = computed(() =>
   comparisonApartmentIds.value
@@ -62,9 +63,22 @@ const bestComparisonValues = computed(() => {
         </p>
       </div>
 
+      <div
+        v-if="comparedApartments.length > 0"
+        class="mb-6 flex justify-end"
+      >
+        <button
+          class="border-0 bg-transparent text-sm font-semibold text-muted underline decoration-brand/30 underline-offset-4 transition-colors hover:text-brand"
+          type="button"
+          @click="clearComparison"
+        >
+          Wyczyść porównanie
+        </button>
+      </div>
+
       <p
         v-if="comparedApartments.length === 0"
-        class="text-muted"
+        class="text-sm leading-relaxed text-muted"
       >
         Nie wybrano jeszcze żadnych mieszkań do porównania.
       </p>
