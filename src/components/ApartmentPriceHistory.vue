@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { formatPrice } from '../utils/apartmentFormatters'
 
 const props = defineProps({
@@ -29,6 +29,27 @@ const closeModal = () => {
   isOpen.value = false
 }
 
+const handleKeydown = (event) => {
+  if (event.key === 'Escape') {
+    closeModal()
+  }
+}
+
+let previousBodyOverflow = ''
+
+watch(isOpen, (modalIsOpen) => {
+  if (modalIsOpen) {
+    previousBodyOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', handleKeydown)
+
+    return
+  }
+
+  document.body.style.overflow = previousBodyOverflow
+  window.removeEventListener('keydown', handleKeydown)
+})
+
 const formatHistoryDate = (date) => {
   return new Intl.DateTimeFormat('pl-PL', {
     day: 'numeric',
@@ -36,6 +57,11 @@ const formatHistoryDate = (date) => {
     year: 'numeric'
   }).format(new Date(date))
 }
+
+onBeforeUnmount(() => {
+  document.body.style.overflow = previousBodyOverflow
+  window.removeEventListener('keydown', handleKeydown)
+})
 </script>
 
 <template>
