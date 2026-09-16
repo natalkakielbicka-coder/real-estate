@@ -195,6 +195,16 @@ export const usePurchaseCalculator = (initialApartmentSlug = null) => {
   }
 
   const applyCalculationValues = (calculation) => {
+    calculationMode.value =
+      calculation.calculationMode === 'custom' ? 'custom' : 'apartment'
+
+    customApartmentPrice.value = toNonNegativeNumber(
+      calculation.customApartmentPrice ?? 0
+    )
+
+    customApartmentArea.value = toNonNegativeNumber(
+      calculation.customApartmentArea ?? 0
+    )
     ownContribution.value = toNonNegativeNumber(
       calculation.ownContribution ?? DEFAULT_CALCULATION.ownContribution
     )
@@ -258,7 +268,10 @@ export const usePurchaseCalculator = (initialApartmentSlug = null) => {
       includeParkingSpace: includeParkingSpace.value,
       parkingSpacePrice: parkingSpacePrice.value,
       includeStorageRoom: includeStorageRoom.value,
-      storageRoomPrice: storageRoomPrice.value
+      storageRoomPrice: storageRoomPrice.value,
+      calculationMode: calculationMode.value,
+      customApartmentPrice: customApartmentPrice.value,
+      customApartmentArea: customApartmentArea.value
     }
 
     try {
