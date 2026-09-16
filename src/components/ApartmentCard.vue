@@ -12,8 +12,11 @@ import {
 } from '../utils/apartmentFormatters'
 import FavoriteButton from './FavoriteButton.vue'
 import { useFavorites } from '../composables/useFavorites'
+import CompareButton from './CompareButton.vue'
+import { useComparison } from '../composables/useComparison'
 
 const { isFavorite, toggleFavorite } = useFavorites()
+const { isInComparison, toggleComparison } = useComparison()
 
 defineProps({
   apartment: {
@@ -144,13 +147,22 @@ defineProps({
           </small>
         </div>
 
-        <RouterLink
-          class="flex min-h-[45px] items-center gap-3 bg-brand px-[17px] text-[11px] font-bold text-white transition-colors hover:bg-brand-light max-xs:justify-center"
-          :to="`/mieszkania/${apartment.slug}`"
-        >
-          <span>Zobacz lokal</span>
-          <span aria-hidden="true">→</span>
-        </RouterLink>
+        <div class="flex flex-col items-stretch gap-2">
+          <CompareButton
+            class="self-end"
+            :is-selected="isInComparison(apartment.id)"
+            :apartment-number="apartment.number"
+            @toggle="toggleComparison(apartment.id)"
+          />
+
+          <RouterLink
+            class="flex min-h-[45px] items-center justify-center gap-3 bg-brand px-[17px] text-[11px] font-bold text-white transition-colors hover:bg-brand-light"
+            :to="`/mieszkania/${apartment.slug}`"
+          >
+            <span>Zobacz lokal</span>
+            <span aria-hidden="true">→</span>
+          </RouterLink>
+        </div>
       </div>
     </div>
   </article>

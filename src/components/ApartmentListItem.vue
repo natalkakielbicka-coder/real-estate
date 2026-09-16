@@ -11,8 +11,11 @@ import {
 } from '../utils/apartmentFormatters'
 import FavoriteButton from './FavoriteButton.vue'
 import { useFavorites } from '../composables/useFavorites'
+import CompareButton from './CompareButton.vue'
+import { useComparison } from '../composables/useComparison'
 
 const { isFavorite, toggleFavorite } = useFavorites()
+const { isInComparison, toggleComparison } = useComparison()
 
 defineProps({
   apartment: {
@@ -107,21 +110,30 @@ defineProps({
         </small>
       </div>
 
-      <div class="flex items-center gap-3">
-        <FavoriteButton
-          class="shrink-0 border border-line"
-          :is-favorite="isFavorite(apartment.id)"
+      <div class="flex flex-col items-stretch gap-2 xs:items-end">
+        <CompareButton
+          class="self-end"
+          :is-selected="isInComparison(apartment.id)"
           :apartment-number="apartment.number"
-          @toggle="toggleFavorite(apartment.id)"
+          @toggle="toggleComparison(apartment.id)"
         />
 
-        <RouterLink
-          class="inline-flex min-h-[43px] items-center justify-center gap-3 bg-brand px-4 text-[10px] font-bold text-white transition-colors hover:bg-brand-light xs:justify-start"
-          :to="`/mieszkania/${apartment.slug}`"
-        >
-          Zobacz lokal
-          <span aria-hidden="true">→</span>
-        </RouterLink>
+        <div class="flex items-center gap-3">
+          <FavoriteButton
+            class="shrink-0 border border-line"
+            :is-favorite="isFavorite(apartment.id)"
+            :apartment-number="apartment.number"
+            @toggle="toggleFavorite(apartment.id)"
+          />
+
+          <RouterLink
+            class="inline-flex min-h-[43px] items-center justify-center gap-3 bg-brand px-4 text-[10px] font-bold text-white transition-colors hover:bg-brand-light xs:justify-start"
+            :to="`/mieszkania/${apartment.slug}`"
+          >
+            Zobacz lokal
+            <span aria-hidden="true">→</span>
+          </RouterLink>
+        </div>
       </div>
     </div>
   </article>

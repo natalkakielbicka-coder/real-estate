@@ -11,8 +11,11 @@ import {
 
 import FavoriteButton from './FavoriteButton.vue'
 import { useFavorites } from '../composables/useFavorites'
+import CompareButton from './CompareButton.vue'
+import { useComparison } from '../composables/useComparison'
 
 const { isFavorite, toggleFavorite } = useFavorites()
+const { isInComparison, toggleComparison } = useComparison()
 
 defineProps({
   apartments: {
@@ -39,6 +42,9 @@ defineProps({
           <th>Status</th>
           <th>
             <span class="sr-only">Ulubione</span>
+          </th>
+          <th>
+            <span class="sr-only">Porównanie</span>
           </th>
           <th>
             <span class="sr-only">Szczegóły</span>
@@ -93,6 +99,32 @@ defineProps({
               :apartment-number="apartment.number"
               @toggle="toggleFavorite(apartment.id)"
             />
+          </td>
+
+          <td class="px-3 py-4 text-center">
+            <button
+              class="text-lg leading-none transition-colors duration-200"
+              :class="
+                isInComparison(apartment.id)
+                  ? 'text-gold'
+                  : 'text-muted hover:text-brand'
+              "
+              type="button"
+              :aria-pressed="isInComparison(apartment.id)"
+              :aria-label="
+                isInComparison(apartment.id)
+                  ? `Usuń mieszkanie ${apartment.number} z porównania`
+                  : `Dodaj mieszkanie ${apartment.number} do porównania`
+              "
+              :title="
+                isInComparison(apartment.id)
+                  ? 'Usuń z porównania'
+                  : 'Dodaj do porównania'
+              "
+              @click="toggleComparison(apartment.id)"
+            >
+              ⇄
+            </button>
           </td>
 
           <td>
