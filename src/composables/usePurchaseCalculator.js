@@ -235,6 +235,16 @@ export const usePurchaseCalculator = (initialApartmentSlug = null) => {
       calculation.customApartmentArea ?? DEFAULT_CALCULATION.customApartmentArea
     )
 
+    customMarketType.value =
+      calculation.customMarketType === 'secondary'
+        ? 'secondary'
+        : DEFAULT_CALCULATION.customMarketType
+
+    isFirstHomePurchase.value = getBooleanValue(
+      calculation.isFirstHomePurchase,
+      DEFAULT_CALCULATION.isFirstHomePurchase
+    )
+
     ownContribution.value = toNonNegativeNumber(
       calculation.ownContribution ?? DEFAULT_CALCULATION.ownContribution
     )
@@ -301,7 +311,9 @@ export const usePurchaseCalculator = (initialApartmentSlug = null) => {
       storageRoomPrice: storageRoomPrice.value,
       calculationMode: calculationMode.value,
       customApartmentPrice: customApartmentPrice.value,
-      customApartmentArea: customApartmentArea.value
+      customApartmentArea: customApartmentArea.value,
+      customMarketType: customMarketType.value,
+      isFirstHomePurchase: isFirstHomePurchase.value
     }
 
     try {
