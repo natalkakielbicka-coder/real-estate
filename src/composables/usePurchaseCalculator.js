@@ -90,6 +90,14 @@ export const usePurchaseCalculator = (initialApartmentSlug = null) => {
     return selectedApartment.value?.area ?? 0
   })
 
+  const canSaveCalculation = computed(() => {
+    if (calculationMode.value === 'custom') {
+      return apartmentPrice.value > 0 && apartmentArea.value > 0
+    }
+
+    return Boolean(selectedApartment.value)
+  })
+
   const propertyPurchaseTax = computed(() => {
     if (calculationMode.value === 'apartment') {
       return 0
@@ -299,6 +307,11 @@ export const usePurchaseCalculator = (initialApartmentSlug = null) => {
   }
 
   const saveCalculation = () => {
+    if (!canSaveCalculation.value) {
+      showToast('Uzupełnij cenę i powierzchnię mieszkania', 'error')
+      return
+    }
+
     const calculation = {
       selectedInvestment: selectedInvestment.value,
       selectedApartmentId: selectedApartmentId.value,
@@ -426,6 +439,7 @@ export const usePurchaseCalculator = (initialApartmentSlug = null) => {
     apartmentArea,
     customMarketType,
     isFirstHomePurchase,
-    propertyPurchaseTax
+    propertyPurchaseTax,
+    canSaveCalculation
   }
 }

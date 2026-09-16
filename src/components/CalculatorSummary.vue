@@ -17,6 +17,10 @@ const props = defineProps({
     type: Number,
     default: 0
   },
+  canSave: {
+    type: Boolean,
+    default: true
+  },
   additionalCosts: {
     type: Number,
     default: 0
@@ -78,7 +82,7 @@ const costRows = computed(() => {
     </p>
 
     <div
-      v-if="apartmentPrice"
+      v-if="canSave && totalCost > 0"
       class="mt-8"
     >
       <PurchaseCostChart
@@ -87,6 +91,15 @@ const costRows = computed(() => {
         :additional-costs="additionalCosts + propertyPurchaseTax"
         :total-cost="totalCost"
       />
+    </div>
+
+    <div
+      v-else
+      class="mt-8 flex min-h-[260px] items-center justify-center rounded-[6px] bg-page p-6 text-center"
+    >
+      <p class="mb-0 max-w-[240px] text-sm text-muted">
+        Uzupełnij cenę i powierzchnię mieszkania, aby zobaczyć wykres kosztów.
+      </p>
     </div>
 
     <div class="mt-8 border-t border-line pt-5">
@@ -123,8 +136,9 @@ const costRows = computed(() => {
     </div>
 
     <button
-      class="group mt-5 flex min-h-[54px] w-full items-center justify-center gap-3 rounded-[6px] bg-gold px-5 text-sm font-semibold text-panel shadow-[0_8px_24px_rgba(199,157,98,0.2)] transition-[background-color,transform,box-shadow] hover:bg-[#b98e52]"
+      class="group mt-5 flex min-h-[54px] w-full items-center justify-center gap-3 rounded-[6px] bg-gold px-5 text-sm font-semibold text-panel shadow-[0_8px_24px_rgba(199,157,98,0.2)] transition-[background-color,transform,box-shadow] hover:bg-[#b98e52] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-gold"
       type="button"
+      :disabled="!canSave"
       @click="emit('save')"
     >
       <svg

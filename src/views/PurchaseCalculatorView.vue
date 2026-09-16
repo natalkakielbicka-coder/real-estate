@@ -47,7 +47,8 @@ const {
   apartmentPrice,
   customMarketType,
   isFirstHomePurchase,
-  propertyPurchaseTax
+  propertyPurchaseTax,
+  canSaveCalculation
 } = usePurchaseCalculator(apartmentFromQuery)
 </script>
 
@@ -134,6 +135,7 @@ const {
           :total-cost="totalPurchaseCost"
           :needed-loan="neededLoan"
           :property-purchase-tax="propertyPurchaseTax"
+          :can-save="canSaveCalculation"
           @save="saveCalculation"
           @reset="resetCalculator"
         />
