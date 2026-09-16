@@ -76,12 +76,31 @@ const bestComparisonValues = computed(() => {
         </button>
       </div>
 
-      <p
+      <section
         v-if="comparedApartments.length === 0"
-        class="text-sm leading-relaxed text-muted"
+        class="border border-brand/10 bg-panel px-6 py-14 text-center shadow-[0_14px_40px_rgba(23,63,53,0.06)]"
       >
-        Nie wybrano jeszcze żadnych mieszkań do porównania.
-      </p>
+        <span
+          class="mx-auto grid size-14 place-items-center rounded-full bg-brand/5 text-2xl text-brand"
+          aria-hidden="true"
+        >
+          ⇄
+        </span>
+
+        <h2 class="mt-5 text-2xl text-brand">Brak mieszkań do porównania</h2>
+
+        <p class="mx-auto mt-3 max-w-md text-muted">
+          Wybierz od dwóch do trzech mieszkań, aby zestawić ich ceny,
+          powierzchnie i pozostałe parametry.
+        </p>
+
+        <RouterLink
+          class="mt-6 inline-flex min-h-11 items-center justify-center bg-brand px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand/90"
+          to="/mieszkania"
+        >
+          Przejdź do mieszkań
+        </RouterLink>
+      </section>
 
       <div
         v-else
