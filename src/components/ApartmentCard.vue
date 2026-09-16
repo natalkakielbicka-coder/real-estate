@@ -137,7 +137,7 @@ defineProps({
           <span class="block text-[10px] text-muted"> cena mieszkania </span>
 
           <strong
-            class="my-[2px] block font-display text-2xl font-normal text-brand"
+            class="whitespace-nowrap my-[2px] block font-display text-2xl font-normal text-brand"
           >
             {{ formatPrice(apartment.price) }} zł
           </strong>

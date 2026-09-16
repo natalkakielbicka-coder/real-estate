@@ -15,7 +15,7 @@ defineEmits(['toggle'])
 
 <template>
   <button
-    class="group inline-flex min-h-8 items-center justify-center gap-1.5 border-0 bg-transparent px-1 text-[10px] font-semibold transition-colors duration-200"
+    class="whitespace-nowrap group inline-flex min-h-8 items-center justify-center gap-1.5 border-0 bg-transparent px-1 text-[10px] font-semibold transition-colors duration-200"
     :class="isSelected ? 'text-gold' : 'text-muted hover:text-brand'"
     type="button"
     :aria-pressed="isSelected"
