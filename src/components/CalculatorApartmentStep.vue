@@ -224,6 +224,8 @@ const handleCustomAreaInput = (event) => {
             min="0"
             step="1000"
             :value="customApartmentPrice"
+            :aria-invalid="customApartmentPrice <= 0"
+            aria-describedby="custom-apartment-price-error"
             @input="handleCustomPriceInput"
           />
 
@@ -233,6 +235,14 @@ const handleCustomAreaInput = (event) => {
             zł
           </span>
         </div>
+
+        <p
+          v-if="customApartmentPrice <= 0"
+          id="custom-apartment-price-error"
+          class="mt-2 text-xs text-[#a94d4d]"
+        >
+          Wpisz cenę mieszkania większą od 0 zł.
+        </p>
       </div>
 
       <div>
@@ -251,6 +261,8 @@ const handleCustomAreaInput = (event) => {
             min="0"
             step="0.1"
             :value="customApartmentArea"
+            :aria-invalid="customApartmentArea <= 0"
+            aria-describedby="custom-apartment-area-error"
             @input="handleCustomAreaInput"
           />
 
@@ -260,6 +272,14 @@ const handleCustomAreaInput = (event) => {
             m²
           </span>
         </div>
+
+        <p
+          v-if="customApartmentArea <= 0"
+          id="custom-apartment-area-error"
+          class="mt-2 text-xs text-[#a94d4d]"
+        >
+          Wpisz powierzchnię większą od 0 m².
+        </p>
       </div>
     </div>
   </section>
