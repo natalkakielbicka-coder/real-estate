@@ -11,7 +11,6 @@ import {
 
 import FavoriteButton from './FavoriteButton.vue'
 import { useFavorites } from '../composables/useFavorites'
-import CompareButton from './CompareButton.vue'
 import { useComparison } from '../composables/useComparison'
 
 const { isFavorite, toggleFavorite } = useFavorites()

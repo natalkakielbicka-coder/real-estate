@@ -16,6 +16,8 @@ const PurchaseCalculatorView = () =>
 
 const FavoritesView = () => import('../views/FavoritesView.vue')
 
+const ComparisonView = () => import('../views/ComparisonView.vue')
+
 const NotFoundView = () => import('../views/NotFoundView.vue')
 
 const routes = [
@@ -42,6 +44,11 @@ const routes = [
     meta: {
       title: 'Ulubione mieszkania'
     }
+  },
+  {
+    path: '/porownanie',
+    name: 'comparison',
+    component: ComparisonView
   },
   {
     path: '/mieszkania/:slug',
