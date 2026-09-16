@@ -20,6 +20,28 @@ const comparedApartments = computed(() =>
     .map((id) => apartments.find((apartment) => apartment.id === id))
     .filter(Boolean)
 )
+
+const bestComparisonValues = computed(() => {
+  if (comparedApartments.value.length < 2) {
+    return null
+  }
+
+  return {
+    lowestPrice: Math.min(
+      ...comparedApartments.value.map((apartment) => apartment.price)
+    ),
+
+    largestArea: Math.max(
+      ...comparedApartments.value.map((apartment) => apartment.area)
+    ),
+
+    lowestPricePerMeter: Math.min(
+      ...comparedApartments.value.map(
+        (apartment) => apartment.price / apartment.area
+      )
+    )
+  }
+})
 </script>
 
 <template>
@@ -84,15 +106,27 @@ const comparedApartments = computed(() =>
             <div class="flex items-center justify-between gap-4 py-3">
               <dt class="text-sm text-muted">Cena</dt>
 
-              <dd class="text-right font-semibold text-brand">
-                {{ formatPrice(apartment.price) }}
+              <dd
+                class="rounded px-2 py-1 text-right font-semibold text-brand"
+                :class="{
+                  'bg-gold/15 text-brand':
+                    apartment.price === bestComparisonValues?.lowestPrice
+                }"
+              >
+                {{ formatPrice(apartment.price) }} zł
               </dd>
             </div>
 
             <div class="flex items-center justify-between gap-4 py-3">
               <dt class="text-sm text-muted">Powierzchnia</dt>
 
-              <dd class="text-right font-semibold text-brand">
+              <dd
+                class="rounded px-2 py-1 text-right font-semibold text-brand"
+                :class="{
+                  'bg-gold/15 text-brand':
+                    apartment.area === bestComparisonValues?.largestArea
+                }"
+              >
                 {{ apartment.area }} m²
               </dd>
             </div>
@@ -116,8 +150,15 @@ const comparedApartments = computed(() =>
             <div class="flex items-center justify-between gap-4 py-3">
               <dt class="text-sm text-muted">Cena za m²</dt>
 
-              <dd class="text-right font-semibold text-brand">
-                {{ formatPricePerMeter(apartment.price, apartment.area) }} zł
+              <dd
+                class="rounded px-2 py-1 text-right font-semibold text-brand"
+                :class="{
+                  'bg-gold/15 text-brand':
+                    apartment.price / apartment.area ===
+                    bestComparisonValues?.lowestPricePerMeter
+                }"
+              >
+                {{ formatPricePerMeter(apartment.price, apartment.area) }} zł/m²
               </dd>
             </div>
 
@@ -137,7 +178,10 @@ const comparedApartments = computed(() =>
 
           <RouterLink
             class="mt-5 inline-flex text-sm font-semibold text-brand underline decoration-gold underline-offset-4"
-            :to="`/mieszkania/${apartment.id}`"
+            :to="{
+              name: 'apartment-details',
+              params: { slug: apartment.slug }
+            }"
           >
             Zobacz mieszkanie
           </RouterLink>
