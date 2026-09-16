@@ -45,6 +45,8 @@ export const usePurchaseCalculator = (initialApartmentSlug = null) => {
 
   const storageRoomPrice = ref(DEFAULT_CALCULATION.storageRoomPrice)
 
+  const calculationMode = ref('apartment')
+
   const apartmentsFromSelectedInvestment = computed(() => {
     return availableApartments.filter((apartment) => {
       return apartment.investment === selectedInvestment.value
@@ -356,6 +358,7 @@ export const usePurchaseCalculator = (initialApartmentSlug = null) => {
     totalAdditionalCosts,
     totalPurchaseCost,
     saveCalculation,
-    resetCalculator
+    resetCalculator,
+    calculationMode
   }
 }

@@ -39,7 +39,8 @@ const {
   totalAdditionalCosts,
   totalPurchaseCost,
   saveCalculation,
-  resetCalculator
+  resetCalculator,
+  calculationMode
 } = usePurchaseCalculator(apartmentFromQuery)
 </script>
 
@@ -77,11 +78,13 @@ const {
           <CalculatorApartmentStep
             :investments="availableInvestments"
             :apartments="apartmentsFromSelectedInvestment"
+            :calculation-mode="calculationMode"
             :selected-investment="selectedInvestment"
             :selected-apartment-id="selectedApartmentId"
             :selected-apartment="selectedApartment"
             @select-investment="selectInvestment"
             @select-apartment="selectApartment"
+            @change-mode="calculationMode = $event"
           />
 
           <CalculatorFinancingStep
