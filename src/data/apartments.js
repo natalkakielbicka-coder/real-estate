@@ -13,6 +13,20 @@ const apartmentsData = [
     rooms: 2,
     area: 46.8,
     price: 639000,
+    priceHistory: [
+      {
+        date: '2025-11-03',
+        price: 619000
+      },
+      {
+        date: '2026-03-12',
+        price: 629000
+      },
+      {
+        date: '2026-08-20',
+        price: 639000
+      }
+    ],
     status: 'available',
     exposure: ['south', 'west'],
     outdoorSpace: {
@@ -797,11 +811,31 @@ const investmentGalleries = {
   ]
 }
 
+const PRICE_HISTORY_DATES = ['2025-11-03', '2026-03-12', '2026-08-20']
+
+const PRICE_HISTORY_PATTERNS = [
+  [0.94, 0.97, 1],
+  [1.04, 1.02, 1],
+  [0.98, 0.95, 1]
+]
+
+const createPriceHistory = (currentPrice, apartmentId) => {
+  const pattern =
+    PRICE_HISTORY_PATTERNS[apartmentId % PRICE_HISTORY_PATTERNS.length]
+
+  return PRICE_HISTORY_DATES.map((date, index) => ({
+    date,
+    price: Math.round((currentPrice * pattern[index]) / 1000) * 1000
+  }))
+}
+
 export const apartments = [
   ...apartmentsData,
   ...additionalZieloneTarasyApartments
 ].map((apartment) => ({
   ...apartment,
+  priceHistory:
+    apartment.priceHistory ?? createPriceHistory(apartment.price, apartment.id),
   floorPlan:
     apartment.floorPlan ?? `/images/apartments/plans/${apartment.slug}.jpg`,
   gallery: investmentGalleries[apartment.investmentId]

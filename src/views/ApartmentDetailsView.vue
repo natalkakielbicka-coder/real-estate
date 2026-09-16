@@ -12,7 +12,6 @@ import ApartmentGrid from '../components/ApartmentGrid.vue'
 import FavoriteButton from '../components/FavoriteButton.vue'
 import {
   getFloorLabel,
-  formatPrice,
   formatPricePerMeter
 } from '../utils/apartmentFormatters'
 import { downloadApartmentPdf } from '../utils/apartmentPdf'
@@ -26,6 +25,7 @@ import { useFavorites } from '../composables/useFavorites'
 import { useRecentlyViewed } from '../composables/useRecentlyViewed'
 import CompareButton from '../components/CompareButton.vue'
 import { useComparison } from '../composables/useComparison'
+import ApartmentPriceHistory from '../components/ApartmentPriceHistory.vue'
 
 const route = useRoute()
 const { showToast } = useToast()
@@ -260,17 +260,10 @@ const hasInteractiveFloorPlan = computed(() => {
               </strong>
             </div>
 
-            <div class="min-h-[110px] border-r border-b border-line p-[22px]">
-              <span
-                class="mb-2 block text-[9px] font-bold text-muted uppercase"
-              >
-                Cena
-              </span>
-
-              <strong class="block text-xl text-brand">
-                {{ formatPrice(apartment.price) }} zł
-              </strong>
-            </div>
+            <ApartmentPriceHistory
+              :current-price="apartment.price"
+              :price-history="apartment.priceHistory"
+            />
 
             <div class="min-h-[110px] border-r border-b border-line p-[22px]">
               <span
