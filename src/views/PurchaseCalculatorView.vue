@@ -40,7 +40,11 @@ const {
   totalPurchaseCost,
   saveCalculation,
   resetCalculator,
-  calculationMode
+  calculationMode,
+  customApartmentArea,
+  customApartmentPrice,
+  apartmentArea,
+  apartmentPrice
 } = usePurchaseCalculator(apartmentFromQuery)
 </script>
 
@@ -79,12 +83,16 @@ const {
             :investments="availableInvestments"
             :apartments="apartmentsFromSelectedInvestment"
             :calculation-mode="calculationMode"
+            :custom-apartment-price="customApartmentPrice"
+            :custom-apartment-area="customApartmentArea"
             :selected-investment="selectedInvestment"
             :selected-apartment-id="selectedApartmentId"
             :selected-apartment="selectedApartment"
             @select-investment="selectInvestment"
             @select-apartment="selectApartment"
             @change-mode="calculationMode = $event"
+            @update-custom-price="customApartmentPrice = $event"
+            @update-custom-area="customApartmentArea = $event"
           />
 
           <CalculatorFinancingStep
@@ -92,14 +100,14 @@ const {
             :contribution-percent="contributionPercent"
             :needed-loan="neededLoan"
             :has-low-contribution="hasLowContribution"
-            :apartment-price="selectedApartment?.price || 0"
+            :apartment-price="apartmentPrice"
           />
 
           <CalculatorFinishingStep
             v-model:cost-per-meter="finishingCostPerMeter"
             :standards="finishingStandards"
             :total-cost="totalFinishingCost"
-            :apartment-area="selectedApartment?.area || 0"
+            :apartment-area="apartmentArea"
           />
 
           <CalculatorAdditionalCostsStep
@@ -113,7 +121,7 @@ const {
         </div>
 
         <CalculatorSummary
-          :apartment-price="selectedApartment?.price || 0"
+          :apartment-price="apartmentPrice"
           :finishing-cost="totalFinishingCost"
           :additional-costs="totalAdditionalCosts"
           :total-cost="totalPurchaseCost"

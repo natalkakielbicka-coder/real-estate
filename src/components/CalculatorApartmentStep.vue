@@ -7,6 +7,14 @@ defineProps({
     type: String,
     default: 'apartment'
   },
+  customApartmentPrice: {
+    type: Number,
+    default: 0
+  },
+  customApartmentArea: {
+    type: Number,
+    default: 0
+  },
   investments: {
     type: Array,
     default: () => []
@@ -32,7 +40,9 @@ defineProps({
 const emit = defineEmits([
   'select-investment',
   'select-apartment',
-  'change-mode'
+  'change-mode',
+  'update-custom-price',
+  'update-custom-area'
 ])
 
 const handleInvestmentChange = (event) => {
@@ -41,6 +51,14 @@ const handleInvestmentChange = (event) => {
 
 const handleApartmentChange = (event) => {
   emit('select-apartment', event.target.value)
+}
+
+const handleCustomPriceInput = (event) => {
+  emit('update-custom-price', Number(event.target.value))
+}
+
+const handleCustomAreaInput = (event) => {
+  emit('update-custom-area', Number(event.target.value))
 }
 </script>
 
@@ -188,9 +206,61 @@ const handleApartmentChange = (event) => {
 
     <div
       v-else
-      class="mt-7 border border-dashed border-line p-5 text-sm text-muted"
+      class="mt-7 grid gap-5 sm:grid-cols-2"
     >
-      Tutaj pojawią się pola do wpisania ceny i powierzchni mieszkania.
+      <div>
+        <label
+          for="custom-apartment-price"
+          class="mb-2 block text-sm font-semibold text-[var(--color-text)]"
+        >
+          Cena mieszkania
+        </label>
+
+        <div class="relative">
+          <input
+            id="custom-apartment-price"
+            class="min-h-[54px] w-full rounded-[6px] border border-line bg-panel py-3 pr-14 pl-4 text-sm font-semibold text-[var(--color-text)] outline-none transition-colors hover:border-gold focus:border-brand"
+            type="number"
+            min="0"
+            step="1000"
+            :value="customApartmentPrice"
+            @input="handleCustomPriceInput"
+          />
+
+          <span
+            class="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-sm text-muted"
+          >
+            zł
+          </span>
+        </div>
+      </div>
+
+      <div>
+        <label
+          for="custom-apartment-area"
+          class="mb-2 block text-sm font-semibold text-[var(--color-text)]"
+        >
+          Powierzchnia mieszkania
+        </label>
+
+        <div class="relative">
+          <input
+            id="custom-apartment-area"
+            class="min-h-[54px] w-full rounded-[6px] border border-line bg-panel py-3 pr-14 pl-4 text-sm font-semibold text-[var(--color-text)] outline-none transition-colors hover:border-gold focus:border-brand"
+            type="number"
+            min="0"
+            step="0.1"
+            :value="customApartmentArea"
+            @input="handleCustomAreaInput"
+          />
+
+          <span
+            class="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-sm text-muted"
+          >
+            m²
+          </span>
+        </div>
+      </div>
     </div>
   </section>
 </template>

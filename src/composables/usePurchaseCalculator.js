@@ -47,6 +47,10 @@ export const usePurchaseCalculator = (initialApartmentSlug = null) => {
 
   const calculationMode = ref('apartment')
 
+  const customApartmentPrice = ref(0)
+
+  const customApartmentArea = ref(0)
+
   const apartmentsFromSelectedInvestment = computed(() => {
     return availableApartments.filter((apartment) => {
       return apartment.investment === selectedInvestment.value
@@ -61,15 +65,26 @@ export const usePurchaseCalculator = (initialApartmentSlug = null) => {
     return apartment ?? apartmentsFromSelectedInvestment.value[0] ?? null
   })
 
-  const neededLoan = computed(() => {
-    if (!selectedApartment.value) {
-      return 0
+  const apartmentPrice = computed(() => {
+    if (calculationMode.value === 'custom') {
+      return toNonNegativeNumber(customApartmentPrice.value)
     }
 
-    const apartmentPrice = selectedApartment.value.price
+    return selectedApartment.value?.price ?? 0
+  })
+
+  const apartmentArea = computed(() => {
+    if (calculationMode.value === 'custom') {
+      return toNonNegativeNumber(customApartmentArea.value)
+    }
+
+    return selectedApartment.value?.area ?? 0
+  })
+
+  const neededLoan = computed(() => {
     const contribution = ownContribution.value || 0
 
-    return Math.max(apartmentPrice - contribution, 0)
+    return Math.max(apartmentPrice.value - contribution, 0)
   })
 
   const finishingStandards = [
@@ -88,24 +103,18 @@ export const usePurchaseCalculator = (initialApartmentSlug = null) => {
   ]
 
   const totalFinishingCost = computed(() => {
-    if (!selectedApartment.value) {
-      return 0
-    }
-
-    const apartmentArea = selectedApartment.value.area
     const costPerMeter = finishingCostPerMeter.value || 0
 
-    return apartmentArea * costPerMeter
+    return apartmentArea.value * costPerMeter
   })
 
   const contributionPercent = computed(() => {
-    if (!selectedApartment.value) {
+    if (apartmentPrice.value <= 0) {
       return 0
     }
 
-    const apartmentPrice = selectedApartment.value.price
     const contribution = ownContribution.value || 0
-    const percent = (contribution / apartmentPrice) * 100
+    const percent = (contribution / apartmentPrice.value) * 100
 
     return Math.min(Math.round(percent), 100)
   })
@@ -170,12 +179,8 @@ export const usePurchaseCalculator = (initialApartmentSlug = null) => {
   })
 
   const totalPurchaseCost = computed(() => {
-    if (!selectedApartment.value) {
-      return 0
-    }
-
     return (
-      selectedApartment.value.price +
+      apartmentPrice.value +
       totalFinishingCost.value +
       totalAdditionalCosts.value
     )
@@ -359,6 +364,10 @@ export const usePurchaseCalculator = (initialApartmentSlug = null) => {
     totalPurchaseCost,
     saveCalculation,
     resetCalculator,
-    calculationMode
+    calculationMode,
+    customApartmentArea,
+    customApartmentPrice,
+    apartmentPrice,
+    apartmentArea
   }
 }
