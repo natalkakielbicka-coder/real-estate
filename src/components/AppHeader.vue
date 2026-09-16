@@ -2,10 +2,12 @@
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useFavorites } from '../composables/useFavorites'
+import { useComparison } from '../composables/useComparison'
 
 const route = useRoute()
 const isMenuOpen = ref(false)
 const { favoriteCount } = useFavorites()
+const { comparisonCount } = useComparison()
 
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
@@ -113,6 +115,23 @@ watch(
             aria-hidden="true"
           >
             {{ favoriteCount }}
+          </span>
+        </RouterLink>
+
+        <RouterLink
+          class="relative grid size-11 shrink-0 place-items-center rounded-full border border-line bg-panel text-[23px] leading-none text-brand transition-[color,border-color,transform] duration-200 hover:scale-105 hover:border-brand hover:text-[#a94d4d] sm:size-12"
+          to="/porownanie"
+          :aria-label="`Porównaj mieszkania: ${comparisonCount}`"
+          title="Porównaj mieszkania"
+        >
+          <span aria-hidden="true">⇄</span>
+
+          <span
+            v-if="comparisonCount"
+            class="absolute -top-1 -right-1 grid min-h-5 min-w-5 place-items-center rounded-full bg-[#a94d4d] px-1 text-[10px] font-bold leading-none text-white"
+            aria-hidden="true"
+          >
+            {{ comparisonCount }}
           </span>
         </RouterLink>
 
