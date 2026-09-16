@@ -55,6 +55,8 @@ const pageFromQuery = getQueryNumber(route.query.page)
 
 const currentPage = ref(Math.max(1, Math.floor(pageFromQuery ?? 1)))
 
+let isSyncingFiltersFromQuery = false
+
 const availableSortValues = [
   'default',
   'price-asc',
@@ -280,6 +282,8 @@ const activeFilters = computed(() => {
 })
 
 const syncFiltersFromQuery = (query) => {
+  isSyncingFiltersFromQuery = true
+
   selectedCities.value = getQueryValues(query.city).filter((city) => {
     return cities.includes(city)
   })
@@ -341,6 +345,8 @@ const syncFiltersFromQuery = (query) => {
   ) {
     selectedFloorNumber.value = queryFloor
   }
+
+  isSyncingFiltersFromQuery = false
 }
 
 watch(
@@ -350,6 +356,32 @@ watch(
   },
   {
     deep: true
+  }
+)
+
+watch(
+  [
+    selectedCities,
+    selectedRooms,
+    selectedFloors,
+    selectedStatuses,
+    selectedOutdoorSpaces,
+    onlyWithParking,
+    onlyWithStorage,
+    minPrice,
+    maxPrice,
+    selectedSort
+  ],
+  () => {
+    if (isSyncingFiltersFromQuery) {
+      return
+    }
+
+    currentPage.value = 1
+  },
+  {
+    deep: true,
+    flush: 'sync'
   }
 )
 
