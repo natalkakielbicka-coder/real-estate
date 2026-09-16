@@ -1,13 +1,13 @@
 # Residence – Real Estate
 
-Frontendowa aplikacja dla dewelopera nieruchomości zbudowana w Vue 3. Aplikacja umożliwia przeglądanie inwestycji i mieszkań, korzystanie z rozbudowanych filtrów, interaktywnych rzutów oraz kalkulatora kosztów zakupu.
+Frontendowa aplikacja dla dewelopera nieruchomości zbudowana w Vue 3. Umożliwia przeglądanie inwestycji i mieszkań, korzystanie z rozbudowanych filtrów, interaktywnych rzutów, porównywarki oraz kalkulatora kosztów zakupu.
 
 ## Funkcjonalności
 
 ### Mieszkania
 
 - lista 35 mieszkań,
-- filtrowanie według lokalizacji, liczby pokoi, ceny, statusu i udogodnień,
+- filtrowanie według lokalizacji, liczby pokoi, piętra, ceny, statusu i udogodnień,
 - sortowanie według ceny, powierzchni i ceny za m²,
 - aktywne filtry w formie etykiet,
 - liczba wyników dostępna przy każdym filtrze,
@@ -15,11 +15,14 @@ Frontendowa aplikacja dla dewelopera nieruchomości zbudowana w Vue 3. Aplikacja
 - synchronizacja filtrów z parametrami URL,
 - obsługa nawigacji przeglądarki „Wstecz” i „Dalej”,
 - mobilny panel filtrów,
+- paginacja wyników,
+- automatyczny powrót do pierwszej strony po zmianie filtrów,
 - widok siatki, listy, tabeli, rzutu i mapy,
-- komunikat o braku wyników wraz z możliwością wyczyszczenia filtrów.
+- stany ładowania zdjęć,
+- komunikat o braku wyników wraz z możliwością wyczyszczenia filtrów,
 - dodawanie i usuwanie mieszkań z ulubionych,
-- zapisywanie ulubionych mieszkań w `localStorage`,
-- synchronizacja stanu ulubionych pomiędzy różnymi widokami,
+- dodawanie mieszkań do porównania,
+- synchronizacja ulubionych i porównywanych mieszkań pomiędzy widokami.
 
 ### Szczegóły mieszkania
 
@@ -28,10 +31,16 @@ Frontendowa aplikacja dla dewelopera nieruchomości zbudowana w Vue 3. Aplikacja
 - rzut mieszkania,
 - informacje o cenie, powierzchni, piętrze i terminie oddania,
 - lista cech i udogodnień,
+- historia ceny dostępna w oknie modalnym,
+- sortowanie historii ceny od najnowszej do najstarszej,
+- przewijana tabela dla dłuższej historii,
 - udostępnianie mieszkania lub kopiowanie linku,
+- pobieranie karty mieszkania w formacie PDF,
 - przejście do kalkulatora kosztów zakupu,
 - wyróżnienie mieszkania na interaktywnym rzucie,
-- lista podobnych mieszkań.
+- dodawanie do ulubionych i porównania,
+- lista podobnych mieszkań,
+- lista ostatnio oglądanych mieszkań.
 
 ### Ulubione
 
@@ -41,6 +50,28 @@ Frontendowa aplikacja dla dewelopera nieruchomości zbudowana w Vue 3. Aplikacja
 - zachowanie listy po odświeżeniu strony,
 - komunikaty toast po dodaniu i usunięciu mieszkania,
 - pusty stan z odnośnikiem do listy mieszkań.
+
+### Porównywarka
+
+- dodawanie mieszkań do porównania z widoku siatki, listy, tabeli i szczegółów,
+- możliwość porównania maksymalnie trzech mieszkań,
+- osobna podstrona porównania,
+- zestawienie ceny, powierzchni, liczby pokoi, piętra, ceny za m² i statusu,
+- wyróżnienie najniższej ceny, największej powierzchni i najniższej ceny za m²,
+- usuwanie pojedynczych mieszkań z porównania,
+- możliwość wyczyszczenia całego porównania,
+- licznik porównywanych mieszkań w nagłówku,
+- zapis wybranych mieszkań w `localStorage`,
+- pusty stan z odnośnikiem do listy mieszkań.
+
+### Ostatnio oglądane
+
+- automatyczne zapisywanie odwiedzonych mieszkań,
+- zachowanie kolejności od ostatnio oglądanego,
+- usuwanie powtórzeń,
+- ograniczenie liczby przechowywanych mieszkań,
+- zapis historii w `localStorage`,
+- prezentacja ostatnio oglądanych ofert na stronie szczegółów.
 
 ### Inwestycje
 
@@ -57,6 +88,12 @@ Frontendowa aplikacja dla dewelopera nieruchomości zbudowana w Vue 3. Aplikacja
 
 - wybór inwestycji i dostępnego mieszkania,
 - obsługa mieszkania przekazanego przez parametr URL,
+- możliwość wpisania własnej ceny i powierzchni mieszkania,
+- przełączanie pomiędzy mieszkaniem z oferty a własnymi danymi,
+- obsługa rynku pierwotnego i wtórnego,
+- obliczanie podatku PCC dla rynku wtórnego,
+- uwzględnienie zwolnienia z PCC przy kwalifikującym się zakupie pierwszego mieszkania,
+- walidacja własnej ceny i powierzchni,
 - obliczanie potrzebnego kredytu,
 - obliczanie procentowego wkładu własnego,
 - ostrzeżenie o wkładzie własnym niższym niż 20%,
@@ -65,6 +102,8 @@ Frontendowa aplikacja dla dewelopera nieruchomości zbudowana w Vue 3. Aplikacja
 - dodatkowe koszty miejsca parkingowego, komórki lokatorskiej i notariusza,
 - podsumowanie wszystkich kosztów,
 - wykres podziału kosztów,
+- stan informacyjny wykresu dla niekompletnych danych,
+- blokowanie zapisu niekompletnej kalkulacji,
 - zapis kalkulacji w `localStorage`,
 - automatyczne wczytywanie zapisanej kalkulacji,
 - możliwość zresetowania kalkulatora,
@@ -82,6 +121,7 @@ Frontendowa aplikacja dla dewelopera nieruchomości zbudowana w Vue 3. Aplikacja
 - Leaflet,
 - Swiper,
 - Vue Easy Lightbox,
+- jsPDF,
 - ESLint,
 - Prettier.
 
@@ -93,9 +133,9 @@ src/
 ├── components/   # Komponenty interfejsu
 ├── composables/  # Logika wielokrotnego użytku
 ├── constants/    # Statusy i stałe aplikacji
-├── data/         # Dane mieszkań, inwestycji i rzutów
+├── data/         # Dane mieszkań, inwestycji, historii cen i rzutów
 ├── router/       # Konfiguracja Vue Router
-├── utils/        # Funkcje pomocnicze i formatery
+├── utils/        # Funkcje pomocnicze, formatery i generator PDF
 └── views/        # Widoki poszczególnych podstron
 ```
 
@@ -167,4 +207,15 @@ npm run preview
 
 Projekt korzysta obecnie z lokalnych danych zapisanych w katalogu `src/data`. Nie wymaga zewnętrznego API ani backendu.
 
-Zapisana kalkulacja oraz lista ulubionych mieszkań są przechowywane lokalnie w przeglądarce przy użyciu `localStorage`.
+Historia cen ma obecnie charakter demonstracyjny i jest generowana na podstawie lokalnych danych mieszkań.
+
+W `localStorage` przechowywane są:
+
+- ulubione mieszkania,
+- mieszkania dodane do porównania,
+- ostatnio oglądane mieszkania,
+- zapisana kalkulacja kosztów zakupu.
+
+## Informacja o kalkulatorze
+
+Wyniki kalkulatora mają charakter orientacyjny i nie stanowią oferty handlowej, finansowej ani porady podatkowej. Rzeczywiste koszty mogą zależeć od warunków transakcji oraz indywidualnej sytuacji kupującego.
