@@ -49,11 +49,7 @@ const comparedApartments = computed(() =>
 
       <div
         v-else
-        class="grid gap-4"
-        :class="{
-          'md:grid-cols-2': comparedApartments.length === 2,
-          'md:grid-cols-3': comparedApartments.length === 3
-        }"
+        class="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
       >
         <article
           v-for="apartment in comparedApartments"
@@ -146,6 +142,25 @@ const comparedApartments = computed(() =>
             Zobacz mieszkanie
           </RouterLink>
         </article>
+
+        <RouterLink
+          v-if="comparedApartments.length < 3"
+          class="group flex min-h-[320px] flex-col items-center justify-center border border-dashed border-brand/25 bg-transparent p-6 text-center transition-colors hover:border-brand hover:bg-brand/[0.03]"
+          to="/mieszkania"
+        >
+          <span
+            class="grid size-12 place-items-center rounded-full border border-brand/20 text-2xl text-brand transition-transform group-hover:scale-105"
+            aria-hidden="true"
+          >
+            +
+          </span>
+
+          <strong class="mt-4 text-brand"> Dodaj kolejne mieszkanie </strong>
+
+          <span class="mt-2 max-w-[220px] text-sm text-muted">
+            Możesz porównać maksymalnie trzy mieszkania.
+          </span>
+        </RouterLink>
       </div>
     </div>
   </main>
