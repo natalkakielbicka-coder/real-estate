@@ -1,6 +1,7 @@
 <script setup>
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { formatPrice } from '../utils/apartmentFormatters'
+import { getLatestPriceChange } from '../utils/priceHistoryHelpers'
 
 const props = defineProps({
   currentPrice: {
@@ -19,6 +20,10 @@ const sortedPriceHistory = computed(() => {
   return [...props.priceHistory].sort((firstEntry, secondEntry) => {
     return new Date(secondEntry.date) - new Date(firstEntry.date)
   })
+})
+
+const priceChange = computed(() => {
+  return getLatestPriceChange(props.priceHistory)
 })
 
 const openModal = () => {
@@ -78,6 +83,24 @@ onBeforeUnmount(() => {
     <strong class="block text-xl text-brand">
       {{ formatPrice(props.currentPrice) }} zł
     </strong>
+
+    <span
+      v-if="priceChange"
+      class="mt-2 flex items-center gap-1 text-[10px] font-semibold"
+      :class="
+        priceChange.direction === 'decrease' ? 'text-brand' : 'text-[#a94d4d]'
+      "
+    >
+      <span aria-hidden="true">
+        {{ priceChange.direction === 'decrease' ? '↓' : '↑' }}
+      </span>
+
+      {{
+        priceChange.direction === 'decrease' ? 'Cena niższa o' : 'Cena wyższa o'
+      }}
+
+      {{ formatPrice(Math.abs(priceChange.amount)) }} zł
+    </span>
 
     <span
       v-if="props.priceHistory.length > 0"
