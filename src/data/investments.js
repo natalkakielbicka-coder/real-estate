@@ -1,3 +1,5 @@
+import { getPublicAssetPath } from '../utils/assetPaths'
+
 export const investments = [
   {
     id: 'zielone-tarasy',
@@ -7,7 +9,7 @@ export const investments = [
     address: 'ul. Zielona 18',
     coordinates: [50.0953, 19.9366],
     completionDate: '2027-06-30',
-    image: '/images/investments/zielone-tarasy.png',
+    image: getPublicAssetPath('/images/investments/zielone-tarasy.png'),
     description:
       'Kameralne osiedle stworzone z myślą o osobach, które chcą łączyć wygodę miasta z bliskością natury. Duże przeszklenia, zielone tarasy i starannie zaprojektowane części wspólne tworzą komfortową przestrzeń do życia.',
 
@@ -28,7 +30,7 @@ export const investments = [
     address: 'ul. Parkowa 7',
     coordinates: [52.2058, 21.0268],
     completionDate: '2028-03-31',
-    image: '/images/investments/miejski-park.png',
+    image: getPublicAssetPath('/images/investments/miejski-park.png'),
     description:
       'Nowoczesna inwestycja w dobrze skomunikowanej części Warszawy. Bliskość parku, usług i komunikacji miejskiej pozwala wygodnie korzystać z życia miasta bez rezygnowania ze spokojnego otoczenia.',
 
@@ -49,7 +51,7 @@ export const investments = [
     address: 'ul. Nadbrzeżna 12',
     coordinates: [51.1252, 17.0364],
     completionDate: '2027-12-31',
-    image: '/images/investments/nad-odra.png',
+    image: getPublicAssetPath('/images/investments/nad-odra.png'),
     description:
       'Nadrzeczna inwestycja łącząca nowoczesną architekturę z wyjątkowym położeniem. Mieszkańcy zyskują dostęp do promenady, terenów zielonych i atrakcji centrum Wrocławia.',
 
