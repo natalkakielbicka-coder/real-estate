@@ -1,10 +1,14 @@
+import { getPublicAssetPath } from '../utils/assetPaths'
+
 export const buildingPlans = [
   {
     id: 'zielone-tarasy-building-a',
     investmentId: 'zielone-tarasy',
     building: 'A',
     name: 'Budynek A',
-    image: '/images/buildings/zielone-tarasy-building-a.png',
+    image: getPublicAssetPath(
+      '/images/buildings/zielone-tarasy-building-a.png'
+    ),
     viewBox: '0 0 1536 1024',
 
     floors: [
