@@ -2,6 +2,10 @@
 
 Frontendowa aplikacja dla dewelopera nieruchomości zbudowana w Vue 3. Umożliwia przeglądanie inwestycji i mieszkań, korzystanie z rozbudowanych filtrów, interaktywnych rzutów, porównywarki oraz kalkulatora kosztów zakupu.
 
+## Demo
+
+[Zobacz aplikację online](https://natalkakielbicka-coder.github.io/real-estate/)
+
 ## Funkcjonalności
 
 ### Mieszkania
