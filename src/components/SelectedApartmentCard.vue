@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { getRoomsLabel } from '../utils/apartmentFormatters'
+import { getPublicAssetPath } from '../utils/assetPaths'
 
 const props = defineProps({
   apartment: {
@@ -10,7 +11,9 @@ const props = defineProps({
 })
 
 const investmentImage = computed(() => {
-  return `/images/investments/${props.apartment.investmentId}.png`
+  return getPublicAssetPath(
+    `/images/investments/${props.apartment.investmentId}.png`
+  )
 })
 
 const isImageLoaded = ref(false)

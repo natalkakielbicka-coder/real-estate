@@ -1,3 +1,5 @@
+import { getPublicAssetPath } from '../utils/assetPaths'
+
 const apartmentsData = [
   {
     id: 1,
@@ -536,10 +538,10 @@ const apartmentsData = [
 ]
 
 const apartmentPlanByRooms = {
-  1: '/images/apartments/plans/zielone-tarasy-b-03.jpg',
-  2: '/images/apartments/plans/zielone-tarasy-a-08.jpg',
-  3: '/images/apartments/plans/zielone-tarasy-a-12.jpg',
-  4: '/images/apartments/plans/zielone-tarasy-a-18.jpg'
+  1: getPublicAssetPath('/images/apartments/plans/zielone-tarasy-b-03.jpg'),
+  2: getPublicAssetPath('/images/apartments/plans/zielone-tarasy-a-08.jpg'),
+  3: getPublicAssetPath('/images/apartments/plans/zielone-tarasy-a-12.jpg'),
+  4: getPublicAssetPath('/images/apartments/plans/zielone-tarasy-a-18.jpg')
 }
 
 const createZieloneTarasyApartment = ({
@@ -837,6 +839,7 @@ export const apartments = [
   priceHistory:
     apartment.priceHistory ?? createPriceHistory(apartment.price, apartment.id),
   floorPlan:
-    apartment.floorPlan ?? `/images/apartments/plans/${apartment.slug}.jpg`,
+    apartment.floorPlan ??
+    getPublicAssetPath(`/images/apartments/plans/${apartment.slug}.jpg`),
   gallery: investmentGalleries[apartment.investmentId]
 }))
