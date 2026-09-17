@@ -77,7 +77,12 @@ const hoveredFloorApartmentsCount = computed(() => {
   }
 
   return props.apartments.filter((apartment) => {
-    return Number(apartment.floor) === Number(hoveredFloor.value.floor)
+    const isSameFloor =
+      Number(apartment.floor) === Number(hoveredFloor.value.floor)
+
+    const isSameBuilding = apartment.building === props.plan.building
+
+    return isSameFloor && isSameBuilding
   }).length
 })
 
