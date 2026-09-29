@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { storeToRefs } from 'pinia'
 import { apartments } from '../data/apartments'
 import { floorPlans } from '../data/floorPlans'
 import {
@@ -21,19 +22,20 @@ import {
 } from '../constants/apartmentAttributes'
 import { formatCompletionDate } from '../utils/dateFormatters'
 import { useFavoritesStore } from '../stores/favorites'
-import { useRecentlyViewed } from '../composables/useRecentlyViewed'
-import CompareButton from '../components/CompareButton.vue'
-import { useComparison } from '../composables/useComparison'
-import ApartmentPriceHistory from '../components/ApartmentPriceHistory.vue'
+import { useRecentlyViewedStore } from '../stores/recentlyViewed'
+import { useComparisonStore } from '../stores/comparison'
 import { useToastStore } from '../stores/toast'
-const { showToast } = useToastStore()
+import CompareButton from '../components/CompareButton.vue'
+import ApartmentPriceHistory from '../components/ApartmentPriceHistory.vue'
 
 const route = useRoute()
 const isGeneratingPdf = ref(false)
+const { showToast } = useToastStore()
 const { isFavorite, toggleFavorite } = useFavoritesStore()
-const { recentlyViewedApartmentIds, addRecentlyViewedApartment } =
-  useRecentlyViewed()
-const { isInComparison, toggleComparison } = useComparison()
+const { isInComparison, toggleComparison } = useComparisonStore()
+const recentlyViewedStore = useRecentlyViewedStore()
+const { recentlyViewedApartmentIds } = storeToRefs(recentlyViewedStore)
+const { addRecentlyViewedApartment } = recentlyViewedStore
 
 const apartment = computed(() => {
   return apartments.find((item) => {
