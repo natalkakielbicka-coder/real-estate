@@ -18,6 +18,7 @@ export const useRecentlyViewedStore = defineStore('recentlyViewed', () => {
       const parsedApartmentIds = JSON.parse(savedApartmentIds)
 
       if (!Array.isArray(parsedApartmentIds)) {
+        recentlyViewedApartmentIds.value = []
         return
       }
 

@@ -29,6 +29,7 @@ export const useComparisonStore = defineStore('comparison', () => {
       const parsedApartmentIds = JSON.parse(savedApartmentIds)
 
       if (!Array.isArray(parsedApartmentIds)) {
+        comparisonApartmentIds.value = []
         return
       }
 
