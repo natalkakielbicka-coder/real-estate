@@ -46,7 +46,7 @@ export const useRecentlyViewedStore = defineStore('recentlyViewed', () => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(nextApartmentIds))
     } catch {
-      // Historia nadal działa do czasu odświeżenia strony.
+      // Historia pozostaje dostępna w bieżącej sesji, mimo błędu zapisu.
     }
   }
 
