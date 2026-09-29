@@ -1,41 +1,14 @@
 import { computed, ref } from 'vue'
-import { useToastStore } from '../stores/toast'
+import { defineStore } from 'pinia'
+import { useToastStore } from './toast'
 
 const STORAGE_KEY = 'comparison-apartment-ids'
 const MAX_COMPARISON_APARTMENTS = 3
 
-const comparisonApartmentIds = ref([])
-
-const loadComparison = () => {
-  try {
-    const savedApartmentIds = localStorage.getItem(STORAGE_KEY)
-
-    if (!savedApartmentIds) {
-      return
-    }
-
-    const parsedApartmentIds = JSON.parse(savedApartmentIds)
-
-    if (!Array.isArray(parsedApartmentIds)) {
-      return
-    }
-
-    comparisonApartmentIds.value = [
-      ...new Set(
-        parsedApartmentIds.filter((apartmentId) => {
-          return Number.isInteger(apartmentId)
-        })
-      )
-    ].slice(0, MAX_COMPARISON_APARTMENTS)
-  } catch {
-    comparisonApartmentIds.value = []
-  }
-}
-
-loadComparison()
-
-export const useComparison = () => {
+export const useComparisonStore = defineStore('comparison', () => {
   const { showToast } = useToastStore()
+
+  const comparisonApartmentIds = ref([])
 
   const comparisonCount = computed(() => {
     return comparisonApartmentIds.value.length
@@ -44,6 +17,32 @@ export const useComparison = () => {
   const isComparisonFull = computed(() => {
     return comparisonCount.value >= MAX_COMPARISON_APARTMENTS
   })
+
+  const loadComparison = () => {
+    try {
+      const savedApartmentIds = localStorage.getItem(STORAGE_KEY)
+
+      if (!savedApartmentIds) {
+        return
+      }
+
+      const parsedApartmentIds = JSON.parse(savedApartmentIds)
+
+      if (!Array.isArray(parsedApartmentIds)) {
+        return
+      }
+
+      comparisonApartmentIds.value = [
+        ...new Set(
+          parsedApartmentIds.filter((apartmentId) => {
+            return Number.isInteger(apartmentId)
+          })
+        )
+      ].slice(0, MAX_COMPARISON_APARTMENTS)
+    } catch {
+      comparisonApartmentIds.value = []
+    }
+  }
 
   const isInComparison = (apartmentId) => {
     return comparisonApartmentIds.value.includes(apartmentId)
@@ -89,6 +88,8 @@ export const useComparison = () => {
     showToast('Wyczyszczono porównanie', 'success')
   }
 
+  loadComparison()
+
   return {
     comparisonApartmentIds,
     comparisonCount,
@@ -97,4 +98,4 @@ export const useComparison = () => {
     toggleComparison,
     clearComparison
   }
-}
+})

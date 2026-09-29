@@ -10,12 +10,11 @@ import {
   getRoomsLabel
 } from '../utils/apartmentFormatters'
 import FavoriteButton from './FavoriteButton.vue'
-import { useFavoritesStore } from '../stores/favorites'
 import CompareButton from './CompareButton.vue'
-import { useComparison } from '../composables/useComparison'
-
+import { useFavoritesStore } from '../stores/favorites'
+import { useComparisonStore } from '../stores/comparison'
 const { isFavorite, toggleFavorite } = useFavoritesStore()
-const { isInComparison, toggleComparison } = useComparison()
+const { isInComparison, toggleComparison } = useComparisonStore()
 
 defineProps({
   apartment: {

@@ -1,7 +1,9 @@
 <script setup>
 import { computed } from 'vue'
 import { apartments } from '../data/apartments'
-import { useComparison } from '../composables/useComparison'
+import { storeToRefs } from 'pinia'
+import { useComparisonStore } from '../stores/comparison'
+
 import {
   formatPrice,
   formatPricePerMeter,
@@ -13,8 +15,9 @@ import {
   apartmentStatusLabels
 } from '../constants/apartmentStatuses'
 
-const { comparisonApartmentIds, toggleComparison, clearComparison } =
-  useComparison()
+const comparisonStore = useComparisonStore()
+const { comparisonApartmentIds } = storeToRefs(comparisonStore)
+const { toggleComparison, clearComparison } = comparisonStore
 
 const comparedApartments = computed(() =>
   comparisonApartmentIds.value

@@ -3,13 +3,12 @@ import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useFavoritesStore } from '../stores/favorites'
-
+import { useComparisonStore } from '../stores/comparison'
 const { favoriteCount } = storeToRefs(useFavoritesStore())
-import { useComparison } from '../composables/useComparison'
+const { comparisonCount } = storeToRefs(useComparisonStore())
 
 const route = useRoute()
 const isMenuOpen = ref(false)
-const { comparisonCount } = useComparison()
 
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value

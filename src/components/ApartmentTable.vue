@@ -11,10 +11,10 @@ import {
 
 import FavoriteButton from './FavoriteButton.vue'
 import { useFavoritesStore } from '../stores/favorites'
-import { useComparison } from '../composables/useComparison'
+import { useComparisonStore } from '../stores/comparison'
 
 const { isFavorite, toggleFavorite } = useFavoritesStore()
-const { isInComparison, toggleComparison } = useComparison()
+const { isInComparison, toggleComparison } = useComparisonStore()
 
 defineProps({
   apartments: {
