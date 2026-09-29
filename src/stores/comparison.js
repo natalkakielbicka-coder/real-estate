@@ -79,10 +79,15 @@ export const useComparisonStore = defineStore('comparison', () => {
   }
 
   const clearComparison = () => {
-    comparisonApartmentIds.value = []
-    localStorage.removeItem(STORAGE_KEY)
+    try {
+      localStorage.removeItem(STORAGE_KEY)
 
-    showToast('Wyczyszczono porównanie', 'success')
+      comparisonApartmentIds.value = []
+
+      showToast('Wyczyszczono porównanie', 'success')
+    } catch {
+      showToast('Nie udało się wyczyścić porównania', 'error')
+    }
   }
 
   loadComparison()

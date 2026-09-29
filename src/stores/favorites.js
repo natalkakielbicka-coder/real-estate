@@ -27,7 +27,13 @@ export const useFavoritesStore = defineStore('favorites', () => {
         return
       }
 
-      favoriteApartmentIds.value = parsedFavorites
+      favoriteApartmentIds.value = [
+        ...new Set(
+          parsedFavorites.filter((apartmentId) => {
+            return Number.isInteger(apartmentId)
+          })
+        )
+      ]
     } catch {
       favoriteApartmentIds.value = []
     }
