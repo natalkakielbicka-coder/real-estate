@@ -1,12 +1,14 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { useFavorites } from '../composables/useFavorites'
+import { storeToRefs } from 'pinia'
+import { useFavoritesStore } from '../stores/favorites'
+
+const { favoriteCount } = storeToRefs(useFavoritesStore())
 import { useComparison } from '../composables/useComparison'
 
 const route = useRoute()
 const isMenuOpen = ref(false)
-const { favoriteCount } = useFavorites()
 const { comparisonCount } = useComparison()
 
 const toggleMenu = () => {

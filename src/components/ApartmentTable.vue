@@ -10,10 +10,10 @@ import {
 } from '../utils/apartmentFormatters'
 
 import FavoriteButton from './FavoriteButton.vue'
-import { useFavorites } from '../composables/useFavorites'
+import { useFavoritesStore } from '../stores/favorites'
 import { useComparison } from '../composables/useComparison'
 
-const { isFavorite, toggleFavorite } = useFavorites()
+const { isFavorite, toggleFavorite } = useFavoritesStore()
 const { isInComparison, toggleComparison } = useComparison()
 
 defineProps({

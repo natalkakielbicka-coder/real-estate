@@ -1,38 +1,37 @@
 import { computed, ref } from 'vue'
-import { useToastStore } from '../stores/toast'
+import { defineStore } from 'pinia'
+import { useToastStore } from './toast'
 
 const STORAGE_KEY = 'favorite-apartment-ids'
 
-const favoriteApartmentIds = ref([])
-
-const loadFavorites = () => {
-  try {
-    const savedFavorites = localStorage.getItem(STORAGE_KEY)
-
-    if (!savedFavorites) {
-      return
-    }
-
-    const parsedFavorites = JSON.parse(savedFavorites)
-
-    if (!Array.isArray(parsedFavorites)) {
-      return
-    }
-
-    favoriteApartmentIds.value = parsedFavorites
-  } catch {
-    favoriteApartmentIds.value = []
-  }
-}
-
-loadFavorites()
-
-export const useFavorites = () => {
+export const useFavoritesStore = defineStore('favorites', () => {
   const { showToast } = useToastStore()
+
+  const favoriteApartmentIds = ref([])
 
   const favoriteCount = computed(() => {
     return favoriteApartmentIds.value.length
   })
+
+  const loadFavorites = () => {
+    try {
+      const savedFavorites = localStorage.getItem(STORAGE_KEY)
+
+      if (!savedFavorites) {
+        return
+      }
+
+      const parsedFavorites = JSON.parse(savedFavorites)
+
+      if (!Array.isArray(parsedFavorites)) {
+        return
+      }
+
+      favoriteApartmentIds.value = parsedFavorites
+    } catch {
+      favoriteApartmentIds.value = []
+    }
+  }
 
   const isFavorite = (apartmentId) => {
     return favoriteApartmentIds.value.includes(apartmentId)
@@ -60,10 +59,12 @@ export const useFavorites = () => {
     }
   }
 
+  loadFavorites()
+
   return {
     favoriteApartmentIds,
     favoriteCount,
     isFavorite,
     toggleFavorite
   }
-}
+})

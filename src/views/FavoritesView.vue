@@ -1,11 +1,11 @@
 <script setup>
 import { computed } from 'vue'
 import { apartments } from '../data/apartments'
-import { useFavorites } from '../composables/useFavorites'
+import { storeToRefs } from 'pinia'
+import { useFavoritesStore } from '../stores/favorites'
 import ApartmentGrid from '../components/ApartmentGrid.vue'
 
-const { favoriteApartmentIds } = useFavorites()
-
+const { favoriteApartmentIds } = storeToRefs(useFavoritesStore())
 const favoriteApartments = computed(() => {
   return apartments.filter((apartment) => {
     return favoriteApartmentIds.value.includes(apartment.id)

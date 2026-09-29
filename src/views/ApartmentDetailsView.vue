@@ -20,7 +20,7 @@ import {
   outdoorSpaceLabels
 } from '../constants/apartmentAttributes'
 import { formatCompletionDate } from '../utils/dateFormatters'
-import { useFavorites } from '../composables/useFavorites'
+import { useFavoritesStore } from '../stores/favorites'
 import { useRecentlyViewed } from '../composables/useRecentlyViewed'
 import CompareButton from '../components/CompareButton.vue'
 import { useComparison } from '../composables/useComparison'
@@ -30,7 +30,7 @@ const { showToast } = useToastStore()
 
 const route = useRoute()
 const isGeneratingPdf = ref(false)
-const { isFavorite, toggleFavorite } = useFavorites()
+const { isFavorite, toggleFavorite } = useFavoritesStore()
 const { recentlyViewedApartmentIds, addRecentlyViewedApartment } =
   useRecentlyViewed()
 const { isInComparison, toggleComparison } = useComparison()
