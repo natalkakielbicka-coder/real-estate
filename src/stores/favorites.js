@@ -24,6 +24,7 @@ export const useFavoritesStore = defineStore('favorites', () => {
       const parsedFavorites = JSON.parse(savedFavorites)
 
       if (!Array.isArray(parsedFavorites)) {
+        favoriteApartmentIds.value = []
         return
       }
 
