@@ -1,5 +1,5 @@
 import { computed, ref } from 'vue'
-import { useToast } from './useToast'
+import { useToastStore } from '../stores/toast'
 
 const STORAGE_KEY = 'comparison-apartment-ids'
 const MAX_COMPARISON_APARTMENTS = 3
@@ -35,7 +35,7 @@ const loadComparison = () => {
 loadComparison()
 
 export const useComparison = () => {
-  const { showToast } = useToast()
+  const { showToast } = useToastStore()
 
   const comparisonCount = computed(() => {
     return comparisonApartmentIds.value.length

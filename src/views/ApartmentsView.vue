@@ -9,10 +9,10 @@ import InvestmentsMap from '../components/InvestmentsMap.vue'
 import { floorPlans } from '../data/floorPlans'
 import { apartments } from '../data/apartments'
 import { apartmentStatusClasses } from '../constants/apartmentStatuses'
-import { useToast } from '../composables/useToast'
 import { getApartmentsLabel, getFloorLabel } from '../utils/apartmentFormatters'
 
-const { showToast } = useToast()
+import { useToastStore } from '../stores/toast'
+const { showToast } = useToastStore()
 
 const selectedStatuses = ref([])
 const selectedOutdoorSpaces = ref([])

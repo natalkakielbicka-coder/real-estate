@@ -1,5 +1,5 @@
 import { computed, ref } from 'vue'
-import { useToast } from './useToast'
+import { useToastStore } from '../stores/toast'
 
 const STORAGE_KEY = 'favorite-apartment-ids'
 
@@ -28,7 +28,7 @@ const loadFavorites = () => {
 loadFavorites()
 
 export const useFavorites = () => {
-  const { showToast } = useToast()
+  const { showToast } = useToastStore()
 
   const favoriteCount = computed(() => {
     return favoriteApartmentIds.value.length

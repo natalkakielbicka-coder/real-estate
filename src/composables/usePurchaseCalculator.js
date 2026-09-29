@@ -1,6 +1,6 @@
 import { computed, ref, onMounted, watch, unref } from 'vue'
 import { apartments } from '../data/apartments'
-import { useToast } from './useToast'
+import { useToastStore } from '../stores/toast'
 import { toNonNegativeNumber } from '../utils/numberHelpers'
 
 const STORAGE_KEY = 'purchase-calculation'
@@ -21,7 +21,7 @@ const DEFAULT_CALCULATION = {
 }
 
 export const usePurchaseCalculator = (initialApartmentSlug = null) => {
-  const { showToast } = useToast()
+  const { showToast } = useToastStore()
   const availableApartments = apartments.filter((apartment) => {
     return apartment.status === 'available'
   })

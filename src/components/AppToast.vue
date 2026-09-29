@@ -1,8 +1,11 @@
 <script setup>
 import { computed } from 'vue'
-import { useToast } from '../composables/useToast'
+import { storeToRefs } from 'pinia'
+import { useToastStore } from '../stores/toast'
 
-const { toast, hideToast } = useToast()
+const toastStore = useToastStore()
+const { toast } = storeToRefs(toastStore)
+const { hideToast } = toastStore
 
 const toastStyles = computed(() => {
   const variants = {

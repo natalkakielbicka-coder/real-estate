@@ -10,9 +10,8 @@ import BuildingFloorSelector from '../components/BuildingFloorSelector.vue'
 import FloorPlanSelector from '../components/FloorPlanSelector.vue'
 import { getInvestmentStatusCounts } from '../utils/investmentHelpers'
 import { getOffersLabel } from '../utils/apartmentFormatters'
-import { useToast } from '../composables/useToast'
-
-const { showToast } = useToast()
+import { useToastStore } from '../stores/toast'
+const { showToast } = useToastStore()
 
 const route = useRoute()
 const router = useRouter()
