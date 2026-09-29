@@ -30,6 +30,7 @@ export const useComparisonStore = defineStore('comparison', () => {
 
       if (!Array.isArray(parsedApartmentIds)) {
         comparisonApartmentIds.value = []
+        localStorage.removeItem(STORAGE_KEY)
         return
       }
 
@@ -42,6 +43,12 @@ export const useComparisonStore = defineStore('comparison', () => {
       ].slice(0, MAX_COMPARISON_APARTMENTS)
     } catch {
       comparisonApartmentIds.value = []
+
+      try {
+        localStorage.removeItem(STORAGE_KEY)
+      } catch {
+        // Pamięć przeglądarki może być niedostępna.
+      }
     }
   }
 

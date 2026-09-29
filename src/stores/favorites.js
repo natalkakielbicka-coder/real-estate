@@ -25,6 +25,7 @@ export const useFavoritesStore = defineStore('favorites', () => {
 
       if (!Array.isArray(parsedFavorites)) {
         favoriteApartmentIds.value = []
+        localStorage.removeItem(STORAGE_KEY)
         return
       }
 
@@ -37,6 +38,12 @@ export const useFavoritesStore = defineStore('favorites', () => {
       ]
     } catch {
       favoriteApartmentIds.value = []
+
+      try {
+        localStorage.removeItem(STORAGE_KEY)
+      } catch {
+        // Pamięć przeglądarki może być niedostępna.
+      }
     }
   }
 

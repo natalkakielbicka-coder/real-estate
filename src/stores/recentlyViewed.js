@@ -19,6 +19,7 @@ export const useRecentlyViewedStore = defineStore('recentlyViewed', () => {
 
       if (!Array.isArray(parsedApartmentIds)) {
         recentlyViewedApartmentIds.value = []
+        localStorage.removeItem(STORAGE_KEY)
         return
       }
 
@@ -31,6 +32,12 @@ export const useRecentlyViewedStore = defineStore('recentlyViewed', () => {
       ].slice(0, MAX_RECENT_APARTMENTS)
     } catch {
       recentlyViewedApartmentIds.value = []
+
+      try {
+        localStorage.removeItem(STORAGE_KEY)
+      } catch {
+        // Pamięć przeglądarki może być niedostępna.
+      }
     }
   }
 
