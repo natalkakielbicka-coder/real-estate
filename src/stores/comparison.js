@@ -62,10 +62,10 @@ export const useComparisonStore = defineStore('comparison', () => {
         })
       : [...comparisonApartmentIds.value, apartmentId]
 
-    comparisonApartmentIds.value = nextApartmentIds
-
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(nextApartmentIds))
+
+      comparisonApartmentIds.value = nextApartmentIds
 
       showToast(
         apartmentIsSelected
@@ -74,10 +74,7 @@ export const useComparisonStore = defineStore('comparison', () => {
         'success'
       )
     } catch {
-      showToast(
-        'Zmieniono porównanie, ale nie udało się zapisać wyboru',
-        'error'
-      )
+      showToast('Nie udało się zapisać porównania', 'error')
     }
   }
 
