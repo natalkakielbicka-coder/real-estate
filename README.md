@@ -1,119 +1,119 @@
 # Residence – Real Estate
 
-Frontendowa aplikacja dla dewelopera nieruchomości zbudowana w Vue 3. Umożliwia przeglądanie inwestycji i mieszkań, korzystanie z rozbudowanych filtrów, interaktywnych rzutów, porównywarki oraz kalkulatora kosztów zakupu.
+A frontend application for a real estate developer, built with Vue 3. It lets users browse developments and apartments, use advanced filters, explore interactive floor plans, compare apartments and estimate purchase costs.
 
 ## Demo
 
-[Zobacz aplikację online](https://natalkakielbicka-coder.github.io/real-estate/)
+[View the live app](https://natalkakielbicka-coder.github.io/real-estate/)
 
-## Funkcjonalności
+## Features
 
-### Mieszkania
+### Apartments
 
-- lista 35 mieszkań,
-- filtrowanie według lokalizacji, liczby pokoi, piętra, ceny, statusu i udogodnień,
-- sortowanie według ceny, powierzchni i ceny za m²,
-- aktywne filtry w formie etykiet,
-- liczba wyników dostępna przy każdym filtrze,
-- walidacja zakresu cen,
-- synchronizacja filtrów z parametrami URL,
-- obsługa nawigacji przeglądarki „Wstecz” i „Dalej”,
-- mobilny panel filtrów,
-- paginacja wyników,
-- automatyczny powrót do pierwszej strony po zmianie filtrów,
-- widok siatki, listy, tabeli, rzutu i mapy,
-- stany ładowania zdjęć,
-- komunikat o braku wyników wraz z możliwością wyczyszczenia filtrów,
-- dodawanie i usuwanie mieszkań z ulubionych,
-- dodawanie mieszkań do porównania,
-- synchronizacja ulubionych i porównywanych mieszkań pomiędzy widokami.
+- list of 35 apartments,
+- filtering by location, number of rooms, floor, price, status and amenities,
+- sorting by price, area and price per m²,
+- active filters shown as tags,
+- result count next to each filter option,
+- price range validation,
+- filters synced with URL parameters,
+- browser Back and Forward navigation support,
+- mobile filter panel,
+- paginated results,
+- automatic return to the first page when filters change,
+- grid, list, table, floor plan and map views,
+- image loading states,
+- empty state with an option to clear filters,
+- adding and removing favourites,
+- adding apartments to comparison,
+- favourites and comparison synced across views.
 
-### Szczegóły mieszkania
+### Apartment details
 
-- galeria zdjęć oparta na Swiper,
-- pełnoekranowy lightbox,
-- rzut mieszkania,
-- informacje o cenie, powierzchni, piętrze i terminie oddania,
-- lista cech i udogodnień,
-- historia ceny dostępna w oknie modalnym,
-- sortowanie historii ceny od najnowszej do najstarszej,
-- przewijana tabela dla dłuższej historii,
-- udostępnianie mieszkania lub kopiowanie linku,
-- pobieranie karty mieszkania w formacie PDF,
-- przejście do kalkulatora kosztów zakupu,
-- wyróżnienie mieszkania na interaktywnym rzucie,
-- dodawanie do ulubionych i porównania,
-- lista podobnych mieszkań,
-- lista ostatnio oglądanych mieszkań.
+- photo gallery built with Swiper,
+- full-screen lightbox,
+- apartment floor plan,
+- price, area, floor and completion date,
+- list of features and amenities,
+- price history in a modal,
+- price history sorted from newest to oldest,
+- scrollable table for longer price history,
+- sharing the apartment or copying its link,
+- downloadable apartment sheet in PDF,
+- link to the purchase cost calculator,
+- apartment highlighted on the interactive floor plan,
+- adding to favourites and comparison,
+- similar apartments,
+- recently viewed apartments.
 
-### Ulubione
+### Favourites
 
-- osobna podstrona z zapisanymi mieszkaniami,
-- licznik ulubionych mieszkań w nagłówku,
-- możliwość usuwania mieszkań bezpośrednio z listy ulubionych,
-- zachowanie listy po odświeżeniu strony,
-- komunikaty toast po dodaniu i usunięciu mieszkania,
-- pusty stan z odnośnikiem do listy mieszkań.
+- dedicated page with saved apartments,
+- favourites counter in the header,
+- removing apartments directly from the list,
+- list preserved after page refresh,
+- toast notifications when adding and removing,
+- empty state with a link to the apartment list.
 
-### Porównywarka
+### Comparison
 
-- dodawanie mieszkań do porównania z widoku siatki, listy, tabeli i szczegółów,
-- możliwość porównania maksymalnie trzech mieszkań,
-- osobna podstrona porównania,
-- zestawienie ceny, powierzchni, liczby pokoi, piętra, ceny za m² i statusu,
-- wyróżnienie najniższej ceny, największej powierzchni i najniższej ceny za m²,
-- usuwanie pojedynczych mieszkań z porównania,
-- możliwość wyczyszczenia całego porównania,
-- licznik porównywanych mieszkań w nagłówku,
-- zapis wybranych mieszkań w `localStorage`,
-- pusty stan z odnośnikiem do listy mieszkań.
+- adding apartments to comparison from grid, list, table and details views,
+- up to three apartments compared at once,
+- dedicated comparison page,
+- side-by-side price, area, rooms, floor, price per m² and status,
+- lowest price, largest area and lowest price per m² highlighted,
+- removing individual apartments from comparison,
+- clearing the whole comparison,
+- comparison counter in the header,
+- selected apartments saved in `localStorage`,
+- empty state with a link to the apartment list.
 
-### Ostatnio oglądane
+### Recently viewed
 
-- automatyczne zapisywanie odwiedzonych mieszkań,
-- zachowanie kolejności od ostatnio oglądanego,
-- usuwanie powtórzeń,
-- ograniczenie liczby przechowywanych mieszkań,
-- zapis historii w `localStorage`,
-- prezentacja ostatnio oglądanych ofert na stronie szczegółów.
+- visited apartments saved automatically,
+- ordered from most recently viewed,
+- duplicates removed,
+- limited number of stored apartments,
+- history saved in `localStorage`,
+- recently viewed listings shown on the details page.
 
-### Inwestycje
+### Developments
 
-- lista inwestycji,
-- szczegółowy widok inwestycji,
-- mapa inwestycji oparta na Leaflet,
-- liczniki dostępnych, zarezerwowanych i sprzedanych mieszkań,
-- interaktywny wybór piętra z wizualizacji budynku,
-- interaktywny rzut mieszkań na wybranym piętrze,
-- filtrowanie mieszkań według statusu,
-- synchronizacja wybranego piętra z adresem URL.
+- list of developments,
+- development details view,
+- development map built with Leaflet,
+- counters of available, reserved and sold apartments,
+- interactive floor selection on a building visualisation,
+- interactive floor plan of apartments on the selected floor,
+- filtering apartments by status,
+- selected floor synced with the URL.
 
-### Kalkulator kosztów zakupu
+### Purchase cost calculator
 
-- wybór inwestycji i dostępnego mieszkania,
-- obsługa mieszkania przekazanego przez parametr URL,
-- możliwość wpisania własnej ceny i powierzchni mieszkania,
-- przełączanie pomiędzy mieszkaniem z oferty a własnymi danymi,
-- obsługa rynku pierwotnego i wtórnego,
-- obliczanie podatku PCC dla rynku wtórnego,
-- uwzględnienie zwolnienia z PCC przy kwalifikującym się zakupie pierwszego mieszkania,
-- walidacja własnej ceny i powierzchni,
-- obliczanie potrzebnego kredytu,
-- obliczanie procentowego wkładu własnego,
-- ostrzeżenie o wkładzie własnym niższym niż 20%,
-- wybór standardu wykończenia,
-- obliczanie kosztu wykończenia na podstawie powierzchni,
-- dodatkowe koszty miejsca parkingowego, komórki lokatorskiej i notariusza,
-- podsumowanie wszystkich kosztów,
-- wykres podziału kosztów,
-- stan informacyjny wykresu dla niekompletnych danych,
-- blokowanie zapisu niekompletnej kalkulacji,
-- zapis kalkulacji w `localStorage`,
-- automatyczne wczytywanie zapisanej kalkulacji,
-- możliwość zresetowania kalkulatora,
-- komunikaty toast po zapisaniu i zresetowaniu danych.
+- choice of development and available apartment,
+- apartment preselected via URL parameter,
+- custom price and area input,
+- switching between a listed apartment and custom data,
+- primary and secondary market support,
+- PCC (civil law transactions tax) calculated for the secondary market,
+- PCC exemption for eligible first-home purchases,
+- validation of custom price and area,
+- required mortgage amount,
+- down payment percentage,
+- warning when the down payment is below 20%,
+- choice of finishing standard,
+- finishing cost calculated from the area,
+- additional costs: parking space, storage unit and notary fees,
+- summary of all costs,
+- cost breakdown chart,
+- informational chart state for incomplete data,
+- saving blocked for incomplete calculations,
+- calculation saved in `localStorage`,
+- saved calculation loaded automatically,
+- calculator reset,
+- toast notifications after saving and resetting.
 
-## Technologie
+## Tech stack
 
 - Vue 3,
 - Composition API,
@@ -129,97 +129,97 @@ Frontendowa aplikacja dla dewelopera nieruchomości zbudowana w Vue 3. Umożliwi
 - ESLint,
 - Prettier.
 
-## Struktura projektu
+## Project structure
 
 ```text
 src/
-├── assets/       # Style globalne i konfiguracja Tailwind CSS
-├── components/   # Komponenty interfejsu
-├── composables/  # Logika wielokrotnego użytku
-├── constants/    # Statusy i stałe aplikacji
-├── data/         # Dane mieszkań, inwestycji, historii cen i rzutów
-├── router/       # Konfiguracja Vue Router
-├── utils/        # Funkcje pomocnicze, formatery i generator PDF
-└── views/        # Widoki poszczególnych podstron
+├── assets/       # Global styles and Tailwind CSS configuration
+├── components/   # UI components
+├── composables/  # Reusable logic
+├── constants/    # Statuses and app constants
+├── data/         # Apartments, developments, price history and floor plans
+├── router/       # Vue Router configuration
+├── utils/        # Helpers, formatters and PDF generator
+└── views/        # Page views
 ```
 
-## Instalacja
+## Installation
 
-Wymagany jest Node.js oraz npm.
+Requires Node.js and npm.
 
 ```bash
 npm install
 ```
 
-## Uruchomienie projektu
+## Running the project
 
 ```bash
 npm run dev
 ```
 
-Aplikacja będzie dostępna pod adresem podanym przez Vite, domyślnie:
+The app will be available at the address shown by Vite, by default:
 
 ```text
 http://localhost:5173
 ```
 
-## Dostępne polecenia
+## Available scripts
 
-Uruchomienie środowiska deweloperskiego:
+Start the development server:
 
 ```bash
 npm run dev
 ```
 
-Sprawdzenie kodu przez ESLint:
+Lint with ESLint:
 
 ```bash
 npm run lint
 ```
 
-Automatyczna naprawa problemów ESLint:
+Fix ESLint issues automatically:
 
 ```bash
 npm run lint:fix
 ```
 
-Sprawdzenie formatowania:
+Check formatting:
 
 ```bash
 npm run format:check
 ```
 
-Automatyczne formatowanie kodu:
+Format code:
 
 ```bash
 npm run format
 ```
 
-Zbudowanie wersji produkcyjnej:
+Build for production:
 
 ```bash
 npm run build
 ```
 
-Lokalny podgląd wersji produkcyjnej:
+Preview the production build locally:
 
 ```bash
 npm run preview
 ```
 
-## Dane aplikacji
+## Application data
 
-Projekt korzysta obecnie z lokalnych danych zapisanych w katalogu `src/data`. Nie wymaga zewnętrznego API ani backendu.
+The project uses local data stored in `src/data`. It does not require an external API or backend.
 
-Historia cen ma obecnie charakter demonstracyjny i jest generowana na podstawie lokalnych danych mieszkań.
+Price history is for demonstration purposes and is generated from local apartment data.
 
-W `localStorage` przechowywane są:
+The following are stored in `localStorage`:
 
-- ulubione mieszkania,
-- mieszkania dodane do porównania,
-- ostatnio oglądane mieszkania,
-- zapisana kalkulacja kosztów zakupu.
+- favourite apartments,
+- apartments added to comparison,
+- recently viewed apartments,
+- saved purchase cost calculation.
 
-## Informacja o kalkulatorze
+## Calculator disclaimer
 
-Wyniki kalkulatora mają charakter orientacyjny i nie stanowią oferty handlowej, finansowej ani porady podatkowej. Rzeczywiste koszty mogą zależeć od warunków transakcji oraz indywidualnej sytuacji kupującego.
+Calculator results are approximate and do not constitute a commercial offer, financial advice or tax advice. Actual costs may depend on the terms of the transaction and the buyer's individual situation.
