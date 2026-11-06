@@ -109,29 +109,28 @@ const purchaseSteps = [
   }
 ]
 
-let heroAnimation
-let descriptionAnimation
+let heroTimeline
 
 onMounted(() => {
-  heroAnimation = gsap.from(heroTitle.value, {
+  heroTimeline = gsap.timeline()
+
+  heroTimeline.from(heroTitle.value, {
     y: 40,
     opacity: 0,
     duration: 1,
     ease: 'power2.out'
   })
 
-  descriptionAnimation = gsap.from(heroDescription.value, {
+  heroTimeline.from(heroDescription.value, {
     y: 30,
     opacity: 0,
-    duration: 1,
-    delay: 0.5,
+    duration: 0.8,
     ease: 'power2.out'
   })
 })
 
 onUnmounted(() => {
-  heroAnimation?.revert()
-  descriptionAnimation?.revert()
+  heroTimeline?.revert()
 })
 </script>
 
