@@ -121,12 +121,16 @@ onMounted(() => {
     ease: 'power2.out'
   })
 
-  heroTimeline.from(heroDescription.value, {
-    y: 30,
-    opacity: 0,
-    duration: 0.8,
-    ease: 'power2.out'
-  })
+  heroTimeline.from(
+    heroDescription.value,
+    {
+      y: 30,
+      opacity: 0,
+      duration: 0.8,
+      ease: 'power2.out'
+    },
+    '-=0.3'
+  )
 })
 
 onUnmounted(() => {
