@@ -16,6 +16,7 @@ const selectedRooms = ref('')
 const selectedMaxPrice = ref('')
 const isHeroImageLoaded = ref(false)
 const heroTitle = ref(null)
+const heroDescription = ref(null)
 
 const searchApartments = () => {
   router.push({
@@ -109,6 +110,7 @@ const purchaseSteps = [
 ]
 
 let heroAnimation
+let descriptionAnimation
 
 onMounted(() => {
   heroAnimation = gsap.from(heroTitle.value, {
@@ -117,10 +119,19 @@ onMounted(() => {
     duration: 1,
     ease: 'power2.out'
   })
+
+  descriptionAnimation = gsap.from(heroDescription.value, {
+    y: 30,
+    opacity: 0,
+    duration: 1,
+    delay: 0.5,
+    ease: 'power2.out'
+  })
 })
 
 onUnmounted(() => {
   heroAnimation?.revert()
+  descriptionAnimation?.revert()
 })
 </script>
 
@@ -148,7 +159,10 @@ onUnmounted(() => {
             <span class="block text-gold"> do dobrego życia </span>
           </h1>
 
-          <p class="mb-[34px] max-w-[600px] text-[17px] text-muted sm:mb-11">
+          <p
+            ref="heroDescription"
+            class="mb-[34px] max-w-[600px] text-[17px] text-muted sm:mb-11"
+          >
             Odkryj starannie wybrane mieszkania w najlepszych lokalizacjach i
             znajdź przestrzeń dopasowaną do Twojego życia.
           </p>
