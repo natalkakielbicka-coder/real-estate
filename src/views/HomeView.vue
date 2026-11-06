@@ -1,5 +1,6 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import gsap from 'gsap'
 import { useRouter } from 'vue-router'
 import { apartments } from '../data/apartments'
 import { investments } from '../data/investments'
@@ -14,6 +15,7 @@ const selectedCity = ref('')
 const selectedRooms = ref('')
 const selectedMaxPrice = ref('')
 const isHeroImageLoaded = ref(false)
+const heroTitle = ref(null)
 
 const searchApartments = () => {
   router.push({
@@ -105,6 +107,21 @@ const purchaseSteps = [
       'Po zakończeniu inwestycji odbierz swoje mieszkanie i rozpocznij nowy etap.'
   }
 ]
+
+let heroAnimation
+
+onMounted(() => {
+  heroAnimation = gsap.from(heroTitle.value, {
+    y: 40,
+    opacity: 0,
+    duration: 1,
+    ease: 'power2.out'
+  })
+})
+
+onUnmounted(() => {
+  heroAnimation?.revert()
+})
 </script>
 
 <template>
@@ -123,6 +140,7 @@ const purchaseSteps = [
           </p>
 
           <h1
+            ref="heroTitle"
             class="mb-[30px] max-w-[750px] text-[clamp(48px,6vw,76px)] text-brand"
           >
             Mieszkania stworzone
