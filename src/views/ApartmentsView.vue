@@ -782,15 +782,38 @@ const paginatedApartments = computed(() => {
 
 watch(
   () => paginatedApartments.value.map((apartment) => apartment.id),
-  async () => {
+  async (newIds, oldIds, onCleanup) => {
+    let animation
+    let cancelled = false
+    let animatedCards = []
+
+    onCleanup(() => {
+      cancelled = true
+      animation?.kill()
+
+      if (animatedCards.length) {
+        gsap.set(animatedCards, {
+          clearProps: 'transform,opacity'
+        })
+      }
+    })
+
     await nextTick()
 
-    console.log('Lista mieszkań została zmieniona')
+    if (cancelled) return
+
     const cards = apartmentGridContainer.value?.querySelectorAll('article')
+
     if (!cards?.length) return
 
-    gsap.fromTo(
-      cards,
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return
+    }
+
+    animatedCards = Array.from(cards)
+
+    animation = gsap.fromTo(
+      animatedCards,
       {
         y: 15,
         opacity: 0
