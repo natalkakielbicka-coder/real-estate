@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch, nextTick } from 'vue'
+import { computed, ref, watch, nextTick, onMounted, onUnmounted } from 'vue'
 import { Flip } from 'gsap/Flip'
 import gsap from 'gsap'
 import { useRoute, useRouter } from 'vue-router'
@@ -137,7 +137,10 @@ const toggleFilters = async () => {
 
   const panel = filtersPanel.value
 
-  if (!panel) return
+  if (!panel) {
+    isFiltersAnimating.value = false
+    return
+  }
 
   const shouldOpen = !isFiltersOpen.value
 
@@ -145,7 +148,13 @@ const toggleFilters = async () => {
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     isFiltersOpen.value = shouldOpen
-    gsap.set(panel, { clearProps: 'height,opacity,overflow' })
+
+    gsap.set(panel, {
+      clearProps: 'height,opacity,overflow'
+    })
+
+    isFiltersAnimating.value = false
+
     return
   }
 
@@ -193,6 +202,41 @@ const toggleFilters = async () => {
     })
   }
 }
+
+let desktopMedia
+
+const resetFiltersAnimation = () => {
+  const panel = filtersPanel.value
+
+  if (!panel) return
+
+  gsap.killTweensOf(panel)
+
+  gsap.set(panel, {
+    clearProps: 'height,opacity,overflow'
+  })
+
+  isFiltersAnimating.value = false
+}
+
+const handleBreakpointChange = (event) => {
+  if (!event.matches) return
+
+  resetFiltersAnimation()
+  isFiltersOpen.value = false
+}
+
+onMounted(() => {
+  desktopMedia = window.matchMedia('(min-width: 768px)')
+
+  desktopMedia.addEventListener('change', handleBreakpointChange)
+})
+
+onUnmounted(() => {
+  desktopMedia?.removeEventListener('change', handleBreakpointChange)
+
+  resetFiltersAnimation()
+})
 
 const resultsContainer = ref(null)
 const apartmentGridContainer = ref(null)
@@ -1067,8 +1111,8 @@ const getOffersLabel = (count) => {
         </button>
 
         <aside
-          ref="filtersPanel"
           id="apartments-filters"
+          ref="filtersPanel"
           class="min-h-[150px] bg-panel px-[18px] py-[22px] shadow-[0_14px_45px_rgba(23,63,53,0.08)] xs:p-7 md:sticky md:top-[118px] md:block md:min-h-[400px]"
           :class="isFiltersOpen ? 'block' : 'hidden'"
         >
