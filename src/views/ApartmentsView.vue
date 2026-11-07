@@ -1318,7 +1318,7 @@ const getOffersLabel = (count) => {
             </button>
           </div>
           <div
-            class="mb-6 flex flex-col items-stretch gap-3 bg-panel p-4 xs:min-h-[62px] xs:flex-row xs:items-center xs:justify-between xs:gap-6 xs:py-2.5 xs:pr-3 xs:pl-5"
+            class="mb-6 flex min-w-0 flex-col items-stretch gap-3 bg-panel p-4 xl:min-h-[62px] xl:flex-row xl:items-center xl:justify-between xl:gap-4 xl:py-2.5 xl:pr-3 xl:pl-5"
           >
             <p class="mb-0 text-xs text-muted">
               <template v-if="usesPagination && sortedApartments.length > 0">
@@ -1349,7 +1349,7 @@ const getOffersLabel = (count) => {
             </p>
 
             <div
-              class="flex gap-1 rounded-[3px] bg-page p-1"
+              class="flex max-w-full flex-wrap gap-1 self-start rounded-[3px] bg-page p-1"
               aria-label="Sposób wyświetlania mieszkań"
             >
               <button
@@ -1424,7 +1424,7 @@ const getOffersLabel = (count) => {
             </div>
 
             <label
-              class="flex flex-col items-stretch gap-1.5 xs:flex-row xs:items-center xs:gap-3"
+              class="flex min-w-0 flex-col items-stretch gap-1.5 sm:flex-row sm:items-center sm:gap-3 xl:shrink-0"
             >
               <span class="text-[10px] font-bold text-muted uppercase"
                 >Sortuj</span
