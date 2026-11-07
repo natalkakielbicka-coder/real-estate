@@ -787,6 +787,12 @@ watch(
     let cancelled = false
     let animatedCards = []
 
+    const previousIds = new Set((oldIds ?? []).map(String))
+
+    const addedIds = new Set(
+      newIds.map(String).filter((id) => !previousIds.has(id))
+    )
+
     onCleanup(() => {
       cancelled = true
       animation?.kill()
@@ -800,34 +806,41 @@ watch(
 
     await nextTick()
 
-    if (cancelled) return
-
-    const cards = apartmentGridContainer.value?.querySelectorAll('article')
-
-    if (!cards?.length) return
+    if (cancelled || !addedIds.size) return
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       return
     }
 
-    animatedCards = Array.from(cards)
+    const cards = apartmentGridContainer.value?.querySelectorAll(
+      'article[data-apartment-id]'
+    )
+
+    if (!cards?.length) return
+
+    animatedCards = Array.from(cards).filter((card) =>
+      addedIds.has(card.dataset.apartmentId)
+    )
+
+    if (!animatedCards.length) return
 
     animation = gsap.fromTo(
       animatedCards,
       {
-        y: 15,
+        y: 40,
         opacity: 0
       },
       {
         y: 0,
         opacity: 1,
-        duration: 0.5,
-        stagger: 0.08,
+        duration: 0.8,
+        stagger: 0.15,
         ease: 'power2.out',
         overwrite: 'auto'
       }
     )
-  }
+  },
+  { flush: 'post' }
 )
 
 const paginationRange = computed(() => {
