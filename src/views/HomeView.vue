@@ -175,23 +175,27 @@ onMounted(() => {
     }
   })
 
-  apartmentAnimation = gsap.from(apartmentGrid.value.children, {
-    y: 50,
-    opacity: 0,
-    duration: 0.8,
-    ease: 'power2.out',
-    stagger: 0.15,
-    scrollTrigger: {
-      trigger: apartmentGrid.value,
-      start: 'top 85%',
-      toggleActions: 'play none none reverse'
+  apartmentAnimation = gsap.from(
+    apartmentGrid.value.querySelectorAll('article'),
+    {
+      y: 50,
+      opacity: 0,
+      duration: 0.8,
+      ease: 'power2.out',
+      stagger: 0.15,
+      scrollTrigger: {
+        trigger: apartmentGrid.value,
+        start: 'top 85%',
+        toggleActions: 'play none none reverse'
+      }
     }
-  })
+  )
 })
 
 onUnmounted(() => {
   heroTimeline?.revert()
   investmentAnimation?.revert()
+  apartmentAnimation?.revert()
 })
 </script>
 
