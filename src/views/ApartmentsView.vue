@@ -780,6 +780,33 @@ const paginatedApartments = computed(() => {
   return sortedApartments.value.slice(startIndex, endIndex)
 })
 
+watch(
+  () => paginatedApartments.value.map((apartment) => apartment.id),
+  async () => {
+    await nextTick()
+
+    console.log('Lista mieszkań została zmieniona')
+    const cards = apartmentGridContainer.value?.querySelectorAll('article')
+    if (!cards?.length) return
+
+    gsap.fromTo(
+      cards,
+      {
+        y: 15,
+        opacity: 0
+      },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.5,
+        stagger: 0.08,
+        ease: 'power2.out',
+        overwrite: 'auto'
+      }
+    )
+  }
+)
+
 const paginationRange = computed(() => {
   if (sortedApartments.value.length === 0) {
     return {
