@@ -217,7 +217,7 @@ onMounted(() => {
           }
         })
 
-        const steps = purchaseStepsGrid.value.querySelectorAll('article')
+        const steps = purchaseStepsGrid.value?.querySelectorAll('article') ?? []
 
         steps.forEach((step) => {
           const number = step.querySelector('span')
