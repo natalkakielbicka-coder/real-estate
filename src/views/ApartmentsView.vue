@@ -130,6 +130,45 @@ const isFiltersOpen = ref(false)
 const filtersPanel = ref(null)
 const isFiltersAnimating = ref(false)
 
+const animateFilterGroups = () => {
+  const groups = filtersPanel.value?.querySelectorAll('fieldset')
+
+  if (!groups?.length) return
+
+  gsap.fromTo(
+    groups,
+    {
+      y: 20,
+      opacity: 0
+    },
+    {
+      y: 0,
+      opacity: 1,
+      duration: 0.45,
+      stagger: 0.18,
+      ease: 'power2.out',
+      overwrite: 'auto',
+      onComplete: () => {
+        gsap.set(groups, {
+          clearProps: 'transform,opacity'
+        })
+      }
+    }
+  )
+}
+
+const resetFilterGroups = () => {
+  const groups = filtersPanel.value?.querySelectorAll('fieldset')
+
+  if (!groups?.length) return
+
+  gsap.killTweensOf(groups)
+
+  gsap.set(groups, {
+    clearProps: 'transform,opacity'
+  })
+}
+
 const toggleFilters = async () => {
   if (isFiltersAnimating.value) return
 
@@ -147,6 +186,8 @@ const toggleFilters = async () => {
   gsap.killTweensOf(panel)
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    resetFilterGroups()
+
     isFiltersOpen.value = shouldOpen
 
     gsap.set(panel, {
@@ -162,6 +203,8 @@ const toggleFilters = async () => {
     isFiltersOpen.value = true
 
     await nextTick()
+
+    animateFilterGroups()
 
     gsap.fromTo(
       panel,
@@ -185,6 +228,8 @@ const toggleFilters = async () => {
       }
     )
   } else {
+    resetFilterGroups()
+
     gsap.to(panel, {
       height: 0,
       opacity: 0,
@@ -217,6 +262,8 @@ const resetFiltersAnimation = () => {
   })
 
   isFiltersAnimating.value = false
+
+  resetFilterGroups()
 }
 
 const handleBreakpointChange = (event) => {
