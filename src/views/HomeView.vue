@@ -202,12 +202,31 @@ onMounted(() => {
     }
   })
 
-  purchaseTimeline.from(purchaseStepsGrid.value.querySelectorAll('article'), {
-    y: 40,
-    opacity: 0,
-    duration: 0.7,
-    ease: 'power2.out',
-    stagger: 0.2
+  const steps = purchaseStepsGrid.value.querySelectorAll('article')
+
+  steps.forEach((step) => {
+    const number = step.querySelector('span')
+    const title = step.querySelector('h3')
+    const desc = step.querySelector('p')
+
+    purchaseTimeline.from(number, {
+      scale: 0.5,
+      opacity: 0,
+      duration: 0.4,
+      ease: 'back.out(1.7)'
+    })
+
+    purchaseTimeline.from(
+      title,
+      {
+        y: 20,
+        scale: 0.5,
+        opacity: 0,
+        duration: 0.5,
+        ease: 'power2.out'
+      },
+      '-=0.2'
+    )
   })
 })
 
