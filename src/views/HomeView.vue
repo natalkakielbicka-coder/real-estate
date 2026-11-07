@@ -117,163 +117,179 @@ const purchaseSteps = [
   }
 ]
 
-let investmentMedia
 let ctx
 
 gsap.registerPlugin(ScrollTrigger)
 
 onMounted(() => {
   ctx = gsap.context(() => {
-    const heroTimeline = gsap.timeline()
+    const mm = gsap.matchMedia()
 
-    heroTimeline.from(heroTitle.value, {
-      y: 40,
-      opacity: 0,
-      duration: 1,
-      ease: 'power2.out'
-    })
-
-    heroTimeline.from(
-      heroDescription.value,
+    mm.add(
       {
-        y: 30,
-        opacity: 0,
-        duration: 0.8,
-        ease: 'power2.out'
+        allowMotion: '(prefers-reduced-motion: no-preference)',
+        desktop: '(min-width: 992px)'
       },
-      '-=0.3'
-    )
-    heroTimeline.from(
-      heroForm.value,
-      {
-        y: 50,
-        opacity: 0,
-        duration: 0.7,
-        ease: 'power2.out'
-      },
-      '<'
-    )
+      (context) => {
+        const { allowMotion, desktop } = context.conditions
 
-    heroTimeline.from(
-      heroVisual.value,
-      {
-        x: 60,
-        opacity: 0,
-        duration: 1.2,
-        scale: 0.95,
-        ease: 'power2.out'
-      },
-      0.2
-    )
+        // Przy ograniczeniu ruchu nie tworzymy animacji.
+        if (!allowMotion) return
 
-    gsap.from(investmentGrid.value.children, {
-      y: 40,
-      opacity: 0,
-      duration: 0.8,
-      ease: 'power2.out',
-      stagger: 0.2,
-      scrollTrigger: {
-        trigger: investmentGrid.value,
-        start: 'top 85%',
-        once: true
-      }
-    })
+        // 1. HERO
+        const heroTimeline = gsap.timeline()
 
-    gsap.from(apartmentGrid.value.querySelectorAll('article'), {
-      y: 50,
-      opacity: 0,
-      duration: 0.8,
-      ease: 'power2.out',
-      stagger: 0.15,
-      scrollTrigger: {
-        trigger: apartmentGrid.value,
-        start: 'top 75%',
-        toggleActions: 'play none none reverse'
-      }
-    })
-
-    const purchaseTimeline = gsap.timeline({
-      scrollTrigger: {
-        trigger: purchaseStepsGrid.value,
-        start: 'top 80%',
-        toggleActions: 'play none none reverse'
-      }
-    })
-
-    const steps = purchaseStepsGrid.value.querySelectorAll('article')
-
-    steps.forEach((step) => {
-      const number = step.querySelector('span')
-      const title = step.querySelector('h3')
-      const description = step.querySelector('p')
-
-      purchaseTimeline.from(number, {
-        scale: 0.5,
-        opacity: 0,
-        duration: 0.4,
-        ease: 'back.out(1.7)'
-      })
-
-      purchaseTimeline.from(
-        title,
-        {
-          y: 20,
+        heroTimeline.from(heroTitle.value, {
+          y: 40,
           opacity: 0,
-          duration: 0.5,
+          duration: 1,
           ease: 'power2.out'
-        },
-        '-=0.2'
-      )
+        })
 
-      purchaseTimeline.from(
-        description,
-        {
-          y: 15,
+        heroTimeline.from(
+          heroDescription.value,
+          {
+            y: 30,
+            opacity: 0,
+            duration: 0.8,
+            ease: 'power2.out'
+          },
+          '-=0.3'
+        )
+
+        heroTimeline.from(
+          heroForm.value,
+          {
+            y: 50,
+            opacity: 0,
+            duration: 0.7,
+            ease: 'power2.out'
+          },
+          '<'
+        )
+
+        heroTimeline.from(
+          heroVisual.value,
+          {
+            x: 60,
+            opacity: 0,
+            scale: 0.95,
+            duration: 1.2,
+            ease: 'power2.out'
+          },
+          0.2
+        )
+
+        // 2. KARTY INWESTYCJI
+        gsap.from(investmentGrid.value.children, {
+          y: 40,
           opacity: 0,
-          duration: 0.6,
-          ease: 'power2.out'
-        },
-        '<0.2'
-      )
-    })
-
-    gsap.from(finalCtaTitle.value, {
-      y: 40,
-      opacity: 0,
-      duration: 0.8,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: finalCtaTitle.value,
-        start: 'top 95%',
-        toggleActions: 'play none none none'
-      }
-    })
-
-    investmentMedia = gsap.matchMedia()
-
-    investmentMedia.add('(min-width: 992px)', () => {
-      gsap.fromTo(
-        investmentTitle.value,
-        {
-          y: 20
-        },
-        {
-          y: -20,
-          ease: 'none',
+          duration: 0.8,
+          stagger: 0.2,
+          ease: 'power2.out',
           scrollTrigger: {
-            trigger: investmentTitle.value,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 1
+            trigger: investmentGrid.value,
+            start: 'top 85%',
+            once: true
           }
+        })
+
+        // 3. KARTY MIESZKAŃ
+        gsap.from(apartmentGrid.value.querySelectorAll('article'), {
+          y: 50,
+          opacity: 0,
+          duration: 0.8,
+          stagger: 0.15,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: apartmentGrid.value,
+            start: 'top 75%',
+            toggleActions: 'play none none reverse'
+          }
+        })
+
+        // 4. ETAPY ZAKUPU
+        const purchaseTimeline = gsap.timeline({
+          scrollTrigger: {
+            trigger: purchaseStepsGrid.value,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse'
+          }
+        })
+
+        const steps = purchaseStepsGrid.value.querySelectorAll('article')
+
+        steps.forEach((step) => {
+          const number = step.querySelector('span')
+          const title = step.querySelector('h3')
+          const description = step.querySelector('p')
+
+          purchaseTimeline.from(number, {
+            scale: 0.5,
+            opacity: 0,
+            duration: 0.4,
+            ease: 'back.out(1.7)'
+          })
+
+          purchaseTimeline.from(
+            title,
+            {
+              y: 20,
+              opacity: 0,
+              duration: 0.5,
+              ease: 'power2.out'
+            },
+            '-=0.2'
+          )
+
+          purchaseTimeline.from(
+            description,
+            {
+              y: 15,
+              opacity: 0,
+              duration: 0.6,
+              ease: 'power2.out'
+            },
+            '<0.2'
+          )
+        })
+
+        // 5. OSTATNIA SEKCJA CTA
+        gsap.from(finalCtaTitle.value, {
+          y: 40,
+          opacity: 0,
+          duration: 0.8,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: finalCtaTitle.value,
+            start: 'top 95%',
+            toggleActions: 'play none none none'
+          }
+        })
+
+        // 6. PARALLAX — TYLKO DESKTOP
+        if (desktop) {
+          gsap.fromTo(
+            investmentTitle.value,
+            { y: 20 },
+            {
+              y: -20,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: investmentTitle.value,
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: 1
+              }
+            }
+          )
         }
-      )
-    })
+      }
+    )
   })
 })
 
 onUnmounted(() => {
-  investmentMedia?.revert()
   ctx?.revert()
 })
 </script>
