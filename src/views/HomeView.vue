@@ -122,7 +122,7 @@ let investmentAnimation
 let apartmentAnimation
 let purchaseTimeline
 let finalCtaAnimation
-let investmentParallax
+let investmentMedia
 
 gsap.registerPlugin(ScrollTrigger)
 onMounted(() => {
@@ -255,22 +255,26 @@ onMounted(() => {
     }
   })
 
-  investmentParallax = gsap.fromTo(
-    investmentTitle.value,
-    {
-      y: 30
-    },
-    {
-      y: -30,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: investmentTitle.value,
-        start: 'top bottom',
-        end: 'bottom top',
-        scrub: true
+  investmentMedia = gsap.matchMedia()
+
+  investmentMedia.add('(min-width: 768px)', () => {
+    gsap.fromTo(
+      investmentTitle.value,
+      {
+        y: 20
+      },
+      {
+        y: -20,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: investmentTitle.value,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1
+        }
       }
-    }
-  )
+    )
+  })
 })
 
 onUnmounted(() => {
@@ -279,7 +283,7 @@ onUnmounted(() => {
   apartmentAnimation?.revert()
   purchaseTimeline?.revert()
   finalCtaAnimation?.revert()
-  investmentParallax?.revert()
+  investmentMedia?.revert()
 })
 </script>
 
