@@ -123,167 +123,167 @@ let apartmentAnimation
 let purchaseTimeline
 let finalCtaAnimation
 let investmentMedia
+let ctx
 
 gsap.registerPlugin(ScrollTrigger)
+
 onMounted(() => {
-  heroTimeline = gsap.timeline()
+  ctx = gsap.context(() => {
+    heroTimeline = gsap.timeline()
 
-  heroTimeline.from(heroTitle.value, {
-    y: 40,
-    opacity: 0,
-    duration: 1,
-    ease: 'power2.out'
-  })
-
-  heroTimeline.from(
-    heroDescription.value,
-    {
-      y: 30,
+    heroTimeline.from(heroTitle.value, {
+      y: 40,
       opacity: 0,
-      duration: 0.8,
+      duration: 1,
       ease: 'power2.out'
-    },
-    '-=0.3'
-  )
-  heroTimeline.from(
-    heroForm.value,
-    {
-      y: 50,
-      opacity: 0,
-      duration: 0.7,
-      ease: 'power2.out'
-    },
-    '<'
-  )
+    })
 
-  heroTimeline.from(
-    heroVisual.value,
-    {
-      x: 60,
-      opacity: 0,
-      duration: 1.2,
-      scale: 0.95,
-      ease: 'power2.out'
-    },
-    0.2
-  )
+    heroTimeline.from(
+      heroDescription.value,
+      {
+        y: 30,
+        opacity: 0,
+        duration: 0.8,
+        ease: 'power2.out'
+      },
+      '-=0.3'
+    )
+    heroTimeline.from(
+      heroForm.value,
+      {
+        y: 50,
+        opacity: 0,
+        duration: 0.7,
+        ease: 'power2.out'
+      },
+      '<'
+    )
 
-  investmentAnimation = gsap.from(investmentGrid.value.children, {
-    y: 40,
-    opacity: 0,
-    duration: 0.8,
-    ease: 'power2.out',
-    stagger: 0.2,
-    scrollTrigger: {
-      trigger: investmentGrid.value,
-      start: 'top 85%',
-      once: true
-    }
-  })
+    heroTimeline.from(
+      heroVisual.value,
+      {
+        x: 60,
+        opacity: 0,
+        duration: 1.2,
+        scale: 0.95,
+        ease: 'power2.out'
+      },
+      0.2
+    )
 
-  apartmentAnimation = gsap.from(
-    apartmentGrid.value.querySelectorAll('article'),
-    {
-      y: 50,
+    investmentAnimation = gsap.from(investmentGrid.value.children, {
+      y: 40,
       opacity: 0,
       duration: 0.8,
       ease: 'power2.out',
-      stagger: 0.15,
+      stagger: 0.2,
       scrollTrigger: {
-        trigger: apartmentGrid.value,
-        start: 'top 75%',
-        toggleActions: 'play none none reverse',
-        markers: true
+        trigger: investmentGrid.value,
+        start: 'top 85%',
+        once: true
       }
-    }
-  )
-
-  purchaseTimeline = gsap.timeline({
-    scrollTrigger: {
-      trigger: purchaseStepsGrid.value,
-      start: 'top 80%',
-      toggleActions: 'play none none reverse'
-    }
-  })
-
-  const steps = purchaseStepsGrid.value.querySelectorAll('article')
-
-  steps.forEach((step) => {
-    const number = step.querySelector('span')
-    const title = step.querySelector('h3')
-    const description = step.querySelector('p')
-
-    purchaseTimeline.from(number, {
-      scale: 0.5,
-      opacity: 0,
-      duration: 0.4,
-      ease: 'back.out(1.7)'
     })
 
-    purchaseTimeline.from(
-      title,
+    apartmentAnimation = gsap.from(
+      apartmentGrid.value.querySelectorAll('article'),
       {
-        y: 20,
+        y: 50,
         opacity: 0,
-        duration: 0.5,
-        ease: 'power2.out'
-      },
-      '-=0.2'
-    )
-
-    purchaseTimeline.from(
-      description,
-      {
-        y: 15,
-        opacity: 0,
-        duration: 0.6,
-        ease: 'power2.out'
-      },
-      '<0.2'
-    )
-  })
-
-  finalCtaAnimation = gsap.from(finalCtaTitle.value, {
-    y: 40,
-    opacity: 0,
-    duration: 0.8,
-    ease: 'power2.out',
-    scrollTrigger: {
-      trigger: finalCtaTitle.value,
-      start: 'top 95%',
-      toggleActions: 'play none none none'
-    }
-  })
-
-  investmentMedia = gsap.matchMedia()
-
-  investmentMedia.add('(min-width: 768px)', () => {
-    gsap.fromTo(
-      investmentTitle.value,
-      {
-        y: 20
-      },
-      {
-        y: -20,
-        ease: 'none',
+        duration: 0.8,
+        ease: 'power2.out',
+        stagger: 0.15,
         scrollTrigger: {
-          trigger: investmentTitle.value,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 1
+          trigger: apartmentGrid.value,
+          start: 'top 75%',
+          toggleActions: 'play none none reverse',
+          markers: true
         }
       }
     )
+
+    purchaseTimeline = gsap.timeline({
+      scrollTrigger: {
+        trigger: purchaseStepsGrid.value,
+        start: 'top 80%',
+        toggleActions: 'play none none reverse'
+      }
+    })
+
+    const steps = purchaseStepsGrid.value.querySelectorAll('article')
+
+    steps.forEach((step) => {
+      const number = step.querySelector('span')
+      const title = step.querySelector('h3')
+      const description = step.querySelector('p')
+
+      purchaseTimeline.from(number, {
+        scale: 0.5,
+        opacity: 0,
+        duration: 0.4,
+        ease: 'back.out(1.7)'
+      })
+
+      purchaseTimeline.from(
+        title,
+        {
+          y: 20,
+          opacity: 0,
+          duration: 0.5,
+          ease: 'power2.out'
+        },
+        '-=0.2'
+      )
+
+      purchaseTimeline.from(
+        description,
+        {
+          y: 15,
+          opacity: 0,
+          duration: 0.6,
+          ease: 'power2.out'
+        },
+        '<0.2'
+      )
+    })
+
+    finalCtaAnimation = gsap.from(finalCtaTitle.value, {
+      y: 40,
+      opacity: 0,
+      duration: 0.8,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: finalCtaTitle.value,
+        start: 'top 95%',
+        toggleActions: 'play none none none'
+      }
+    })
+
+    investmentMedia = gsap.matchMedia()
+
+    investmentMedia.add('(min-width: 768px)', () => {
+      gsap.fromTo(
+        investmentTitle.value,
+        {
+          y: 20
+        },
+        {
+          y: -20,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: investmentTitle.value,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1
+          }
+        }
+      )
+    })
   })
 })
 
 onUnmounted(() => {
-  heroTimeline?.revert()
-  investmentAnimation?.revert()
-  apartmentAnimation?.revert()
-  purchaseTimeline?.revert()
-  finalCtaAnimation?.revert()
   investmentMedia?.revert()
+  ctx?.revert()
 })
 </script>
 
