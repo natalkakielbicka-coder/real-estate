@@ -30,6 +30,7 @@ defineProps({
 const cardElement = ref(null)
 let moveCard
 const apartmentNumberElement = ref(null)
+const apartmentFloorElement = ref(null)
 let numberTimeline
 
 onMounted(() => {
@@ -48,11 +49,22 @@ onMounted(() => {
     paused: true
   })
 
-  numberTimeline.to(apartmentNumberElement.value, {
-    scale: 1.12,
-    duration: 0.3,
-    ease: 'power2.out'
-  })
+  numberTimeline
+    .to(apartmentNumberElement.value, {
+      scale: 1.12,
+      duration: 0.3,
+      ease: 'power2.out'
+    })
+    .to(
+      apartmentFloorElement.value,
+      {
+        y: 5,
+        color: '#173f35',
+        duration: 0.3,
+        ease: 'power2.out'
+      },
+      '<'
+    )
 })
 
 const handleMouseEnter = () => {
@@ -112,7 +124,10 @@ onUnmounted(() => {
           {{ apartment.number }}
         </strong>
 
-        <small class="mt-2.5 text-[11px] font-semibold text-muted">
+        <small
+          ref="apartmentFloorElement"
+          class="mt-2.5 text-[11px] font-semibold text-muted"
+        >
           {{ getFloorLabel(apartment.floor) }}
         </small>
       </div>
