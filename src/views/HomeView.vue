@@ -117,11 +117,6 @@ const purchaseSteps = [
   }
 ]
 
-let heroTimeline
-let investmentAnimation
-let apartmentAnimation
-let purchaseTimeline
-let finalCtaAnimation
 let investmentMedia
 let ctx
 
@@ -129,7 +124,7 @@ gsap.registerPlugin(ScrollTrigger)
 
 onMounted(() => {
   ctx = gsap.context(() => {
-    heroTimeline = gsap.timeline()
+    const heroTimeline = gsap.timeline()
 
     heroTimeline.from(heroTitle.value, {
       y: 40,
@@ -171,7 +166,7 @@ onMounted(() => {
       0.2
     )
 
-    investmentAnimation = gsap.from(investmentGrid.value.children, {
+    gsap.from(investmentGrid.value.children, {
       y: 40,
       opacity: 0,
       duration: 0.8,
@@ -184,24 +179,20 @@ onMounted(() => {
       }
     })
 
-    apartmentAnimation = gsap.from(
-      apartmentGrid.value.querySelectorAll('article'),
-      {
-        y: 50,
-        opacity: 0,
-        duration: 0.8,
-        ease: 'power2.out',
-        stagger: 0.15,
-        scrollTrigger: {
-          trigger: apartmentGrid.value,
-          start: 'top 75%',
-          toggleActions: 'play none none reverse',
-          markers: true
-        }
+    gsap.from(apartmentGrid.value.querySelectorAll('article'), {
+      y: 50,
+      opacity: 0,
+      duration: 0.8,
+      ease: 'power2.out',
+      stagger: 0.15,
+      scrollTrigger: {
+        trigger: apartmentGrid.value,
+        start: 'top 75%',
+        toggleActions: 'play none none reverse'
       }
-    )
+    })
 
-    purchaseTimeline = gsap.timeline({
+    const purchaseTimeline = gsap.timeline({
       scrollTrigger: {
         trigger: purchaseStepsGrid.value,
         start: 'top 80%',
@@ -246,7 +237,7 @@ onMounted(() => {
       )
     })
 
-    finalCtaAnimation = gsap.from(finalCtaTitle.value, {
+    gsap.from(finalCtaTitle.value, {
       y: 40,
       opacity: 0,
       duration: 0.8,
@@ -260,7 +251,7 @@ onMounted(() => {
 
     investmentMedia = gsap.matchMedia()
 
-    investmentMedia.add('(min-width: 768px)', () => {
+    investmentMedia.add('(min-width: 992px)', () => {
       gsap.fromTo(
         investmentTitle.value,
         {
