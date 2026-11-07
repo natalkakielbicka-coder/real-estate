@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useRouter } from 'vue-router'
 import { apartments } from '../data/apartments'
 import { investments } from '../data/investments'
@@ -19,6 +20,7 @@ const heroTitle = ref(null)
 const heroDescription = ref(null)
 const heroForm = ref(null)
 const heroVisual = ref(null)
+const investmentGrid = ref(null)
 
 const searchApartments = () => {
   router.push({
@@ -112,7 +114,9 @@ const purchaseSteps = [
 ]
 
 let heroTimeline
+let investmentAnimation
 
+gsap.registerPlugin(ScrollTrigger)
 onMounted(() => {
   heroTimeline = gsap.timeline()
 
@@ -153,12 +157,26 @@ onMounted(() => {
       scale: 0.95,
       ease: 'power2.out'
     },
-    '0.2'
+    0.2
   )
+
+  investmentAnimation = gsap.from(investmentGrid.value.children, {
+    y: 40,
+    opacity: 0,
+    duration: 0.8,
+    ease: 'power2.out',
+    stagger: 0.2,
+    scrollTrigger: {
+      trigger: investmentGrid.value,
+      start: 'top 85%',
+      once: true
+    }
+  })
 })
 
 onUnmounted(() => {
   heroTimeline?.revert()
+  investmentAnimation?.revert()
 })
 </script>
 
@@ -386,7 +404,10 @@ onUnmounted(() => {
           </RouterLink>
         </div>
 
-        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
+        <div
+          ref="investmentGrid"
+          class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3"
+        >
           <InvestmentCard
             v-for="investment in investments"
             :key="investment.id"
