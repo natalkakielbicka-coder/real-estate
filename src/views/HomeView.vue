@@ -18,6 +18,7 @@ const isHeroImageLoaded = ref(false)
 const heroTitle = ref(null)
 const heroDescription = ref(null)
 const heroForm = ref(null)
+const heroVisual = ref(null)
 
 const searchApartments = () => {
   router.push({
@@ -141,6 +142,18 @@ onMounted(() => {
       ease: 'power2.out'
     },
     '<'
+  )
+
+  heroTimeline.from(
+    heroVisual.value,
+    {
+      x: 60,
+      opacity: 0,
+      duration: 1.2,
+      scale: 0.95,
+      ease: 'power2.out'
+    },
+    '0.2'
   )
 })
 
@@ -282,6 +295,7 @@ onUnmounted(() => {
         </div>
 
         <div
+          ref="heroVisual"
           class="hero__visual relative z-[1] ml-auto h-[480px] min-h-0 w-[calc(100%-30px)] xs:h-[520px] sm:h-[620px] sm:w-[85%] md:ml-0 md:h-[min(68vh,720px)] md:min-h-[540px] md:w-full"
         >
           <div
