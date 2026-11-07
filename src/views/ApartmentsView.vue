@@ -1,5 +1,7 @@
 <script setup>
 import { computed, ref, watch, nextTick } from 'vue'
+import { Flip } from 'gsap/Flip'
+import gsap from 'gsap'
 import { useRoute, useRouter } from 'vue-router'
 import ApartmentGrid from '../components/ApartmentGrid.vue'
 import ApartmentList from '../components/ApartmentList.vue'
