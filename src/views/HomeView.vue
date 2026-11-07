@@ -24,6 +24,7 @@ const investmentGrid = ref(null)
 const apartmentGrid = ref(null)
 const purchaseStepsGrid = ref(null)
 const finalCtaTitle = ref(null)
+const investmentTitle = ref(null)
 
 const searchApartments = () => {
   router.push({
@@ -121,6 +122,7 @@ let investmentAnimation
 let apartmentAnimation
 let purchaseTimeline
 let finalCtaAnimation
+let investmentParallax
 
 gsap.registerPlugin(ScrollTrigger)
 onMounted(() => {
@@ -252,6 +254,23 @@ onMounted(() => {
       toggleActions: 'play none none none'
     }
   })
+
+  investmentParallax = gsap.fromTo(
+    investmentTitle.value,
+    {
+      y: 30
+    },
+    {
+      y: -30,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: investmentTitle.value,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: true
+      }
+    }
+  )
 })
 
 onUnmounted(() => {
@@ -260,6 +279,7 @@ onUnmounted(() => {
   apartmentAnimation?.revert()
   purchaseTimeline?.revert()
   finalCtaAnimation?.revert()
+  investmentParallax?.revert()
 })
 </script>
 
@@ -467,7 +487,10 @@ onUnmounted(() => {
               Nasze inwestycje
             </p>
 
-            <h2 class="mb-0 max-w-[650px] text-[clamp(38px,5vw,58px)]">
+            <h2
+              ref="investmentTitle"
+              class="mb-0 max-w-[650px] text-[clamp(38px,5vw,58px)]"
+            >
               Znajdź miejsce dla siebie
             </h2>
           </div>
