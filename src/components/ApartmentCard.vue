@@ -29,6 +29,8 @@ defineProps({
 
 const cardElement = ref(null)
 let moveCard
+const apartmentNumberElement = ref(null)
+let numberTimeline
 
 onMounted(() => {
   if (!cardElement.value) return
@@ -37,20 +39,37 @@ onMounted(() => {
     duration: 0.3,
     ease: 'power2.out'
   })
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    return
+  }
+
+  numberTimeline = gsap.timeline({
+    paused: true
+  })
+
+  numberTimeline.to(apartmentNumberElement.value, {
+    scale: 1.12,
+    duration: 0.3,
+    ease: 'power2.out'
+  })
 })
 
 const handleMouseEnter = () => {
   moveCard?.(-4)
+  numberTimeline?.play()
 }
 
 const handleMouseLeave = () => {
   moveCard?.(0)
+  numberTimeline?.reverse()
 }
 
 onUnmounted(() => {
   if (!cardElement.value) return
 
   gsap.killTweensOf(cardElement.value)
+  numberTimeline?.kill()
 })
 </script>
 
@@ -87,6 +106,7 @@ onUnmounted(() => {
         </span>
 
         <strong
+          ref="apartmentNumberElement"
           class="font-display text-[58px] leading-none font-normal text-brand"
         >
           {{ apartment.number }}
