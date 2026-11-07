@@ -127,6 +127,17 @@ onlyWithStorage.value = route.query.storage === '1'
 const availableViewModes = ['grid', 'list', 'table', 'plan', 'map']
 
 const isFiltersOpen = ref(false)
+const filtersPanel = ref(null)
+
+const toggleFilters = () => {
+  isFiltersOpen.value = !isFiltersOpen.value
+
+  gsap.to(filtersPanel.value, {
+    height: 'auto',
+    duration: 0.4,
+    ease: 'power2.out'
+  })
+}
 
 const resultsContainer = ref(null)
 const apartmentGridContainer = ref(null)
@@ -985,7 +996,7 @@ const getOffersLabel = (count) => {
           type="button"
           aria-controls="apartments-filters"
           :aria-expanded="isFiltersOpen"
-          @click="isFiltersOpen = !isFiltersOpen"
+          @click="toggleFilters"
         >
           <span>
             {{ isFiltersOpen ? 'Ukryj filtry' : 'Pokaż filtry' }}
@@ -1000,6 +1011,7 @@ const getOffersLabel = (count) => {
         </button>
 
         <aside
+          ref="filtersPanel"
           id="apartments-filters"
           class="min-h-[150px] bg-panel px-[18px] py-[22px] shadow-[0_14px_45px_rgba(23,63,53,0.08)] xs:p-7 md:sticky md:top-[118px] md:block md:min-h-[400px]"
           :class="isFiltersOpen ? 'block' : 'hidden'"
