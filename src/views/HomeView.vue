@@ -23,6 +23,7 @@ const heroVisual = ref(null)
 const investmentGrid = ref(null)
 const apartmentGrid = ref(null)
 const purchaseStepsGrid = ref(null)
+const finalCtaTitle = ref(null)
 
 const searchApartments = () => {
   router.push({
@@ -119,6 +120,7 @@ let heroTimeline
 let investmentAnimation
 let apartmentAnimation
 let purchaseTimeline
+let finalCtaAnimation
 
 gsap.registerPlugin(ScrollTrigger)
 onMounted(() => {
@@ -238,6 +240,18 @@ onMounted(() => {
       '<0.2'
     )
   })
+
+  finalCtaAnimation = gsap.from(finalCtaTitle.value, {
+    y: 40,
+    opacity: 0,
+    duration: 0.8,
+    ease: 'power2.out',
+    scrollTrigger: {
+      trigger: finalCtaTitle.value,
+      start: 'top 95%',
+      toggleActions: 'play none none none'
+    }
+  })
 })
 
 onUnmounted(() => {
@@ -245,6 +259,7 @@ onUnmounted(() => {
   investmentAnimation?.revert()
   apartmentAnimation?.revert()
   purchaseTimeline?.revert()
+  finalCtaAnimation?.revert()
 })
 </script>
 
@@ -578,7 +593,10 @@ onUnmounted(() => {
             Znajdź swoje miejsce
           </p>
 
-          <h2 class="mb-0 max-w-[700px] text-[clamp(36px,5vw,56px)] text-white">
+          <h2
+            ref="finalCtaTitle"
+            class="mb-0 max-w-[700px] text-[clamp(36px,5vw,56px)] text-white"
+          >
             Gotowy na wybór mieszkania?
           </h2>
         </div>
