@@ -128,15 +128,70 @@ const availableViewModes = ['grid', 'list', 'table', 'plan', 'map']
 
 const isFiltersOpen = ref(false)
 const filtersPanel = ref(null)
+const isFiltersAnimating = ref(false)
 
-const toggleFilters = () => {
-  isFiltersOpen.value = !isFiltersOpen.value
+const toggleFilters = async () => {
+  if (isFiltersAnimating.value) return
 
-  gsap.to(filtersPanel.value, {
-    height: 'auto',
-    duration: 0.4,
-    ease: 'power2.out'
-  })
+  isFiltersAnimating.value = true
+
+  const panel = filtersPanel.value
+
+  if (!panel) return
+
+  const shouldOpen = !isFiltersOpen.value
+
+  gsap.killTweensOf(panel)
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    isFiltersOpen.value = shouldOpen
+    gsap.set(panel, { clearProps: 'height,opacity,overflow' })
+    return
+  }
+
+  if (shouldOpen) {
+    isFiltersOpen.value = true
+
+    await nextTick()
+
+    gsap.fromTo(
+      panel,
+      {
+        height: 0,
+        opacity: 0,
+        overflow: 'hidden'
+      },
+      {
+        height: 'auto',
+        opacity: 1,
+        duration: 0.4,
+        ease: 'power2.out',
+        onComplete: () => {
+          isFiltersAnimating.value = false
+
+          gsap.set(panel, {
+            clearProps: 'height,opacity,overflow'
+          })
+        }
+      }
+    )
+  } else {
+    gsap.to(panel, {
+      height: 0,
+      opacity: 0,
+      overflow: 'hidden',
+      duration: 0.3,
+      ease: 'power2.in',
+      onComplete: () => {
+        isFiltersAnimating.value = false
+        isFiltersOpen.value = false
+
+        gsap.set(panel, {
+          clearProps: 'height,opacity,overflow'
+        })
+      }
+    })
+  }
 }
 
 const resultsContainer = ref(null)
@@ -820,6 +875,7 @@ watch(
     if (cancelled || !addedIds.size) return
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      isFiltersAnimating.value = false
       return
     }
 
