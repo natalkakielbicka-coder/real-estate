@@ -17,6 +17,7 @@ const selectedMaxPrice = ref('')
 const isHeroImageLoaded = ref(false)
 const heroTitle = ref(null)
 const heroDescription = ref(null)
+const heroForm = ref(null)
 
 const searchApartments = () => {
   router.push({
@@ -131,6 +132,16 @@ onMounted(() => {
     },
     '-=0.3'
   )
+  heroTimeline.from(
+    heroForm.value,
+    {
+      y: 50,
+      opacity: 0,
+      duration: 0.7,
+      ease: 'power2.out'
+    },
+    '<'
+  )
 })
 
 onUnmounted(() => {
@@ -171,6 +182,7 @@ onUnmounted(() => {
           </p>
 
           <form
+            ref="heroForm"
             class="relative z-[3] grid w-full grid-cols-1 bg-panel p-2.5 shadow-[0_18px_50px_rgba(23,63,53,0.13)] xs:grid-cols-2 md:w-[min(780px,calc(100vw-40px))] md:grid-cols-[repeat(3,minmax(145px,1fr))_auto]"
             @submit.prevent="searchApartments"
           >
