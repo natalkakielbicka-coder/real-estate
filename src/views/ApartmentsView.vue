@@ -12,6 +12,7 @@ import { floorPlans } from '../data/floorPlans'
 import { apartments } from '../data/apartments'
 import { apartmentStatusClasses } from '../constants/apartmentStatuses'
 import { getApartmentsLabel, getFloorLabel } from '../utils/apartmentFormatters'
+gsap.registerPlugin(Flip)
 
 import { useToastStore } from '../stores/toast'
 const { showToast } = useToastStore()
@@ -128,6 +129,7 @@ const availableViewModes = ['grid', 'list', 'table', 'plan', 'map']
 const isFiltersOpen = ref(false)
 
 const resultsContainer = ref(null)
+const apartmentGridContainer = ref(null)
 
 const initialViewMode = getQueryValue(route.query.view)
 
@@ -719,6 +721,44 @@ const sortedApartments = computed(() => {
       sensitivity: 'base'
     })
   })
+})
+
+const changeSortWithFlip = async (newSort) => {
+  if (selectedSort.value === newSort) return
+
+  const container = apartmentGridContainer.value
+
+  const shouldAnimate =
+    viewMode.value === 'grid' &&
+    currentPage.value === 1 &&
+    container &&
+    !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  if (!shouldAnimate) {
+    selectedSort.value = newSort
+    return
+  }
+
+  const cards = container.querySelectorAll('article')
+
+  const state = Flip.getState(cards)
+
+  selectedSort.value = newSort
+
+  await nextTick()
+
+  Flip.from(state, {
+    targets: container.querySelectorAll('article'),
+    duration: 0.6,
+    ease: 'power2.inOut'
+  })
+}
+
+const animatedSort = computed({
+  get: () => selectedSort.value,
+  set: (value) => {
+    changeSortWithFlip(value)
+  }
 })
 
 const totalPages = computed(() => {
@@ -1315,7 +1355,7 @@ const getOffersLabel = (count) => {
                 >Sortuj</span
               >
               <select
-                v-model="selectedSort"
+                v-model="animatedSort"
                 class="h-[42px] w-full rounded-[3px] border border-transparent bg-page pr-8 pl-3.5 text-[11px] font-semibold text-brand outline-none focus:border-gold xs:w-auto"
               >
                 <option value="default">Inwestycja i numer</option>
@@ -1331,10 +1371,12 @@ const getOffersLabel = (count) => {
           </div>
 
           <template v-if="sortedApartments.length > 0 || viewMode === 'plan'">
-            <ApartmentGrid
+            <div
               v-if="viewMode === 'grid'"
-              :apartments="paginatedApartments"
-            />
+              ref="apartmentGridContainer"
+            >
+              <ApartmentGrid :apartments="paginatedApartments" />
+            </div>
             <ApartmentList
               v-else-if="viewMode === 'list'"
               :apartments="paginatedApartments"
