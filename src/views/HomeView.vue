@@ -21,6 +21,7 @@ const heroDescription = ref(null)
 const heroForm = ref(null)
 const heroVisual = ref(null)
 const investmentGrid = ref(null)
+const apartmentGrid = ref(null)
 
 const searchApartments = () => {
   router.push({
@@ -115,6 +116,7 @@ const purchaseSteps = [
 
 let heroTimeline
 let investmentAnimation
+let apartmentAnimation
 
 gsap.registerPlugin(ScrollTrigger)
 onMounted(() => {
@@ -170,6 +172,19 @@ onMounted(() => {
       trigger: investmentGrid.value,
       start: 'top 85%',
       once: true
+    }
+  })
+
+  apartmentAnimation = gsap.from(apartmentGrid.value.children, {
+    y: 50,
+    opacity: 0,
+    duration: 0.8,
+    ease: 'power2.out',
+    stagger: 0.15,
+    scrollTrigger: {
+      trigger: apartmentGrid.value,
+      start: 'top 85%',
+      toggleActions: 'play none none reverse'
     }
   })
 })
@@ -452,7 +467,9 @@ onUnmounted(() => {
           </RouterLink>
         </div>
 
-        <ApartmentGrid :apartments="featuredApartments" />
+        <div ref="apartmentGrid">
+          <ApartmentGrid :apartments="featuredApartments" />
+        </div>
       </div>
     </section>
 
