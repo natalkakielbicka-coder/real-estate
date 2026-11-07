@@ -22,6 +22,7 @@ const heroForm = ref(null)
 const heroVisual = ref(null)
 const investmentGrid = ref(null)
 const apartmentGrid = ref(null)
+const purchaseStepsGrid = ref(null)
 
 const searchApartments = () => {
   router.push({
@@ -117,6 +118,7 @@ const purchaseSteps = [
 let heroTimeline
 let investmentAnimation
 let apartmentAnimation
+let purchaseTimeline
 
 gsap.registerPlugin(ScrollTrigger)
 onMounted(() => {
@@ -185,17 +187,35 @@ onMounted(() => {
       stagger: 0.15,
       scrollTrigger: {
         trigger: apartmentGrid.value,
-        start: 'top 85%',
-        toggleActions: 'play none none reverse'
+        start: 'top 75%',
+        toggleActions: 'play none none reverse',
+        markers: true
       }
     }
   )
+
+  purchaseTimeline = gsap.timeline({
+    scrollTrigger: {
+      trigger: purchaseStepsGrid.value,
+      start: 'top 80%',
+      toggleActions: 'play none none reverse'
+    }
+  })
+
+  purchaseTimeline.from(purchaseStepsGrid.value.querySelectorAll('article'), {
+    y: 40,
+    opacity: 0,
+    duration: 0.7,
+    ease: 'power2.out',
+    stagger: 0.2
+  })
 })
 
 onUnmounted(() => {
   heroTimeline?.revert()
   investmentAnimation?.revert()
   apartmentAnimation?.revert()
+  purchaseTimeline?.revert()
 })
 </script>
 
@@ -492,6 +512,7 @@ onUnmounted(() => {
         </div>
 
         <div
+          ref="purchaseStepsGrid"
           class="grid grid-cols-1 gap-y-[50px] sm:grid-cols-2 md:grid-cols-4 md:gap-y-0"
         >
           <article
