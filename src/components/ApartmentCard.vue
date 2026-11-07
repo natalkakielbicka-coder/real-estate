@@ -1,4 +1,6 @@
 <script setup>
+import gsap from 'gsap'
+import { ref, onMounted, onUnmounted } from 'vue'
 import {
   apartmentStatusLabels,
   apartmentStatusClasses
@@ -24,10 +26,39 @@ defineProps({
     required: true
   }
 })
+
+const cardElement = ref(null)
+let moveCard
+
+onMounted(() => {
+  if (!cardElement.value) return
+
+  moveCard = gsap.quickTo(cardElement.value, 'y', {
+    duration: 0.3,
+    ease: 'power2.out'
+  })
+})
+
+const handleMouseEnter = () => {
+  moveCard?.(-4)
+}
+
+const handleMouseLeave = () => {
+  moveCard?.(0)
+}
+
+onUnmounted(() => {
+  if (!cardElement.value) return
+
+  gsap.killTweensOf(cardElement.value)
+})
 </script>
 
 <template>
   <article
+    ref="cardElement"
+    @mouseenter="handleMouseEnter"
+    @mouseleave="handleMouseLeave"
     :data-apartment-id="apartment.id"
     class="overflow-hidden bg-panel shadow-[0_14px_45px_rgba(23,63,53,0.08)] transition-shadow duration-300 hover:shadow-[0_22px_55px_rgba(23,63,53,0.14)]"
   >
