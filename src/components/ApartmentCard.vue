@@ -36,6 +36,9 @@ let moveBuilding
 let moveStatusBadge
 let numberTimeline
 let cardContext
+const prefersReducedMotion = window.matchMedia(
+  '(prefers-reduced-motion: reduce)'
+)
 
 // Funkcje clamp tworzymy raz, a nie przy każdym ruchu myszy
 const clampBuilding = gsap.utils.clamp(-8, 8)
@@ -49,14 +52,14 @@ let isTickerActive = false
 onMounted(() => {
   if (!cardElement.value) return
 
+  prefersReducedMotion.addEventListener('change', handleMotionPreferenceChange)
+
+  if (prefersReducedMotion.matches) return
+
   moveCard = gsap.quickTo(cardElement.value, 'y', {
     duration: 0.3,
     ease: 'power2.out'
   })
-
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    return
-  }
 
   moveBuilding = gsap.quickTo(buildingElement.value, 'x', {
     duration: 0.3,
@@ -120,7 +123,9 @@ const updatePointerEffects = () => {
 
 const startTicker = () => {
   // Przy prefers-reduced-motion nie ma czego aktualizować
-  if (isTickerActive || !moveBuilding) return
+  if (isTickerActive || !moveBuilding || prefersReducedMotion.matches) {
+    return
+  }
 
   gsap.ticker.add(updatePointerEffects)
   isTickerActive = true
@@ -134,7 +139,38 @@ const stopTicker = () => {
   hasPointerChanged = false
 }
 
+const handleMotionPreferenceChange = (event) => {
+  if (!event.matches) return
+
+  stopTicker()
+
+  gsap.killTweensOf(cardElement.value)
+
+  if (buildingElement.value) {
+    gsap.killTweensOf(buildingElement.value)
+  }
+
+  cardContext?.revert()
+  numberTimeline = null
+  cardContext = null
+
+  gsap.set(
+    [cardElement.value, buildingElement.value, statusBadgeElement.value].filter(
+      Boolean
+    ),
+    {
+      clearProps: 'transform'
+    }
+  )
+
+  moveCard = null
+  moveBuilding = null
+  moveStatusBadge = null
+}
+
 const handleMouseEnter = () => {
+  if (prefersReducedMotion.matches) return
+
   moveCard?.(-4)
   numberTimeline?.play()
   startTicker()
@@ -142,6 +178,8 @@ const handleMouseEnter = () => {
 
 // mousemove tylko zapamiętuje pozycję kursora, bez obliczeń
 const handleMouseMove = (event) => {
+  if (prefersReducedMotion.matches) return
+
   pointerX = event.clientX
   hasPointerChanged = true
 }
@@ -158,14 +196,17 @@ const handleMouseLeave = () => {
 const handleComparisonToggle = (apartmentId) => {
   toggleComparison(apartmentId)
 
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    return
-  }
+  if (prefersReducedMotion.matches) return
 
   cardContext?.animateComparison()
 }
 
 onUnmounted(() => {
+  prefersReducedMotion.removeEventListener(
+    'change',
+    handleMotionPreferenceChange
+  )
+
   stopTicker()
 
   cardContext?.revert()
