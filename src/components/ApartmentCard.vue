@@ -34,7 +34,7 @@ const statusBadgeElement = ref(null)
 let moveCard
 let moveBuilding
 let moveStatusBadge
-let numberTimeline
+let floorTimeline
 let cardContext
 const prefersReducedMotion = window.matchMedia(
   '(prefers-reduced-motion: reduce)'
@@ -68,11 +68,11 @@ const initializeCardAnimations = () => {
     const floor = cardElement.value.querySelector('.apartment-card__floor')
 
     if (floor) {
-      numberTimeline = gsap.timeline({
+      floorTimeline = gsap.timeline({
         paused: true
       })
 
-      numberTimeline.to(floor, {
+      floorTimeline.to(floor, {
         y: 5,
         duration: 0.3,
         ease: 'power2.out'
@@ -159,7 +159,7 @@ const cleanupCardAnimations = () => {
     }
   )
 
-  numberTimeline = null
+  floorTimeline = null
   cardContext = null
   moveCard = null
   moveBuilding = null
@@ -180,7 +180,7 @@ const handleMouseEnter = () => {
   if (prefersReducedMotion.matches) return
 
   moveCard?.(-4)
-  numberTimeline?.play()
+  floorTimeline?.play()
   startTicker()
 }
 
@@ -196,7 +196,7 @@ const handleMouseLeave = () => {
   stopTicker()
 
   moveCard?.(0)
-  numberTimeline?.reverse()
+  floorTimeline?.reverse()
   moveBuilding?.(0)
   moveStatusBadge?.(0)
 }
