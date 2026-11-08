@@ -28,14 +28,24 @@ defineProps({
 })
 
 const cardElement = ref(null)
-let moveCard
 const apartmentNumberElement = ref(null)
 const apartmentFloorElement = ref(null)
 const buildingElement = ref(null)
 const statusBadgeElement = ref(null)
-let moveStatusBadge
+
+let moveCard
 let moveBuilding
+let moveStatusBadge
 let numberTimeline
+
+// Funkcje clamp tworzymy raz, a nie przy każdym ruchu myszy
+const clampBuilding = gsap.utils.clamp(-8, 8)
+const clampBadge = gsap.utils.clamp(-3, 3)
+
+// Ostatnia pozycja kursora zapisana przez mousemove
+let pointerX = 0
+let hasPointerChanged = false
+let isTickerActive = false
 
 onMounted(() => {
   if (!cardElement.value) return
@@ -78,31 +88,52 @@ onMounted(() => {
     )
 })
 
-const handleMouseEnter = () => {
-  moveCard?.(-4)
-  numberTimeline?.play()
-}
+// Wywoływane przez gsap.ticker raz na klatkę
+const updatePointerEffects = () => {
+  if (!hasPointerChanged) return
+  hasPointerChanged = false
 
-const handleMouseMove = (event) => {
-  if (!cardElement.value || !moveBuilding || !moveStatusBadge) {
-    return
-  }
+  if (!cardElement.value || !moveBuilding || !moveStatusBadge) return
 
   const rect = cardElement.value.getBoundingClientRect()
   const centerX = rect.left + rect.width / 2
-  const distanceX = event.clientX - centerX
+  const distanceX = pointerX - centerX
 
-  const clampBuilding = gsap.utils.clamp(-8, 8)
-  const clampBadge = gsap.utils.clamp(-3, 3)
+  moveBuilding(clampBuilding(distanceX * 0.05))
+  moveStatusBadge(clampBadge(distanceX * 0.02))
+}
 
-  const buildingX = clampBuilding(distanceX * 0.05)
-  const badgeX = clampBadge(distanceX * 0.02)
+const startTicker = () => {
+  // Przy prefers-reduced-motion nie ma czego aktualizować
+  if (isTickerActive || !moveBuilding) return
 
-  moveBuilding(buildingX)
-  moveStatusBadge(badgeX)
+  gsap.ticker.add(updatePointerEffects)
+  isTickerActive = true
+}
+
+const stopTicker = () => {
+  if (!isTickerActive) return
+
+  gsap.ticker.remove(updatePointerEffects)
+  isTickerActive = false
+  hasPointerChanged = false
+}
+
+const handleMouseEnter = () => {
+  moveCard?.(-4)
+  numberTimeline?.play()
+  startTicker()
+}
+
+// mousemove tylko zapamiętuje pozycję kursora, bez obliczeń
+const handleMouseMove = (event) => {
+  pointerX = event.clientX
+  hasPointerChanged = true
 }
 
 const handleMouseLeave = () => {
+  stopTicker()
+
   moveCard?.(0)
   numberTimeline?.reverse()
   moveBuilding?.(0)
@@ -110,6 +141,8 @@ const handleMouseLeave = () => {
 }
 
 onUnmounted(() => {
+  stopTicker()
+
   if (!cardElement.value) return
 
   gsap.killTweensOf(cardElement.value)
