@@ -49,12 +49,8 @@ let pointerX = 0
 let hasPointerChanged = false
 let isTickerActive = false
 
-onMounted(() => {
-  if (!cardElement.value) return
-
-  prefersReducedMotion.addEventListener('change', handleMotionPreferenceChange)
-
-  if (prefersReducedMotion.matches) return
+const initializeCardAnimations = () => {
+  if (!cardElement.value || prefersReducedMotion.matches) return
 
   moveCard = gsap.quickTo(cardElement.value, 'y', {
     duration: 0.3,
@@ -69,23 +65,19 @@ onMounted(() => {
   moveStatusBadge = gsap.quickSetter(statusBadgeElement.value, 'x', 'px')
 
   cardContext = gsap.context(() => {
-    const number = cardElement.value.querySelector('.apartment-card__number')
     const floor = cardElement.value.querySelector('.apartment-card__floor')
 
-    if (!number || !floor) {
-      console.warn('Nie znaleziono numeru lub piętra mieszkania')
-      return
+    if (floor) {
+      numberTimeline = gsap.timeline({
+        paused: true
+      })
+
+      numberTimeline.to(floor, {
+        y: 5,
+        duration: 0.3,
+        ease: 'power2.out'
+      })
     }
-
-    numberTimeline = gsap.timeline({
-      paused: true
-    })
-
-    numberTimeline.to(floor, {
-      y: 5,
-      duration: 0.3,
-      ease: 'power2.out'
-    })
   }, cardElement.value)
 
   cardContext.add('animateComparison', () => {
@@ -104,6 +96,12 @@ onMounted(() => {
       }
     )
   })
+}
+
+onMounted(() => {
+  prefersReducedMotion.addEventListener('change', handleMotionPreferenceChange)
+
+  initializeCardAnimations()
 })
 
 // Wywoływane przez gsap.ticker raz na klatkę
@@ -139,20 +137,18 @@ const stopTicker = () => {
   hasPointerChanged = false
 }
 
-const handleMotionPreferenceChange = (event) => {
-  if (!event.matches) return
-
+const cleanupCardAnimations = () => {
   stopTicker()
 
-  gsap.killTweensOf(cardElement.value)
+  cardContext?.revert()
+
+  if (cardElement.value) {
+    gsap.killTweensOf(cardElement.value)
+  }
 
   if (buildingElement.value) {
     gsap.killTweensOf(buildingElement.value)
   }
-
-  cardContext?.revert()
-  numberTimeline = null
-  cardContext = null
 
   gsap.set(
     [cardElement.value, buildingElement.value, statusBadgeElement.value].filter(
@@ -163,9 +159,21 @@ const handleMotionPreferenceChange = (event) => {
     }
   )
 
+  numberTimeline = null
+  cardContext = null
   moveCard = null
   moveBuilding = null
   moveStatusBadge = null
+
+  hasPointerChanged = false
+}
+
+const handleMotionPreferenceChange = (event) => {
+  cleanupCardAnimations()
+
+  if (!event.matches) {
+    initializeCardAnimations()
+  }
 }
 
 const handleMouseEnter = () => {
@@ -207,23 +215,7 @@ onUnmounted(() => {
     handleMotionPreferenceChange
   )
 
-  stopTicker()
-
-  cardContext?.revert()
-
-  if (cardElement.value) {
-    gsap.killTweensOf(cardElement.value)
-  }
-
-  if (buildingElement.value) {
-    gsap.killTweensOf(buildingElement.value)
-  }
-
-  if (statusBadgeElement.value) {
-    gsap.set(statusBadgeElement.value, {
-      clearProps: 'transform'
-    })
-  }
+  cleanupCardAnimations()
 })
 </script>
 
