@@ -142,22 +142,19 @@ const cleanupCardAnimations = () => {
 
   cardContext?.revert()
 
-  if (cardElement.value) {
-    gsap.killTweensOf(cardElement.value)
-  }
+  const elements = [
+    cardElement.value,
+    buildingElement.value,
+    statusBadgeElement.value
+  ].filter(Boolean)
 
-  if (buildingElement.value) {
-    gsap.killTweensOf(buildingElement.value)
-  }
+  if (elements.length > 0) {
+    gsap.killTweensOf(elements)
 
-  gsap.set(
-    [cardElement.value, buildingElement.value, statusBadgeElement.value].filter(
-      Boolean
-    ),
-    {
+    gsap.set(elements, {
       clearProps: 'transform'
-    }
-  )
+    })
+  }
 
   floorTimeline = null
   cardContext = null
