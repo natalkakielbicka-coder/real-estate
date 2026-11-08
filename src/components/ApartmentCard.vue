@@ -32,6 +32,8 @@ let moveCard
 const apartmentNumberElement = ref(null)
 const apartmentFloorElement = ref(null)
 const buildingElement = ref(null)
+const statusBadgeElement = ref(null)
+let moveStatusBadge
 let moveBuilding
 let numberTimeline
 
@@ -51,6 +53,8 @@ onMounted(() => {
     duration: 0.3,
     ease: 'power2.out'
   })
+
+  moveStatusBadge = gsap.quickSetter(statusBadgeElement.value, 'x', 'px')
 
   numberTimeline = gsap.timeline({
     paused: true
@@ -80,25 +84,29 @@ const handleMouseEnter = () => {
 }
 
 const handleMouseMove = (event) => {
-  if (!cardElement.value || !moveBuilding) return
+  if (!cardElement.value || !moveBuilding || !moveStatusBadge) {
+    return
+  }
 
   const rect = cardElement.value.getBoundingClientRect()
-
   const centerX = rect.left + rect.width / 2
-
   const distanceX = event.clientX - centerX
 
-  const clampX = gsap.utils.clamp(-8, 8)
+  const clampBuilding = gsap.utils.clamp(-8, 8)
+  const clampBadge = gsap.utils.clamp(-3, 3)
 
-  const offsetX = clampX(distanceX * 0.05)
+  const buildingX = clampBuilding(distanceX * 0.05)
+  const badgeX = clampBadge(distanceX * 0.02)
 
-  moveBuilding(offsetX)
+  moveBuilding(buildingX)
+  moveStatusBadge(badgeX)
 }
 
 const handleMouseLeave = () => {
   moveCard?.(0)
   numberTimeline?.reverse()
   moveBuilding?.(0)
+  moveStatusBadge?.(0)
 }
 
 onUnmounted(() => {
@@ -109,6 +117,12 @@ onUnmounted(() => {
 
   if (buildingElement.value) {
     gsap.killTweensOf(buildingElement.value)
+  }
+
+  if (statusBadgeElement.value) {
+    gsap.set(statusBadgeElement.value, {
+      clearProps: 'transform'
+    })
   }
 })
 </script>
@@ -126,6 +140,7 @@ onUnmounted(() => {
       class="apartment-card__visual relative grid min-h-[250px] place-items-center overflow-hidden"
     >
       <div
+        ref="statusBadgeElement"
         class="absolute top-[18px] left-[18px] z-[2] px-3 py-[7px] text-[10px] font-bold tracking-[0.08em] text-white uppercase"
         :class="apartmentStatusClasses[apartment.status]"
       >
