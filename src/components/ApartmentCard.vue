@@ -31,6 +31,8 @@ const cardElement = ref(null)
 let moveCard
 const apartmentNumberElement = ref(null)
 const apartmentFloorElement = ref(null)
+const buildingElement = ref(null)
+let moveBuilding
 let numberTimeline
 
 onMounted(() => {
@@ -44,6 +46,11 @@ onMounted(() => {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     return
   }
+
+  moveBuilding = gsap.quickTo(buildingElement.value, 'x', {
+    duration: 0.3,
+    ease: 'power2.out'
+  })
 
   numberTimeline = gsap.timeline({
     paused: true
@@ -72,9 +79,26 @@ const handleMouseEnter = () => {
   numberTimeline?.play()
 }
 
+const handleMouseMove = (event) => {
+  if (!cardElement.value || !moveBuilding) return
+
+  const rect = cardElement.value.getBoundingClientRect()
+
+  const centerX = rect.left + rect.width / 2
+
+  const distanceX = event.clientX - centerX
+
+  const clampX = gsap.utils.clamp(-8, 8)
+
+  const offsetX = clampX(distanceX * 0.05)
+
+  moveBuilding(offsetX)
+}
+
 const handleMouseLeave = () => {
   moveCard?.(0)
   numberTimeline?.reverse()
+  moveBuilding?.(0)
 }
 
 onUnmounted(() => {
@@ -82,16 +106,21 @@ onUnmounted(() => {
 
   gsap.killTweensOf(cardElement.value)
   numberTimeline?.kill()
+
+  if (buildingElement.value) {
+    gsap.killTweensOf(buildingElement.value)
+  }
 })
 </script>
 
 <template>
   <article
     ref="cardElement"
-    @mouseenter="handleMouseEnter"
-    @mouseleave="handleMouseLeave"
     :data-apartment-id="apartment.id"
     class="overflow-hidden bg-panel shadow-[0_14px_45px_rgba(23,63,53,0.08)] transition-shadow duration-300 hover:shadow-[0_22px_55px_rgba(23,63,53,0.14)]"
+    @mouseenter="handleMouseEnter"
+    @mouseleave="handleMouseLeave"
+    @mousemove="handleMouseMove"
   >
     <div
       class="apartment-card__visual relative grid min-h-[250px] place-items-center overflow-hidden"
@@ -112,6 +141,7 @@ onUnmounted(() => {
 
       <div class="relative z-[1] flex flex-col items-center">
         <span
+          ref="buildingElement"
           class="mb-[5px] text-[11px] font-bold tracking-[0.14em] text-gold uppercase"
         >
           {{ apartment.building }}
