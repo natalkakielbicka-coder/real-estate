@@ -28,8 +28,6 @@ defineProps({
 })
 
 const cardElement = ref(null)
-const apartmentNumberElement = ref(null)
-const apartmentFloorElement = ref(null)
 const buildingElement = ref(null)
 const statusBadgeElement = ref(null)
 
@@ -68,26 +66,23 @@ onMounted(() => {
   moveStatusBadge = gsap.quickSetter(statusBadgeElement.value, 'x', 'px')
 
   cardContext = gsap.context(() => {
+    const number = cardElement.value.querySelector('.apartment-card__number')
+    const floor = cardElement.value.querySelector('.apartment-card__floor')
+
+    if (!number || !floor) {
+      console.warn('Nie znaleziono numeru lub piętra mieszkania')
+      return
+    }
+
     numberTimeline = gsap.timeline({
       paused: true
     })
 
-    numberTimeline
-      .to(apartmentNumberElement.value, {
-        scale: 1.12,
-        duration: 0.3,
-        ease: 'power2.out'
-      })
-      .to(
-        apartmentFloorElement.value,
-        {
-          y: 5,
-          color: '#173f35',
-          duration: 0.3,
-          ease: 'power2.out'
-        },
-        '<'
-      )
+    numberTimeline.to(floor, {
+      y: 5,
+      duration: 0.3,
+      ease: 'power2.out'
+    })
   }, cardElement.value)
 })
 
@@ -200,15 +195,13 @@ onUnmounted(() => {
         </span>
 
         <strong
-          ref="apartmentNumberElement"
-          class="font-display text-[58px] leading-none font-normal text-brand"
+          class="apartment-card__number inline-block font-display text-[58px] leading-none font-normal text-brand"
         >
           {{ apartment.number }}
         </strong>
 
         <small
-          ref="apartmentFloorElement"
-          class="mt-2.5 text-[11px] font-semibold text-muted"
+          class="apartment-card__floor inline-block mt-2.5 text-[11px] font-semibold text-muted"
         >
           {{ getFloorLabel(apartment.floor) }}
         </small>
