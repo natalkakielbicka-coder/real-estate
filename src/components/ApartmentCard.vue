@@ -37,6 +37,7 @@ let moveCard
 let moveBuilding
 let moveStatusBadge
 let numberTimeline
+let cardContext
 
 // Funkcje clamp tworzymy raz, a nie przy każdym ruchu myszy
 const clampBuilding = gsap.utils.clamp(-8, 8)
@@ -66,26 +67,28 @@ onMounted(() => {
 
   moveStatusBadge = gsap.quickSetter(statusBadgeElement.value, 'x', 'px')
 
-  numberTimeline = gsap.timeline({
-    paused: true
-  })
-
-  numberTimeline
-    .to(apartmentNumberElement.value, {
-      scale: 1.12,
-      duration: 0.3,
-      ease: 'power2.out'
+  cardContext = gsap.context(() => {
+    numberTimeline = gsap.timeline({
+      paused: true
     })
-    .to(
-      apartmentFloorElement.value,
-      {
-        y: 5,
-        color: '#173f35',
+
+    numberTimeline
+      .to(apartmentNumberElement.value, {
+        scale: 1.12,
         duration: 0.3,
         ease: 'power2.out'
-      },
-      '<'
-    )
+      })
+      .to(
+        apartmentFloorElement.value,
+        {
+          y: 5,
+          color: '#173f35',
+          duration: 0.3,
+          ease: 'power2.out'
+        },
+        '<'
+      )
+  }, cardElement.value)
 })
 
 // Wywoływane przez gsap.ticker raz na klatkę
@@ -143,10 +146,11 @@ const handleMouseLeave = () => {
 onUnmounted(() => {
   stopTicker()
 
-  if (!cardElement.value) return
+  cardContext?.revert()
 
-  gsap.killTweensOf(cardElement.value)
-  numberTimeline?.kill()
+  if (cardElement.value) {
+    gsap.killTweensOf(cardElement.value)
+  }
 
   if (buildingElement.value) {
     gsap.killTweensOf(buildingElement.value)
