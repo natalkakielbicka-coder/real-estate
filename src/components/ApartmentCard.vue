@@ -84,6 +84,23 @@ onMounted(() => {
       ease: 'power2.out'
     })
   }, cardElement.value)
+
+  cardContext.add('animateComparison', () => {
+    gsap.fromTo(
+      '.apartment-card__number',
+      {
+        y: -5,
+        opacity: 0.65
+      },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.35,
+        ease: 'power2.out',
+        overwrite: true
+      }
+    )
+  })
 })
 
 // Wywoływane przez gsap.ticker raz na klatkę
@@ -136,6 +153,16 @@ const handleMouseLeave = () => {
   numberTimeline?.reverse()
   moveBuilding?.(0)
   moveStatusBadge?.(0)
+}
+
+const handleComparisonToggle = (apartmentId) => {
+  toggleComparison(apartmentId)
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    return
+  }
+
+  cardContext?.animateComparison()
 }
 
 onUnmounted(() => {
@@ -294,7 +321,7 @@ onUnmounted(() => {
             class="self-end"
             :is-selected="isInComparison(apartment.id)"
             :apartment-number="apartment.number"
-            @toggle="toggleComparison(apartment.id)"
+            @toggle="handleComparisonToggle(apartment.id)"
           />
 
           <RouterLink
