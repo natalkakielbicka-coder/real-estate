@@ -1,5 +1,6 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, onMounted, onUnmounted, watch } from 'vue'
+import gsap from 'gsap'
 import { Doughnut } from 'vue-chartjs'
 import { ArcElement, Chart as ChartJS, Tooltip } from 'chart.js'
 import { formatPrice } from '../utils/apartmentFormatters'
@@ -84,12 +85,95 @@ const chartOptions = {
     }
   }
 }
+
+const chartContainer = ref(null)
+const legendContainer = ref(null)
+
+let entranceAnimation = null
+
+const animateChart = () => {
+  const chart = chartContainer.value
+  const legend = legendContainer.value
+
+  if (!chart || !legend) return
+
+  entranceAnimation?.kill()
+
+  const legendItems = legend.querySelectorAll('[data-legend-item]')
+
+  gsap.set([chart, ...legendItems], {
+    clearProps: 'opacity,transform'
+  })
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    return
+  }
+
+  entranceAnimation = gsap.timeline({
+    defaults: {
+      ease: 'power2.out'
+    },
+    onComplete: () => {
+      gsap.set([chart, ...legendItems], {
+        clearProps: 'opacity,transform'
+      })
+    }
+  })
+
+  entranceAnimation.fromTo(
+    chart,
+    {
+      opacity: 0,
+      y: 40,
+      scale: 0.92
+    },
+    {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      duration: 0.9,
+      ease: 'back.out(1.3)'
+    }
+  )
+
+  entranceAnimation.fromTo(
+    legendItems,
+    {
+      opacity: 0,
+      x: -30
+    },
+    {
+      opacity: 1,
+      x: 0,
+      duration: 0.5,
+      stagger: 0.18
+    },
+    '-=0.4'
+  )
+}
+
+onMounted(() => {
+  animateChart()
+})
+
+watch(
+  () => [props.apartmentPrice, props.finishingCost, props.additionalCosts],
+  () => {
+    animateChart()
+  },
+  { flush: 'post' }
+)
+
+onUnmounted(() => {
+  entranceAnimation?.kill()
+})
 </script>
 
 <template>
   <div>
     <!-- Wykres -->
     <div
+      ref="chartContainer"
       class="relative mx-auto h-[220px] w-full max-w-[250px] xs:h-[250px] xs:max-w-[290px]"
     >
       <Doughnut
@@ -115,9 +199,13 @@ const chartOptions = {
     </div>
 
     <!-- Legenda -->
-    <div class="mt-7 space-y-4">
+    <div
+      ref="legendContainer"
+      class="mt-7 space-y-4"
+    >
       <!-- Mieszkanie -->
       <div
+        data-legend-item
         class="grid grid-cols-[minmax(0,1fr)_36px_86px] items-center gap-2 text-xs xs:grid-cols-[minmax(0,1fr)_42px_100px] xs:gap-3 xs:text-sm"
       >
         <div class="flex items-center gap-3">
@@ -138,6 +226,7 @@ const chartOptions = {
 
       <!-- Wykończenie -->
       <div
+        data-legend-item
         class="grid grid-cols-[minmax(0,1fr)_36px_86px] items-center gap-2 text-xs xs:grid-cols-[minmax(0,1fr)_42px_100px] xs:gap-3 xs:text-sm"
       >
         <div class="flex items-center gap-3">
@@ -158,6 +247,7 @@ const chartOptions = {
 
       <!-- Opłaty -->
       <div
+        data-legend-item
         class="grid grid-cols-[minmax(0,1fr)_36px_86px] items-center gap-2 text-xs xs:grid-cols-[minmax(0,1fr)_42px_100px] xs:gap-3 xs:text-sm"
       >
         <div class="flex items-center gap-3">
