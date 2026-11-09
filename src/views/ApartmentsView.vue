@@ -287,11 +287,65 @@ onUnmounted(() => {
 
 const resultsContainer = ref(null)
 const apartmentGridContainer = ref(null)
+const viewTransitionContainer = ref(null)
 
 const initialViewMode = getQueryValue(route.query.view)
 
 const viewMode = ref(
   availableViewModes.includes(initialViewMode) ? initialViewMode : 'grid'
+)
+
+watch(
+  viewMode,
+  async (newView, oldView, onCleanup) => {
+    if (newView === oldView) return
+
+    let cancelled = false
+    let animation
+
+    onCleanup(() => {
+      cancelled = true
+      animation?.kill()
+    })
+
+    await nextTick()
+
+    if (cancelled) return
+
+    const container = viewTransitionContainer.value
+
+    if (!container) return
+
+    gsap.killTweensOf(container)
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      gsap.set(container, {
+        clearProps: 'opacity,transform'
+      })
+      return
+    }
+
+    animation = gsap.fromTo(
+      container,
+      {
+        opacity: 0,
+        y: 12
+      },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.3,
+        ease: 'power2.out',
+        overwrite: 'auto',
+        onComplete: () => {
+          gsap.set(container, {
+            clearProps: 'opacity,transform'
+          })
+        }
+      }
+    )
+  },
+  { flush: 'post' }
 )
 
 const floorFromQuery = getQueryNumber(route.query.floor)
@@ -1593,102 +1647,106 @@ const getOffersLabel = (count) => {
           </div>
 
           <template v-if="sortedApartments.length > 0 || viewMode === 'plan'">
-            <div
-              v-if="viewMode === 'grid'"
-              ref="apartmentGridContainer"
-            >
-              <ApartmentGrid :apartments="paginatedApartments" />
-            </div>
-            <ApartmentList
-              v-else-if="viewMode === 'list'"
-              :apartments="paginatedApartments"
-            />
-            <ApartmentTable
-              v-else-if="viewMode === 'table'"
-              :apartments="paginatedApartments"
-            />
-            <div v-else-if="viewMode === 'plan'">
+            <div ref="viewTransitionContainer">
               <div
-                class="mb-4 flex flex-wrap items-center gap-2 bg-panel p-3 shadow-[0_8px_24px_rgba(23,63,53,0.06)]"
-                aria-label="Wybierz piętro"
+                v-if="viewMode === 'grid'"
+                ref="apartmentGridContainer"
               >
-                <span
-                  class="mr-2 text-[10px] font-bold tracking-[0.08em] text-muted uppercase"
+                <ApartmentGrid :apartments="paginatedApartments" />
+              </div>
+              <ApartmentList
+                v-else-if="viewMode === 'list'"
+                :apartments="paginatedApartments"
+              />
+              <ApartmentTable
+                v-else-if="viewMode === 'table'"
+                :apartments="paginatedApartments"
+              />
+              <div v-else-if="viewMode === 'plan'">
+                <div
+                  class="mb-4 flex flex-wrap items-center gap-2 bg-panel p-3 shadow-[0_8px_24px_rgba(23,63,53,0.06)]"
+                  aria-label="Wybierz piętro"
                 >
-                  Piętro
-                </span>
+                  <span
+                    class="mr-2 text-[10px] font-bold tracking-[0.08em] text-muted uppercase"
+                  >
+                    Piętro
+                  </span>
+
+                  <button
+                    v-for="floorPlan in floorPlans"
+                    :key="floorPlan.id"
+                    class="min-h-[38px] rounded-[3px] border px-3.5 text-[10px] font-bold transition-colors"
+                    :class="
+                      selectedFloorNumber === floorPlan.floor
+                        ? 'border-brand bg-brand text-white'
+                        : 'border-line bg-page text-brand hover:border-gold hover:text-gold'
+                    "
+                    type="button"
+                    :aria-pressed="selectedFloorNumber === floorPlan.floor"
+                    @click="selectFloorPlan(floorPlan)"
+                  >
+                    {{
+                      floorPlan.floor === 0 ? 'Parter' : `${floorPlan.floor}.`
+                    }}
+                  </button>
+                </div>
+
+                <FloorPlanSelector
+                  :floor-plan="selectedFloorPlan"
+                  :visible-apartments="sortedApartments"
+                  @reset-filters="resetFilters"
+                />
+              </div>
+              <InvestmentsMap
+                v-else
+                :apartments="sortedApartments"
+                @show-investment="showInvestmentApartments"
+              />
+
+              <nav
+                v-if="usesPagination && totalPages > 1"
+                class="mt-10 flex flex-wrap items-center justify-center gap-2"
+                aria-label="Paginacja mieszkań"
+              >
+                <button
+                  class="grid min-h-10 min-w-10 place-items-center rounded-[3px] border border-line bg-panel px-3 text-sm font-semibold text-brand transition-colors enabled:hover:border-brand enabled:hover:bg-brand enabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-35"
+                  type="button"
+                  :disabled="currentPage === 1"
+                  aria-label="Poprzednia strona"
+                  @click="changePage(currentPage - 1)"
+                >
+                  ←
+                </button>
 
                 <button
-                  v-for="floorPlan in floorPlans"
-                  :key="floorPlan.id"
-                  class="min-h-[38px] rounded-[3px] border px-3.5 text-[10px] font-bold transition-colors"
+                  v-for="page in totalPages"
+                  :key="page"
+                  class="grid min-h-10 min-w-10 place-items-center rounded-[3px] border px-3 text-sm font-semibold transition-colors"
                   :class="
-                    selectedFloorNumber === floorPlan.floor
+                    page === currentPage
                       ? 'border-brand bg-brand text-white'
-                      : 'border-line bg-page text-brand hover:border-gold hover:text-gold'
+                      : 'border-line bg-panel text-brand hover:border-brand'
                   "
                   type="button"
-                  :aria-pressed="selectedFloorNumber === floorPlan.floor"
-                  @click="selectFloorPlan(floorPlan)"
+                  :aria-current="page === currentPage ? 'page' : undefined"
+                  :aria-label="`Strona ${page}`"
+                  @click="changePage(page)"
                 >
-                  {{ floorPlan.floor === 0 ? 'Parter' : `${floorPlan.floor}.` }}
+                  {{ page }}
                 </button>
-              </div>
 
-              <FloorPlanSelector
-                :floor-plan="selectedFloorPlan"
-                :visible-apartments="sortedApartments"
-                @reset-filters="resetFilters"
-              />
+                <button
+                  class="grid min-h-10 min-w-10 place-items-center rounded-[3px] border border-line bg-panel px-3 text-sm font-semibold text-brand transition-colors enabled:hover:border-brand enabled:hover:bg-brand enabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-35"
+                  type="button"
+                  :disabled="currentPage === totalPages"
+                  aria-label="Następna strona"
+                  @click="changePage(currentPage + 1)"
+                >
+                  →
+                </button>
+              </nav>
             </div>
-            <InvestmentsMap
-              v-else
-              :apartments="sortedApartments"
-              @show-investment="showInvestmentApartments"
-            />
-
-            <nav
-              v-if="usesPagination && totalPages > 1"
-              class="mt-10 flex flex-wrap items-center justify-center gap-2"
-              aria-label="Paginacja mieszkań"
-            >
-              <button
-                class="grid min-h-10 min-w-10 place-items-center rounded-[3px] border border-line bg-panel px-3 text-sm font-semibold text-brand transition-colors enabled:hover:border-brand enabled:hover:bg-brand enabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-35"
-                type="button"
-                :disabled="currentPage === 1"
-                aria-label="Poprzednia strona"
-                @click="changePage(currentPage - 1)"
-              >
-                ←
-              </button>
-
-              <button
-                v-for="page in totalPages"
-                :key="page"
-                class="grid min-h-10 min-w-10 place-items-center rounded-[3px] border px-3 text-sm font-semibold transition-colors"
-                :class="
-                  page === currentPage
-                    ? 'border-brand bg-brand text-white'
-                    : 'border-line bg-panel text-brand hover:border-brand'
-                "
-                type="button"
-                :aria-current="page === currentPage ? 'page' : undefined"
-                :aria-label="`Strona ${page}`"
-                @click="changePage(page)"
-              >
-                {{ page }}
-              </button>
-
-              <button
-                class="grid min-h-10 min-w-10 place-items-center rounded-[3px] border border-line bg-panel px-3 text-sm font-semibold text-brand transition-colors enabled:hover:border-brand enabled:hover:bg-brand enabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-35"
-                type="button"
-                :disabled="currentPage === totalPages"
-                aria-label="Następna strona"
-                @click="changePage(currentPage + 1)"
-              >
-                →
-              </button>
-            </nav>
           </template>
 
           <div
