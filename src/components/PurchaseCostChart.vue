@@ -72,6 +72,12 @@ const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
   cutout: '68%',
+  animation: {
+    duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      ? 0
+      : 800,
+    easing: 'easeOutQuart'
+  },
   plugins: {
     legend: {
       display: false
@@ -87,6 +93,46 @@ const chartOptions = {
     }
   }
 }
+
+const displayedTotal = ref(props.totalCost)
+
+const animatedTotal = {
+  value: props.totalCost
+}
+
+watch(
+  () => props.totalCost,
+  (newTotal) => {
+    gsap.killTweensOf(animatedTotal)
+
+    const reducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches
+
+    if (reducedMotion) {
+      animatedTotal.value = newTotal
+      displayedTotal.value = newTotal
+      return
+    }
+
+    gsap.to(animatedTotal, {
+      value: newTotal,
+      duration: 0.8,
+      ease: 'power2.out',
+      overwrite: true,
+      onUpdate: () => {
+        displayedTotal.value = Math.round(animatedTotal.value)
+      },
+      onComplete: () => {
+        displayedTotal.value = newTotal
+      }
+    })
+  }
+)
+
+onUnmounted(() => {
+  gsap.killTweensOf(animatedTotal)
+})
 
 const chartContainer = ref(null)
 const legendContainer = ref(null)
@@ -198,7 +244,7 @@ onUnmounted(() => {
           <strong
             class="block font-display text-[clamp(20px,2.4vw,27px)] font-normal leading-none text-brand"
           >
-            {{ formatPrice(totalCost) }} zł
+            {{ formatPrice(displayedTotal) }} zł
           </strong>
 
           <span class="mt-2 block text-[10px] text-muted"> suma </span>

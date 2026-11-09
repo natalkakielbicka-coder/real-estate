@@ -283,8 +283,8 @@ onUnmounted(() => {
 
       <div
         v-else
-        id="comparison-panel"
         v-show="isPanelOpen"
+        id="comparison-panel"
         ref="comparisonPanel"
       >
         <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
