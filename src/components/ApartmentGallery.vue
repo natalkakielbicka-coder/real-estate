@@ -1,5 +1,6 @@
 <script setup>
-import { computed, ref, onBeforeUnmount } from 'vue'
+import { computed, ref, watch, onBeforeUnmount } from 'vue'
+import { useReducedMotion } from '../composables/useReducedMotion'
 import { A11y, Keyboard, Navigation, Thumbs, EffectFade } from 'swiper/modules'
 import gsap from 'gsap'
 import { Swiper, SwiperSlide } from 'swiper/vue'
@@ -19,9 +20,7 @@ const props = defineProps({
 
 const modules = [Navigation, Thumbs, Keyboard, A11y, EffectFade]
 
-const reducedMotion = window.matchMedia(
-  '(prefers-reduced-motion: reduce)'
-).matches
+const reducedMotion = useReducedMotion()
 
 const thumbsSwiper = ref(null)
 
@@ -78,10 +77,29 @@ const closeLightbox = () => {
 let imageAnimation = null
 let lastAnimatedElement = null
 
+const resetImageAnimation = () => {
+  imageAnimation?.kill()
+  imageAnimation = null
+
+  if (lastAnimatedElement) {
+    gsap.set(lastAnimatedElement, {
+      clearProps: 'transform'
+    })
+
+    lastAnimatedElement = null
+  }
+}
+
+watch(reducedMotion, (shouldReduce) => {
+  if (shouldReduce) {
+    resetImageAnimation()
+  }
+})
+
 const animateActiveSlide = (swiper) => {
   if (!swiper || swiper.destroyed) return
 
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (reducedMotion.value) {
     return
   }
 
@@ -121,13 +139,7 @@ const animateActiveSlide = (swiper) => {
 }
 
 onBeforeUnmount(() => {
-  imageAnimation?.kill()
-
-  if (lastAnimatedElement) {
-    gsap.set(lastAnimatedElement, {
-      clearProps: 'transform'
-    })
-  }
+  resetImageAnimation()
 })
 </script>
 
