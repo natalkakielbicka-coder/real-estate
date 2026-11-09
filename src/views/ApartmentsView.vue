@@ -1092,19 +1092,75 @@ watch(
   }
 )
 
+const isPageAnimating = ref(false)
+
 const changePage = async (page) => {
-  if (page < 1 || page > totalPages.value || page === currentPage.value) {
+  if (
+    page < 1 ||
+    page > totalPages.value ||
+    page === currentPage.value ||
+    isPageAnimating.value
+  ) {
     return
   }
 
-  currentPage.value = page
+  const container = viewTransitionContainer.value
 
-  await nextTick()
+  const reducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+  ).matches
 
-  resultsContainer.value?.scrollIntoView({
-    behavior: 'smooth',
-    block: 'start'
-  })
+  isPageAnimating.value = true
+
+  try {
+    if (container && !reducedMotion) {
+      gsap.killTweensOf(container)
+
+      await gsap
+        .to(container, {
+          opacity: 0,
+          y: -10,
+          duration: 0.2,
+          ease: 'power2.in'
+        })
+        .then()
+    }
+
+    currentPage.value = page
+
+    await nextTick()
+
+    resultsContainer.value?.scrollIntoView({
+      behavior: reducedMotion ? 'instant' : 'smooth',
+      block: 'start'
+    })
+
+    if (container && !reducedMotion) {
+      await gsap
+        .fromTo(
+          container,
+          {
+            opacity: 0,
+            y: 15
+          },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.35,
+            ease: 'power2.out'
+          }
+        )
+        .then()
+    }
+  } finally {
+    if (container) {
+      gsap.set(container, {
+        clearProps: 'opacity,transform'
+      })
+    }
+
+    isPageAnimating.value = false
+  }
 }
 
 const availableApartmentsCount = computed(() => {
@@ -1712,7 +1768,7 @@ const getOffersLabel = (count) => {
                 <button
                   class="grid min-h-10 min-w-10 place-items-center rounded-[3px] border border-line bg-panel px-3 text-sm font-semibold text-brand transition-colors enabled:hover:border-brand enabled:hover:bg-brand enabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-35"
                   type="button"
-                  :disabled="currentPage === 1"
+                  :disabled="currentPage === 1 || isPageAnimating"
                   aria-label="Poprzednia strona"
                   @click="changePage(currentPage - 1)"
                 >
@@ -1729,6 +1785,7 @@ const getOffersLabel = (count) => {
                       : 'border-line bg-panel text-brand hover:border-brand'
                   "
                   type="button"
+                  :disabled="isPageAnimating"
                   :aria-current="page === currentPage ? 'page' : undefined"
                   :aria-label="`Strona ${page}`"
                   @click="changePage(page)"
@@ -1739,7 +1796,7 @@ const getOffersLabel = (count) => {
                 <button
                   class="grid min-h-10 min-w-10 place-items-center rounded-[3px] border border-line bg-panel px-3 text-sm font-semibold text-brand transition-colors enabled:hover:border-brand enabled:hover:bg-brand enabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-35"
                   type="button"
-                  :disabled="currentPage === totalPages"
+                  :disabled="currentPage === totalPages || isPageAnimating"
                   aria-label="Następna strona"
                   @click="changePage(currentPage + 1)"
                 >
