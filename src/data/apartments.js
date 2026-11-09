@@ -809,7 +809,7 @@ const investmentGalleries = {
   'nad-odra': [
     'https://images.unsplash.com/photo-1600566753051-f0b89df2dd90?auto=format&fit=crop&w=1400&q=85',
     'https://images.unsplash.com/photo-1600585152915-d208bec867a1?auto=format&fit=crop&w=1400&q=85',
-    'https://images.unsplash.com/photo-1600566753198-17f0baa2a6c3?auto=format&fit=crop&w=1400&q=85'
+    'https://images.unsplash.com/photo-1721396185451-ff45e7440c30?auto=format&fit=crop&w=1400&q=85'
   ]
 }
 
