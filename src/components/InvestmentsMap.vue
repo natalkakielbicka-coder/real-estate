@@ -1,5 +1,6 @@
 <script setup>
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import gsap from 'gsap'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { investments } from '../data/investments'
@@ -22,6 +23,50 @@ const mapContainer = ref(null)
 
 let mapInstance = null
 let markersLayer = null
+
+let activeMarkerElement = null
+
+const prefersReducedMotion = () => {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
+
+const resetActiveMarker = () => {
+  if (!activeMarkerElement) return
+
+  gsap.killTweensOf(activeMarkerElement)
+
+  gsap.set(activeMarkerElement, {
+    clearProps: 'backgroundColor,boxShadow'
+  })
+
+  activeMarkerElement = null
+}
+
+const highlightMarker = (marker) => {
+  const markerElement = marker.getElement()?.querySelector('.investment-marker')
+
+  if (!markerElement) return
+
+  resetActiveMarker()
+
+  activeMarkerElement = markerElement
+
+  if (prefersReducedMotion()) {
+    gsap.set(markerElement, {
+      backgroundColor: '#c79d62',
+      boxShadow: '0 10px 30px rgba(199,157,98,0.5)'
+    })
+    return
+  }
+
+  gsap.to(markerElement, {
+    backgroundColor: '#c79d62',
+    boxShadow: '0 10px 30px rgba(199,157,98,0.5)',
+    duration: 0.35,
+    ease: 'power2.out',
+    overwrite: true
+  })
+}
 
 const initialMapCenter = [52.0, 19.1]
 const initialMapZoom = 6
@@ -142,8 +187,10 @@ const addInvestmentMarker = (investment) => {
     })
 
   marker.on('click', () => {
+    highlightMarker(marker)
+
     mapInstance.flyTo(investment.coordinates, 11, {
-      duration: 0.8
+      duration: prefersReducedMotion() ? 0 : 0.8
     })
   })
 
@@ -151,6 +198,9 @@ const addInvestmentMarker = (investment) => {
     const popupElement = marker.getPopup().getElement()
 
     const button = popupElement.querySelector('.investment-popup__button')
+
+    highlightMarker(marker)
+    animatePopup(popupElement)
 
     button.addEventListener(
       'click',
@@ -162,8 +212,21 @@ const addInvestmentMarker = (investment) => {
   })
 
   marker.on('popupclose', () => {
+    const popupContent = marker
+      .getPopup()
+      ?.getElement()
+      ?.querySelector('.investment-popup')
+
+    if (popupContent) {
+      gsap.killTweensOf(popupContent)
+    }
+
+    resetActiveMarker()
+
+    if (!mapInstance) return
+
     mapInstance.flyTo(initialMapCenter, initialMapZoom, {
-      duration: 0.8
+      duration: prefersReducedMotion() ? 0 : 0.8
     })
   })
 }
@@ -174,6 +237,7 @@ const renderMarkers = () => {
   }
 
   markersLayer.clearLayers()
+  resetActiveMarker()
 
   investments.forEach((investment) => {
     const apartmentsCount = getApartmentsCountByInvestment(
@@ -185,6 +249,34 @@ const renderMarkers = () => {
       addInvestmentMarker(investment)
     }
   })
+}
+
+const animatePopup = (popupElement) => {
+  if (!popupElement || prefersReducedMotion()) return
+
+  const content = popupElement.querySelector('.investment-popup')
+
+  if (!content) return
+
+  gsap.fromTo(
+    content,
+    {
+      opacity: 0,
+      y: 15
+    },
+    {
+      opacity: 1,
+      y: 0,
+      duration: 0.45,
+      ease: 'power2.out',
+      overwrite: true,
+      onComplete: () => {
+        gsap.set(content, {
+          clearProps: 'opacity,transform'
+        })
+      }
+    }
+  )
 }
 
 onMounted(() => {
@@ -220,6 +312,14 @@ watch(
 )
 
 onBeforeUnmount(() => {
+  resetActiveMarker()
+
+  mapContainer.value
+    ?.querySelectorAll('.investment-popup')
+    .forEach((element) => {
+      gsap.killTweensOf(element)
+    })
+
   if (mapInstance) {
     mapInstance.remove()
     mapInstance = null
