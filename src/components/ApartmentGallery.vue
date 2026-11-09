@@ -1,7 +1,9 @@
 <script setup>
-import { computed, ref } from 'vue'
-import { A11y, Keyboard, Navigation, Thumbs } from 'swiper/modules'
+import { computed, ref, onBeforeUnmount } from 'vue'
+import { A11y, Keyboard, Navigation, Thumbs, EffectFade } from 'swiper/modules'
+import gsap from 'gsap'
 import { Swiper, SwiperSlide } from 'swiper/vue'
+import 'swiper/css/effect-fade'
 
 import 'swiper/css'
 import 'swiper/css/navigation'
@@ -15,7 +17,11 @@ const props = defineProps({
   }
 })
 
-const modules = [Navigation, Thumbs, Keyboard, A11y]
+const modules = [Navigation, Thumbs, Keyboard, A11y, EffectFade]
+
+const reducedMotion = window.matchMedia(
+  '(prefers-reduced-motion: reduce)'
+).matches
 
 const thumbsSwiper = ref(null)
 
@@ -68,6 +74,61 @@ const openLightbox = (index) => {
 const closeLightbox = () => {
   lightboxVisible.value = false
 }
+
+let imageAnimation = null
+let lastAnimatedElement = null
+
+const animateActiveSlide = (swiper) => {
+  if (!swiper || swiper.destroyed) return
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    return
+  }
+
+  const activeSlide = swiper.slides[swiper.activeIndex]
+
+  const imageWrapper = activeSlide?.querySelector('[data-gallery-image]')
+
+  if (!imageWrapper) return
+
+  imageAnimation?.kill()
+
+  if (lastAnimatedElement) {
+    gsap.set(lastAnimatedElement, {
+      clearProps: 'transform'
+    })
+  }
+
+  lastAnimatedElement = imageWrapper
+
+  imageAnimation = gsap.fromTo(
+    imageWrapper,
+    {
+      scale: 1.035
+    },
+    {
+      scale: 1,
+      duration: 0.65,
+      ease: 'power2.out',
+      overwrite: true,
+      onComplete: () => {
+        gsap.set(imageWrapper, {
+          clearProps: 'transform'
+        })
+      }
+    }
+  )
+}
+
+onBeforeUnmount(() => {
+  imageAnimation?.kill()
+
+  if (lastAnimatedElement) {
+    gsap.set(lastAnimatedElement, {
+      clearProps: 'transform'
+    })
+  }
+})
 </script>
 
 <template>
@@ -75,6 +136,9 @@ const closeLightbox = () => {
     <Swiper
       class="gallery-main h-[560px] bg-panel max-sm:h-[450px] max-xs:h-[340px]"
       :modules="modules"
+      effect="fade"
+      :fade-effect="{ crossFade: true }"
+      :speed="reducedMotion ? 0 : 450"
       :navigation="true"
       :keyboard="{
         enabled: true
@@ -83,12 +147,14 @@ const closeLightbox = () => {
         swiper: thumbsSwiper
       }"
       :space-between="10"
+      @slide-change="animateActiveSlide"
     >
       <SwiperSlide
         v-for="(image, index) in images"
         :key="image.src"
       >
         <div
+          data-gallery-image
           class="relative h-full w-full"
           :class="{
             'p-[35px] max-xs:p-[15px]': image.type === 'floor-plan'
