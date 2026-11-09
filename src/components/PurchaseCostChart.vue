@@ -1,9 +1,11 @@
 <script setup>
 import { computed, ref, onMounted, onUnmounted, watch } from 'vue'
 import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Doughnut } from 'vue-chartjs'
 import { ArcElement, Chart as ChartJS, Tooltip } from 'chart.js'
 import { formatPrice } from '../utils/apartmentFormatters'
+gsap.registerPlugin(ScrollTrigger)
 
 ChartJS.register(ArcElement, Tooltip)
 
@@ -89,38 +91,27 @@ const chartOptions = {
 const chartContainer = ref(null)
 const legendContainer = ref(null)
 
-let entranceAnimation = null
+let chartAnimation = null
+let legendAnimation = null
 
-const animateChart = () => {
+onMounted(() => {
   const chart = chartContainer.value
   const legend = legendContainer.value
 
   if (!chart || !legend) return
 
-  entranceAnimation?.kill()
-
-  const legendItems = legend.querySelectorAll('[data-legend-item]')
-
-  gsap.set([chart, ...legendItems], {
-    clearProps: 'opacity,transform'
-  })
-
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    gsap.set([chart, ...legend.querySelectorAll('[data-legend-item]')], {
+      opacity: 1
+    })
+
     return
   }
 
-  entranceAnimation = gsap.timeline({
-    defaults: {
-      ease: 'power2.out'
-    },
-    onComplete: () => {
-      gsap.set([chart, ...legendItems], {
-        clearProps: 'opacity,transform'
-      })
-    }
-  })
+  const legendItems = legend.querySelectorAll('[data-legend-item]')
 
-  entranceAnimation.fromTo(
+  // 1. Wykres – animacja po pojawieniu się w oknie
+  chartAnimation = gsap.fromTo(
     chart,
     {
       opacity: 0,
@@ -132,40 +123,56 @@ const animateChart = () => {
       y: 0,
       scale: 1,
       duration: 0.9,
-      ease: 'back.out(1.3)'
+      ease: 'power2.out',
+      immediateRender: false,
+      scrollTrigger: {
+        trigger: chart,
+        start: 'top 80%',
+        once: true
+      },
+      onComplete: () => {
+        gsap.set(chart, {
+          clearProps: 'opacity,transform'
+        })
+      }
     }
   )
 
-  entranceAnimation.fromTo(
+  // 2. Legenda – niezależna animacja po przewinięciu
+  legendAnimation = gsap.fromTo(
     legendItems,
     {
       opacity: 0,
-      x: -30
+      x: -35
     },
     {
       opacity: 1,
       x: 0,
-      duration: 0.5,
-      stagger: 0.18
-    },
-    '-=0.4'
+      duration: 0.65,
+      stagger: 0.25,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: legend,
+        start: 'top 85%',
+        once: true
+      },
+      onComplete: () => {
+        gsap.set(legendItems, {
+          clearProps: 'opacity,transform'
+        })
+      }
+    }
   )
-}
 
-onMounted(() => {
-  animateChart()
+  ScrollTrigger.refresh()
 })
 
-watch(
-  () => [props.apartmentPrice, props.finishingCost, props.additionalCosts],
-  () => {
-    animateChart()
-  },
-  { flush: 'post' }
-)
-
 onUnmounted(() => {
-  entranceAnimation?.kill()
+  chartAnimation?.scrollTrigger?.kill()
+  legendAnimation?.scrollTrigger?.kill()
+
+  chartAnimation?.kill()
+  legendAnimation?.kill()
 })
 </script>
 
@@ -175,6 +182,7 @@ onUnmounted(() => {
     <div
       ref="chartContainer"
       class="relative mx-auto h-[220px] w-full max-w-[250px] xs:h-[250px] xs:max-w-[290px]"
+      style="opacity: 0"
     >
       <Doughnut
         :data="chartData"
@@ -207,6 +215,7 @@ onUnmounted(() => {
       <div
         data-legend-item
         class="grid grid-cols-[minmax(0,1fr)_36px_86px] items-center gap-2 text-xs xs:grid-cols-[minmax(0,1fr)_42px_100px] xs:gap-3 xs:text-sm"
+        style="opacity: 0"
       >
         <div class="flex items-center gap-3">
           <span
@@ -228,6 +237,7 @@ onUnmounted(() => {
       <div
         data-legend-item
         class="grid grid-cols-[minmax(0,1fr)_36px_86px] items-center gap-2 text-xs xs:grid-cols-[minmax(0,1fr)_42px_100px] xs:gap-3 xs:text-sm"
+        style="opacity: 0"
       >
         <div class="flex items-center gap-3">
           <span
@@ -249,6 +259,7 @@ onUnmounted(() => {
       <div
         data-legend-item
         class="grid grid-cols-[minmax(0,1fr)_36px_86px] items-center gap-2 text-xs xs:grid-cols-[minmax(0,1fr)_42px_100px] xs:gap-3 xs:text-sm"
+        style="opacity: 0"
       >
         <div class="flex items-center gap-3">
           <span
