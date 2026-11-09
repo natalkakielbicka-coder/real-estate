@@ -1,5 +1,6 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, nextTick, onUnmounted } from 'vue'
+import gsap from 'gsap'
 import { apartments } from '../data/apartments'
 import { storeToRefs } from 'pinia'
 import { useComparisonStore } from '../stores/comparison'
@@ -46,6 +47,86 @@ const bestComparisonValues = computed(() => {
     )
   }
 })
+
+const isPanelOpen = ref(true)
+const isPanelAnimating = ref(false)
+const comparisonPanel = ref(null)
+
+const toggleComparisonPanel = async () => {
+  if (isPanelAnimating.value) return
+
+  const panel = comparisonPanel.value
+  if (!panel) return
+
+  const reducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+  ).matches
+
+  gsap.killTweensOf(panel)
+
+  if (reducedMotion) {
+    isPanelOpen.value = !isPanelOpen.value
+    return
+  }
+
+  isPanelAnimating.value = true
+
+  if (!isPanelOpen.value) {
+    isPanelOpen.value = true
+    await nextTick()
+
+    gsap.fromTo(
+      panel,
+      {
+        height: 0,
+        opacity: 0,
+        overflow: 'hidden'
+      },
+      {
+        height: 'auto',
+        opacity: 1,
+        duration: 0.45,
+        ease: 'power2.out',
+        onComplete: () => {
+          gsap.set(panel, {
+            clearProps: 'height,opacity,overflow'
+          })
+
+          isPanelAnimating.value = false
+        }
+      }
+    )
+  } else {
+    gsap.fromTo(
+      panel,
+      {
+        height: panel.offsetHeight,
+        opacity: 1,
+        overflow: 'hidden'
+      },
+      {
+        height: 0,
+        opacity: 0,
+        duration: 0.3,
+        ease: 'power2.inOut',
+        onComplete: () => {
+          isPanelOpen.value = false
+          isPanelAnimating.value = false
+
+          gsap.set(panel, {
+            clearProps: 'height,opacity,overflow'
+          })
+        }
+      }
+    )
+  }
+}
+
+onUnmounted(() => {
+  if (comparisonPanel.value) {
+    gsap.killTweensOf(comparisonPanel.value)
+  }
+})
 </script>
 
 <template>
@@ -68,8 +149,32 @@ const bestComparisonValues = computed(() => {
 
       <div
         v-if="comparedApartments.length > 0"
-        class="mb-6 flex justify-end"
+        class="mb-6 flex flex-wrap items-center justify-between gap-4"
       >
+        <button
+          type="button"
+          class="inline-flex min-h-11 items-center gap-3 font-semibold text-brand"
+          :aria-expanded="isPanelOpen"
+          aria-controls="comparison-panel"
+          :disabled="isPanelAnimating"
+          @click="toggleComparisonPanel"
+        >
+          <span>
+            {{ isPanelOpen ? 'Zwiń porównanie' : 'Rozwiń porównanie' }}
+          </span>
+
+          <span
+            class="inline-block text-lg"
+            aria-hidden="true"
+            :style="{
+              transform: isPanelOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: 'transform 250ms ease'
+            }"
+          >
+            ↓
+          </span>
+        </button>
+
         <button
           class="border-0 bg-transparent text-sm font-semibold text-muted underline decoration-brand/30 underline-offset-4 transition-colors hover:text-brand"
           type="button"
@@ -107,140 +212,147 @@ const bestComparisonValues = computed(() => {
 
       <div
         v-else
-        class="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+        id="comparison-panel"
+        ref="comparisonPanel"
+        v-show="isPanelOpen"
       >
-        <article
-          v-for="apartment in comparedApartments"
-          :key="apartment.id"
-          class="relative border border-brand/10 bg-panel p-5 shadow-[0_14px_40px_rgba(23,63,53,0.08)]"
-        >
-          <button
-            class="absolute top-4 right-4 grid size-8 place-items-center rounded-full border border-brand/10 text-lg leading-none text-muted transition-colors hover:border-brand hover:text-brand"
-            type="button"
-            :aria-label="`Usuń mieszkanie ${apartment.number} z porównania`"
-            title="Usuń z porównania"
-            @click="toggleComparison(apartment.id)"
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <article
+            v-for="apartment in comparedApartments"
+            :key="apartment.id"
+            class="relative border border-brand/10 bg-panel p-5 shadow-[0_14px_40px_rgba(23,63,53,0.08)]"
           >
-            ×
-          </button>
+            <button
+              class="absolute top-4 right-4 grid size-8 place-items-center rounded-full border border-brand/10 text-lg leading-none text-muted transition-colors hover:border-brand hover:text-brand"
+              type="button"
+              :aria-label="`Usuń mieszkanie ${apartment.number} z porównania`"
+              title="Usuń z porównania"
+              @click="toggleComparison(apartment.id)"
+            >
+              ×
+            </button>
 
-          <p
-            class="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-gold"
-          >
-            Mieszkanie
-          </p>
+            <p
+              class="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-gold"
+            >
+              Mieszkanie
+            </p>
 
-          <h2 class="pr-10 text-2xl text-brand">
-            {{ apartment.number }}
-          </h2>
+            <h2 class="pr-10 text-2xl text-brand">
+              {{ apartment.number }}
+            </h2>
 
-          <p class="mt-2 text-sm text-muted">
-            {{ apartment.investment }}
-          </p>
+            <p class="mt-2 text-sm text-muted">
+              {{ apartment.investment }}
+            </p>
 
-          <dl class="mt-6 divide-y divide-brand/10 border-y border-brand/10">
-            <div class="flex items-center justify-between gap-4 py-3">
-              <dt class="text-sm text-muted">Cena</dt>
+            <dl class="mt-6 divide-y divide-brand/10 border-y border-brand/10">
+              <div class="flex items-center justify-between gap-4 py-3">
+                <dt class="text-sm text-muted">Cena</dt>
 
-              <dd
-                class="rounded px-2 py-1 text-right font-semibold text-brand"
-                :class="{
-                  'bg-gold/15 text-brand':
-                    apartment.price === bestComparisonValues?.lowestPrice
-                }"
-              >
-                {{ formatPrice(apartment.price) }} zł
-              </dd>
-            </div>
-
-            <div class="flex items-center justify-between gap-4 py-3">
-              <dt class="text-sm text-muted">Powierzchnia</dt>
-
-              <dd
-                class="rounded px-2 py-1 text-right font-semibold text-brand"
-                :class="{
-                  'bg-gold/15 text-brand':
-                    apartment.area === bestComparisonValues?.largestArea
-                }"
-              >
-                {{ apartment.area }} m²
-              </dd>
-            </div>
-
-            <div class="flex items-center justify-between gap-4 py-3">
-              <dt class="text-sm text-muted">Liczba pokoi</dt>
-
-              <dd class="text-right font-semibold text-brand">
-                {{ apartment.rooms }} {{ getRoomsLabel(apartment.rooms) }}
-              </dd>
-            </div>
-
-            <div class="flex items-center justify-between gap-4 py-3">
-              <dt class="text-sm text-muted">Piętro</dt>
-
-              <dd class="text-right font-semibold text-brand">
-                {{ getFloorLabel(apartment.floor) }}
-              </dd>
-            </div>
-
-            <div class="flex items-center justify-between gap-4 py-3">
-              <dt class="text-sm text-muted">Cena za m²</dt>
-
-              <dd
-                class="rounded px-2 py-1 text-right font-semibold text-brand"
-                :class="{
-                  'bg-gold/15 text-brand':
-                    apartment.price / apartment.area ===
-                    bestComparisonValues?.lowestPricePerMeter
-                }"
-              >
-                {{ formatPricePerMeter(apartment.price, apartment.area) }} zł/m²
-              </dd>
-            </div>
-
-            <div class="flex items-center justify-between gap-4 py-3">
-              <dt class="text-sm text-muted">Status</dt>
-
-              <dd>
-                <span
-                  class="inline-flex items-center px-3 py-[7px] text-[10px] font-bold tracking-[0.08em] text-white uppercase"
-                  :class="apartmentStatusClasses[apartment.status]"
+                <dd
+                  class="rounded px-2 py-1 text-right font-semibold text-brand"
+                  :class="{
+                    'bg-gold/15 text-brand':
+                      apartment.price === bestComparisonValues?.lowestPrice
+                  }"
                 >
-                  {{ apartmentStatusLabels[apartment.status] }}
-                </span>
-              </dd>
-            </div>
-          </dl>
+                  {{ formatPrice(apartment.price) }} zł
+                </dd>
+              </div>
+
+              <div class="flex items-center justify-between gap-4 py-3">
+                <dt class="text-sm text-muted">Powierzchnia</dt>
+
+                <dd
+                  class="rounded px-2 py-1 text-right font-semibold text-brand"
+                  :class="{
+                    'bg-gold/15 text-brand':
+                      apartment.area === bestComparisonValues?.largestArea
+                  }"
+                >
+                  {{ apartment.area }} m²
+                </dd>
+              </div>
+
+              <div class="flex items-center justify-between gap-4 py-3">
+                <dt class="text-sm text-muted">Liczba pokoi</dt>
+
+                <dd class="text-right font-semibold text-brand">
+                  {{ apartment.rooms }} {{ getRoomsLabel(apartment.rooms) }}
+                </dd>
+              </div>
+
+              <div class="flex items-center justify-between gap-4 py-3">
+                <dt class="text-sm text-muted">Piętro</dt>
+
+                <dd class="text-right font-semibold text-brand">
+                  {{ getFloorLabel(apartment.floor) }}
+                </dd>
+              </div>
+
+              <div class="flex items-center justify-between gap-4 py-3">
+                <dt class="text-sm text-muted">Cena za m²</dt>
+
+                <dd
+                  class="rounded px-2 py-1 text-right font-semibold text-brand"
+                  :class="{
+                    'bg-gold/15 text-brand':
+                      apartment.price / apartment.area ===
+                      bestComparisonValues?.lowestPricePerMeter
+                  }"
+                >
+                  {{
+                    formatPricePerMeter(apartment.price, apartment.area)
+                  }}
+                  zł/m²
+                </dd>
+              </div>
+
+              <div class="flex items-center justify-between gap-4 py-3">
+                <dt class="text-sm text-muted">Status</dt>
+
+                <dd>
+                  <span
+                    class="inline-flex items-center px-3 py-[7px] text-[10px] font-bold tracking-[0.08em] text-white uppercase"
+                    :class="apartmentStatusClasses[apartment.status]"
+                  >
+                    {{ apartmentStatusLabels[apartment.status] }}
+                  </span>
+                </dd>
+              </div>
+            </dl>
+
+            <RouterLink
+              class="mt-5 inline-flex text-sm font-semibold text-brand underline decoration-gold underline-offset-4"
+              :to="{
+                name: 'apartment-details',
+                params: { slug: apartment.slug }
+              }"
+            >
+              Zobacz mieszkanie
+            </RouterLink>
+          </article>
 
           <RouterLink
-            class="mt-5 inline-flex text-sm font-semibold text-brand underline decoration-gold underline-offset-4"
-            :to="{
-              name: 'apartment-details',
-              params: { slug: apartment.slug }
-            }"
+            v-if="comparedApartments.length < 3"
+            class="group flex min-h-[320px] flex-col items-center justify-center border border-dashed border-brand/25 bg-transparent p-6 text-center transition-colors hover:border-brand hover:bg-brand/[0.03]"
+            to="/mieszkania"
           >
-            Zobacz mieszkanie
+            <span
+              class="grid size-12 place-items-center rounded-full border border-brand/20 text-2xl text-brand transition-transform group-hover:scale-105"
+              aria-hidden="true"
+            >
+              +
+            </span>
+
+            <strong class="mt-4 text-brand"> Dodaj kolejne mieszkanie </strong>
+
+            <span class="mt-2 max-w-[220px] text-sm text-muted">
+              Możesz porównać maksymalnie trzy mieszkania.
+            </span>
           </RouterLink>
-        </article>
-
-        <RouterLink
-          v-if="comparedApartments.length < 3"
-          class="group flex min-h-[320px] flex-col items-center justify-center border border-dashed border-brand/25 bg-transparent p-6 text-center transition-colors hover:border-brand hover:bg-brand/[0.03]"
-          to="/mieszkania"
-        >
-          <span
-            class="grid size-12 place-items-center rounded-full border border-brand/20 text-2xl text-brand transition-transform group-hover:scale-105"
-            aria-hidden="true"
-          >
-            +
-          </span>
-
-          <strong class="mt-4 text-brand"> Dodaj kolejne mieszkanie </strong>
-
-          <span class="mt-2 max-w-[220px] text-sm text-muted">
-            Możesz porównać maksymalnie trzy mieszkania.
-          </span>
-        </RouterLink>
+        </div>
       </div>
     </div>
   </main>
