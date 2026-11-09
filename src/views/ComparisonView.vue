@@ -1,9 +1,12 @@
 <script setup>
 import { computed, ref, nextTick, onUnmounted } from 'vue'
 import gsap from 'gsap'
+import { Flip } from 'gsap/Flip'
 import { apartments } from '../data/apartments'
 import { storeToRefs } from 'pinia'
 import { useComparisonStore } from '../stores/comparison'
+
+gsap.registerPlugin(Flip)
 
 import {
   formatPrice,
@@ -122,6 +125,74 @@ const toggleComparisonPanel = async () => {
   }
 }
 
+const isRemovingApartment = ref(false)
+
+const removeComparisonApartment = async (apartmentId) => {
+  if (isRemovingApartment.value) return
+
+  const panel = comparisonPanel.value
+
+  const reducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+  ).matches
+
+  const cards = Array.from(
+    panel?.querySelectorAll('[data-comparison-id]') ?? []
+  )
+
+  const removedCard = cards.find(
+    (card) => Number(card.dataset.comparisonId) === apartmentId
+  )
+
+  if (!removedCard || reducedMotion) {
+    toggleComparison(apartmentId)
+    return
+  }
+
+  isRemovingApartment.value = true
+
+  const remainingCards = cards.filter((card) => card !== removedCard)
+
+  try {
+    // 1. Animacja znikania usuwanej karty
+    await gsap
+      .to(removedCard, {
+        opacity: 0,
+        scale: 0.97,
+        duration: 0.2,
+        ease: 'power2.in'
+      })
+      .then()
+
+    // 2. Zapamiętujemy pozycje pozostałych kart
+    const state = Flip.getState(remainingCards)
+
+    // 3. Aktualizujemy dane w Pinia
+    toggleComparison(apartmentId)
+
+    // 4. Czekamy na aktualizację DOM przez Vue
+    await nextTick()
+
+    // 5. Animujemy karty do nowych pozycji
+    if (remainingCards.length) {
+      await Flip.from(state, {
+        targets: remainingCards,
+        duration: 0.45,
+        ease: 'power2.inOut',
+        absolute: true,
+        scale: true,
+        simple: true
+      }).then()
+    }
+  } finally {
+    gsap.set(remainingCards, {
+      clearProps: 'transform,opacity'
+    })
+
+    isRemovingApartment.value = false
+  }
+}
+
 onUnmounted(() => {
   if (comparisonPanel.value) {
     gsap.killTweensOf(comparisonPanel.value)
@@ -220,6 +291,7 @@ onUnmounted(() => {
           <article
             v-for="apartment in comparedApartments"
             :key="apartment.id"
+            :data-comparison-id="apartment.id"
             class="relative border border-brand/10 bg-panel p-5 shadow-[0_14px_40px_rgba(23,63,53,0.08)]"
           >
             <button
@@ -227,7 +299,8 @@ onUnmounted(() => {
               type="button"
               :aria-label="`Usuń mieszkanie ${apartment.number} z porównania`"
               title="Usuń z porównania"
-              @click="toggleComparison(apartment.id)"
+              :disabled="isRemovingApartment"
+              @click="removeComparisonApartment(apartment.id)"
             >
               ×
             </button>
@@ -302,9 +375,7 @@ onUnmounted(() => {
                       bestComparisonValues?.lowestPricePerMeter
                   }"
                 >
-                  {{
-                    formatPricePerMeter(apartment.price, apartment.area)
-                  }}
+                  {{ formatPricePerMeter(apartment.price, apartment.area) }}
                   zł/m²
                 </dd>
               </div>
