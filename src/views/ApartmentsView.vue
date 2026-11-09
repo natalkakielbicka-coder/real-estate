@@ -793,6 +793,46 @@ const filteredApartments = computed(() => {
   })
 })
 
+const animatedResultsCount = ref(filteredApartments.value.length)
+
+const counterState = {
+  value: filteredApartments.value.length
+}
+
+const updateResultsCounter = (newCount) => {
+  gsap.killTweensOf(counterState)
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    counterState.value = newCount
+    animatedResultsCount.value = newCount
+    return
+  }
+
+  gsap.to(counterState, {
+    value: newCount,
+    duration: 0.6,
+    ease: 'power2.out',
+    overwrite: true,
+    onUpdate: () => {
+      animatedResultsCount.value = Math.round(counterState.value)
+    },
+    onComplete: () => {
+      animatedResultsCount.value = newCount
+    }
+  })
+}
+
+watch(
+  () => filteredApartments.value.length,
+  (newCount) => {
+    updateResultsCounter(newCount)
+  }
+)
+
+onUnmounted(() => {
+  gsap.killTweensOf(counterState)
+})
+
 const roomCounts = computed(() => {
   return Object.fromEntries(
     rooms.map((room) => {
@@ -1278,7 +1318,7 @@ const getOffersLabel = (count) => {
             <span
               class="shrink-0 bg-page px-2 py-[5px] text-[9px] font-bold text-brand uppercase"
             >
-              {{ filteredApartments.length }}
+              {{ animatedResultsCount }}
               {{ getOffersLabel(filteredApartments.length) }}
             </span>
           </div>
@@ -1587,8 +1627,10 @@ const getOffersLabel = (count) => {
 
                 z
 
-                <strong class="text-sm text-brand">
-                  {{ sortedApartments.length }}
+                <strong
+                  class="inline-block min-w-[2ch] text-sm text-brand tabular-nums"
+                >
+                  {{ animatedResultsCount }}
                 </strong>
 
                 {{ getApartmentsLabel(sortedApartments.length) }}
@@ -1597,8 +1639,10 @@ const getOffersLabel = (count) => {
               <template v-else>
                 Znaleziono
 
-                <strong class="text-sm text-brand">
-                  {{ sortedApartments.length }}
+                <strong
+                  class="inline-block min-w-[2ch] text-sm text-brand tabular-nums"
+                >
+                  {{ animatedResultsCount }}
                 </strong>
 
                 {{ getApartmentsLabel(sortedApartments.length) }}
