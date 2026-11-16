@@ -1,11 +1,15 @@
 <script setup>
 import { computed, ref, watch, nextTick, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { getSharedComparisonIds } from '../utils/comparisonShare'
+import {
+  getSharedComparisonIds,
+  createComparisonLocation
+} from '../utils/comparisonShare'
 import gsap from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { apartments } from '../data/apartments'
 import { storeToRefs } from 'pinia'
+import { useToastStore } from '../stores/toast'
 import { useComparisonStore } from '../stores/comparison'
 
 gsap.registerPlugin(Flip)
@@ -33,6 +37,52 @@ const comparedApartments = computed(() =>
 
 const route = useRoute()
 const router = useRouter()
+
+const { showToast } = useToastStore()
+
+const isCopyingLink = ref(false)
+const comparisonLinkInput = ref(null)
+const manualComparisonLink = ref('')
+
+const copyComparisonLink = async () => {
+  if (isCopyingLink.value || comparedApartments.value.length === 0) {
+    return
+  }
+
+  isCopyingLink.value = true
+  manualComparisonLink.value = ''
+
+  try {
+    const location = createComparisonLocation(
+      comparedApartments.value.map((apartment) => apartment.id),
+      apartments
+    )
+
+    const resolvedRoute = router.resolve(location)
+
+    const url = new URL(resolvedRoute.href, window.location.href).href
+
+    try {
+      await navigator.clipboard.writeText(url)
+
+      showToast('Link do porównania został skopiowany', 'success')
+    } catch {
+      manualComparisonLink.value = url
+
+      await nextTick()
+
+      comparisonLinkInput.value?.focus()
+      comparisonLinkInput.value?.select()
+
+      showToast(
+        'Nie udało się skopiować automatycznie. Skopiuj zaznaczony link.',
+        'error'
+      )
+    }
+  } finally {
+    isCopyingLink.value = false
+  }
+}
 
 watch(
   () => route.query.ids,
@@ -292,13 +342,51 @@ onUnmounted(() => {
           </span>
         </button>
 
-        <button
-          class="border-0 bg-transparent text-sm font-semibold text-muted underline decoration-brand/30 underline-offset-4 transition-colors hover:text-brand"
-          type="button"
-          @click="clearComparison"
-        >
-          Wyczyść porównanie
-        </button>
+        <div class="flex flex-wrap items-center gap-4">
+          <button
+            class="inline-flex min-h-11 items-center justify-center rounded-[3px] border-0 bg-brand px-4 text-xs font-bold text-white transition-colors hover:bg-brand-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-wait disabled:opacity-60"
+            type="button"
+            :disabled="isCopyingLink || isRemovingApartment"
+            @click="copyComparisonLink"
+          >
+            {{ isCopyingLink ? 'Kopiowanie…' : 'Kopiuj link do porównania' }}
+          </button>
+
+          <button
+            class="min-h-11 border-0 bg-transparent text-sm font-semibold text-muted underline decoration-brand/30 underline-offset-4 transition-colors hover:text-brand"
+            type="button"
+            :disabled="isRemovingApartment"
+            @click="clearComparison"
+          >
+            Wyczyść porównanie
+          </button>
+        </div>
+      </div>
+
+      <div
+        v-if="manualComparisonLink && comparedApartments.length > 0"
+        class="mb-6 rounded-[3px] border border-line bg-panel p-4"
+      >
+        <label class="block">
+          <span class="mb-2 block text-xs font-bold text-brand">
+            Link do ręcznego skopiowania
+          </span>
+
+          <input
+            ref="comparisonLinkInput"
+            :value="manualComparisonLink"
+            class="min-h-11 w-full rounded-[3px] border border-line bg-page px-3 text-sm text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+            type="text"
+            readonly
+            @focus="$event.target.select()"
+            @click="$event.target.select()"
+          />
+        </label>
+
+        <p class="mt-2 mb-0 text-xs text-muted">
+          Skopiuj zaznaczony adres. Po zmianie porównania ponownie użyj
+          przycisku „Kopiuj link do porównania”.
+        </p>
       </div>
 
       <section
