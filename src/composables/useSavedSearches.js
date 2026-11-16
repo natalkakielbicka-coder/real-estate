@@ -43,6 +43,24 @@ const normalizeQuery = (query) => {
   return normalized
 }
 
+const multipleValueKeys = ['city', 'rooms', 'floors', 'status', 'outdoorSpace']
+
+const getQuerySignature = (query) => {
+  const normalized = normalizeQuery(query)
+
+  const entries = Object.entries(normalized).map(([key, value]) => {
+    if (!multipleValueKeys.includes(key)) {
+      return [key, value]
+    }
+
+    const sortedValues = [...new Set(value.split(','))].sort()
+
+    return [key, sortedValues.join(',')]
+  })
+
+  return JSON.stringify(entries)
+}
+
 const isValidSearch = (search) => {
   return (
     search !== null &&
@@ -160,10 +178,24 @@ export const useSavedSearches = () => {
       }
     }
 
+    const normalizedQuery = normalizeQuery(query)
+    const querySignature = getQuerySignature(normalizedQuery)
+
+    const matchingSearch = savedSearches.value.find((search) => {
+      return getQuerySignature(search.query) === querySignature
+    })
+
+    if (matchingSearch) {
+      return {
+        success: false,
+        message: `Te ustawienia są już zapisane jako „${matchingSearch.name}”.`
+      }
+    }
+
     const search = {
       id: crypto.randomUUID(),
       name: trimmedName,
-      query: normalizeQuery(query)
+      query: normalizedQuery
     }
 
     return persistSearches([search, ...savedSearches.value])
