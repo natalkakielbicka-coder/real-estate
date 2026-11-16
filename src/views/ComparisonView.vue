@@ -1,5 +1,7 @@
 <script setup>
-import { computed, ref, nextTick, onUnmounted } from 'vue'
+import { computed, ref, watch, nextTick, onUnmounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { getSharedComparisonIds } from '../utils/comparisonShare'
 import gsap from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { apartments } from '../data/apartments'
@@ -21,12 +23,56 @@ import {
 
 const comparisonStore = useComparisonStore()
 const { comparisonApartmentIds } = storeToRefs(comparisonStore)
-const { toggleComparison, clearComparison } = comparisonStore
+const { toggleComparison, clearComparison, replaceComparison } = comparisonStore
 
 const comparedApartments = computed(() =>
   comparisonApartmentIds.value
     .map((id) => apartments.find((apartment) => apartment.id === id))
     .filter(Boolean)
+)
+
+const route = useRoute()
+const router = useRouter()
+
+watch(
+  () => route.query.ids,
+  (queryIds) => {
+    if (queryIds === undefined) {
+      return
+    }
+
+    const sharedIds = getSharedComparisonIds(queryIds, apartments)
+
+    replaceComparison(sharedIds)
+  },
+  { immediate: true }
+)
+
+watch(
+  comparisonApartmentIds,
+  (ids) => {
+    if (route.query.ids === undefined) {
+      return
+    }
+
+    const queryIds = getSharedComparisonIds(route.query.ids, apartments)
+
+    const hasSameIds =
+      ids.length === queryIds.length &&
+      ids.every((id, index) => id === queryIds[index])
+
+    if (hasSameIds) {
+      return
+    }
+
+    router.replace({
+      query: {
+        ...route.query,
+        ids: ids.join(',')
+      }
+    })
+  },
+  { deep: true }
 )
 
 const bestComparisonValues = computed(() => {

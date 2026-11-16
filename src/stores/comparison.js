@@ -1,6 +1,7 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useToastStore } from './toast'
+import { apartments } from '../data/apartments'
 
 const STORAGE_KEY = 'comparison-apartment-ids'
 const MAX_COMPARISON_APARTMENTS = 3
@@ -98,6 +99,36 @@ export const useComparisonStore = defineStore('comparison', () => {
     }
   }
 
+  const replaceComparison = (ids) => {
+    const availableIds = new Set(apartments.map((apartment) => apartment.id))
+
+    const nextIds = [...new Set(ids)]
+      .filter((id) => Number.isInteger(id) && availableIds.has(id))
+      .slice(0, MAX_COMPARISON_APARTMENTS)
+
+    const hasSameIds =
+      nextIds.length === comparisonApartmentIds.value.length &&
+      nextIds.every((id, index) => {
+        return id === comparisonApartmentIds.value[index]
+      })
+
+    if (hasSameIds) {
+      return true
+    }
+
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(nextIds))
+
+      comparisonApartmentIds.value = nextIds
+
+      return true
+    } catch {
+      showToast('Nie udało się zapisać udostępnionego porównania', 'error')
+
+      return false
+    }
+  }
+
   loadComparison()
 
   return {
@@ -106,6 +137,7 @@ export const useComparisonStore = defineStore('comparison', () => {
     isComparisonFull,
     isInComparison,
     toggleComparison,
-    clearComparison
+    clearComparison,
+    replaceComparison
   }
 })
