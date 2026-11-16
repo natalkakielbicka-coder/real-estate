@@ -13,9 +13,14 @@ import { apartments } from '../data/apartments'
 import { apartmentStatusClasses } from '../constants/apartmentStatuses'
 import { getApartmentsLabel, getFloorLabel } from '../utils/apartmentFormatters'
 gsap.registerPlugin(Flip)
+import { useSavedSearches } from '../composables/useSavedSearches'
 
 import { useToastStore } from '../stores/toast'
 const { showToast } = useToastStore()
+const { saveSearch } = useSavedSearches()
+
+const searchName = ref('')
+const searchNameError = ref('')
 
 const selectedStatuses = ref([])
 const selectedOutdoorSpaces = ref([])
@@ -651,6 +656,25 @@ const filtersQuery = computed(() => {
         : undefined
   }
 })
+
+const handleSaveSearch = () => {
+  if (priceRangeError.value) {
+    searchNameError.value = 'Popraw zakres ceny przed zapisaniem.'
+    return
+  }
+
+  const result = saveSearch(searchName.value, filtersQuery.value)
+
+  if (!result.success) {
+    searchNameError.value = result.message
+    return
+  }
+
+  searchName.value = ''
+  searchNameError.value = ''
+
+  showToast('Wyszukiwanie zostało zapisane', 'success')
+}
 
 watch(filtersQuery, (newQuery) => {
   router.replace({
@@ -1591,6 +1615,51 @@ const getOffersLabel = (count) => {
           ref="resultsContainer"
           class="min-w-0 scroll-mt-[120px]"
         >
+          <form
+            class="mb-5 rounded-[3px] border border-line bg-panel p-4"
+            @submit.prevent="handleSaveSearch"
+          >
+            <label class="block">
+              <span class="mb-2 block text-xs font-bold text-brand">
+                Zapisz aktualne wyszukiwanie
+              </span>
+
+              <span class="mb-3 block text-xs leading-relaxed text-muted">
+                Zapisz zastosowane filtry, sortowanie i widok, aby wrócić do
+                nich później. Cenę zatwierdź przyciskiem „Zastosuj cenę”.
+              </span>
+
+              <input
+                v-model="searchName"
+                class="min-h-11 w-full rounded-[3px] border bg-page px-3 text-sm text-brand placeholder:text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                :class="searchNameError ? 'border-red-600' : 'border-line'"
+                type="text"
+                maxlength="60"
+                placeholder="Np. Kraków — 3 pokoje"
+                :aria-invalid="Boolean(searchNameError)"
+                :aria-describedby="
+                  searchNameError ? 'saved-search-error' : undefined
+                "
+                @input="searchNameError = ''"
+              />
+            </label>
+
+            <p
+              v-if="searchNameError"
+              id="saved-search-error"
+              class="mt-2 text-xs font-semibold text-red-700"
+              role="alert"
+            >
+              {{ searchNameError }}
+            </p>
+
+            <button
+              class="mt-3 inline-flex min-h-11 items-center justify-center rounded-[3px] border-0 bg-brand px-5 text-xs font-bold text-white transition-colors hover:bg-brand-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+              type="submit"
+            >
+              Zapisz wyszukiwanie
+            </button>
+          </form>
           <div
             v-if="activeFilters.length > 0"
             class="mb-4 flex flex-wrap items-center gap-2"
