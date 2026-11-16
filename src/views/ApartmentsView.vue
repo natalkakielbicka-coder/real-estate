@@ -17,7 +17,7 @@ import { useSavedSearches } from '../composables/useSavedSearches'
 
 import { useToastStore } from '../stores/toast'
 const { showToast } = useToastStore()
-const { saveSearch } = useSavedSearches()
+const { savedSearches, saveSearch, removeSearch } = useSavedSearches()
 
 const searchName = ref('')
 const searchNameError = ref('')
@@ -674,6 +674,17 @@ const handleSaveSearch = () => {
   searchNameError.value = ''
 
   showToast('Wyszukiwanie zostało zapisane', 'success')
+}
+
+const handleRemoveSearch = (search) => {
+  const result = removeSearch(search.id)
+
+  if (!result.success) {
+    showToast(result.message, 'error')
+    return
+  }
+
+  showToast('Wyszukiwanie zostało usunięte', 'success')
 }
 
 watch(filtersQuery, (newQuery) => {
@@ -1660,6 +1671,58 @@ const getOffersLabel = (count) => {
               Zapisz wyszukiwanie
             </button>
           </form>
+
+          <section
+            v-if="savedSearches.length > 0"
+            class="mb-5 rounded-[3px] border border-line bg-panel p-4"
+            aria-labelledby="saved-searches-heading"
+          >
+            <div class="mb-3 flex items-center justify-between gap-3">
+              <h2
+                id="saved-searches-heading"
+                class="mb-0 font-sans text-sm font-bold text-brand"
+              >
+                Zapisane wyszukiwania
+              </h2>
+
+              <span class="shrink-0 text-xs text-muted">
+                {{ savedSearches.length }}/10
+              </span>
+            </div>
+
+            <ul class="m-0 grid list-none gap-2 p-0">
+              <li
+                v-for="search in savedSearches"
+                :key="search.id"
+                class="flex min-w-0 items-center gap-2"
+              >
+                <RouterLink
+                  :to="{
+                    name: 'apartments',
+                    query: search.query
+                  }"
+                  class="flex min-h-11 min-w-0 flex-1 items-center rounded-[3px] border border-line bg-page px-3 py-2 text-xs font-semibold break-words text-brand transition-colors hover:border-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                >
+                  {{ search.name }}
+                </RouterLink>
+
+                <button
+                  class="grid min-h-11 min-w-11 shrink-0 place-items-center rounded-[3px] border border-line bg-page text-xl text-muted transition-colors hover:border-red-600 hover:text-red-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                  type="button"
+                  :aria-label="`Usuń wyszukiwanie: ${search.name}`"
+                  @click="handleRemoveSearch(search)"
+                >
+                  <span aria-hidden="true">×</span>
+                </button>
+              </li>
+            </ul>
+
+            <p class="mt-3 mb-0 text-xs leading-relaxed text-muted">
+              Wyszukiwania są zapisane w tej przeglądarce. Kliknij nazwę, aby
+              przywrócić kryteria.
+            </p>
+          </section>
+
           <div
             v-if="activeFilters.length > 0"
             class="mb-4 flex flex-wrap items-center gap-2"
