@@ -1626,6 +1626,16 @@ const getOffersLabel = (count) => {
           ref="resultsContainer"
           class="min-w-0 scroll-mt-[120px]"
         >
+          <p
+            class="sr-only"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            Liczba mieszkań spełniających kryteria:
+            {{ sortedApartments.length }}.
+          </p>
+
           <form
             class="mb-5 rounded-[3px] border border-line bg-panel p-4"
             @submit.prevent="handleSaveSearch"
@@ -2073,5 +2083,14 @@ const getOffersLabel = (count) => {
   border-right: 2px solid #ffffff;
   border-bottom: 2px solid #ffffff;
   transform: rotate(45deg);
+}
+
+.filter-checkbox input:focus-visible + .filter-checkbox__mark {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+.filter-checkbox:focus-within {
+  color: var(--color-primary);
 }
 </style>
