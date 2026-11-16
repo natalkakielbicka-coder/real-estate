@@ -22,6 +22,17 @@ const { savedSearches, saveSearch, removeSearch } = useSavedSearches()
 const searchName = ref('')
 const searchNameError = ref('')
 
+const searchNameInput = ref(null)
+const savedSearchLinks = new Map()
+
+const setSavedSearchLink = (id, element) => {
+  if (element) {
+    savedSearchLinks.set(id, element)
+  } else {
+    savedSearchLinks.delete(id)
+  }
+}
+
 const selectedStatuses = ref([])
 const selectedOutdoorSpaces = ref([])
 const onlyWithParking = ref(false)
@@ -676,12 +687,27 @@ const handleSaveSearch = () => {
   showToast('Wyszukiwanie zostało zapisane', 'success')
 }
 
-const handleRemoveSearch = (search) => {
+const handleRemoveSearch = async (search) => {
+  const removedIndex = savedSearches.value.findIndex((item) => {
+    return item.id === search.id
+  })
+
   const result = removeSearch(search.id)
 
   if (!result.success) {
     showToast(result.message, 'error')
     return
+  }
+
+  await nextTick()
+
+  const nextSearch =
+    savedSearches.value[removedIndex] ?? savedSearches.value[removedIndex - 1]
+
+  if (nextSearch) {
+    savedSearchLinks.get(nextSearch.id)?.focus()
+  } else {
+    searchNameInput.value?.focus()
   }
 
   showToast('Wyszukiwanie zostało usunięte', 'success')
@@ -1651,6 +1677,7 @@ const getOffersLabel = (count) => {
               </span>
 
               <input
+                ref="searchNameInput"
                 v-model="searchName"
                 class="min-h-11 w-full rounded-[3px] border bg-page px-3 text-sm text-brand placeholder:text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
                 :class="searchNameError ? 'border-red-600' : 'border-line'"
@@ -1707,13 +1734,21 @@ const getOffersLabel = (count) => {
                 class="flex min-w-0 items-center gap-2"
               >
                 <RouterLink
+                  v-slot="{ href, navigate }"
                   :to="{
                     name: 'apartments',
                     query: search.query
                   }"
-                  class="flex min-h-11 min-w-0 flex-1 items-center rounded-[3px] border border-line bg-page px-3 py-2 text-xs font-semibold break-words text-brand transition-colors hover:border-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                  custom
                 >
-                  {{ search.name }}
+                  <a
+                    :ref="(element) => setSavedSearchLink(search.id, element)"
+                    :href="href"
+                    class="flex min-h-11 min-w-0 flex-1 items-center rounded-[3px] border border-line bg-page px-3 py-2 text-xs font-semibold break-words text-brand transition-colors hover:border-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                    @click="navigate"
+                  >
+                    {{ search.name }}
+                  </a>
                 </RouterLink>
 
                 <button
