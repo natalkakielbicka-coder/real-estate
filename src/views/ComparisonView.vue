@@ -35,6 +35,14 @@ const comparedApartments = computed(() =>
     .filter(Boolean)
 )
 
+watch(
+  () => comparedApartments.value.map((apartment) => apartment.id),
+  () => {
+    manualComparisonLink.value = ''
+  },
+  { flush: 'sync' }
+)
+
 const route = useRoute()
 const router = useRouter()
 
@@ -43,6 +51,14 @@ const { showToast } = useToastStore()
 const isCopyingLink = ref(false)
 const comparisonLinkInput = ref(null)
 const manualComparisonLink = ref('')
+
+watch(
+  () => comparedApartments.value.map((apartment) => apartment.id),
+  () => {
+    manualComparisonLink.value = ''
+  },
+  { flush: 'sync' }
+)
 
 const copyComparisonLink = async () => {
   if (isCopyingLink.value || comparedApartments.value.length === 0) {
