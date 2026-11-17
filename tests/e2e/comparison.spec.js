@@ -159,6 +159,37 @@ test('shows a selectable comparison link when clipboard access fails', async ({
     end: linkValue.length
   })
 
+  const removedApartment = selectedApartments[0]
+
+  await page
+    .locator(`[data-comparison-id="${removedApartment.id}"]`)
+    .getByRole('button', {
+      name: `Usuń mieszkanie ${removedApartment.number} z porównania`,
+      exact: true
+    })
+    .click()
+
+  await expect(page.locator('[data-comparison-id]')).toHaveCount(1)
+
+  await expect(linkInput).toHaveCount(0)
+
+  await page
+    .getByRole('button', {
+      name: 'Kopiuj link do porównania',
+      exact: true
+    })
+    .click()
+
+  await expect(linkInput).toBeVisible()
+  await expect(linkInput).toBeFocused()
+
+  const updatedLinkValue = await linkInput.inputValue()
+  const updatedUrl = new URL(updatedLinkValue)
+
+  expect(updatedUrl.searchParams.get('ids')).toBe(
+    String(selectedApartments[1].id)
+  )
+
   await page.goto(linkValue)
 
   await expect(page.locator('[data-comparison-id]')).toHaveCount(2)
