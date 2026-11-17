@@ -5,7 +5,12 @@ import globals from 'globals'
 
 export default [
   {
-    ignores: ['dist/**']
+    ignores: [
+      'dist/**',
+      'playwright-report/**',
+      'test-results/**',
+      'blob-report/**'
+    ]
   },
   js.configs.recommended,
   ...pluginVue.configs['flat/recommended'],
